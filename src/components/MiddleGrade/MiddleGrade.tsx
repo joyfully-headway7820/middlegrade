@@ -1,4 +1,5 @@
-import { IData } from "./App";
+import { IData } from "../../App";
+import TextBlock from "./TextBlock";
 
 export default function MiddleGrade({ data }: IData) {
 	const grades: (number | null)[] = [];
@@ -81,43 +82,32 @@ export default function MiddleGrade({ data }: IData) {
 	const labGrades5: number = sumGradeArr(labs);
 
 	return (
-		<>
-			<div className='inner_text'>
-				<p>
-					Средний балл:{" "}
-					<b>
-						{countMiddle(gradeSum, grades)} ({grade5Sum})
-					</b>
-				</p>
-
-				<p>
-					Средний балл за работу на паре:{" "}
-					<b>
-						{countMiddle(classGrade, classWork)} ({classGrades5})
-					</b>
-				</p>
-
-				<p>
-					Средний балл за контрольные:{" "}
-					<b>
-						{countMiddle(controlGrade, controlWork)} ({controlGrades5})
-					</b>
-				</p>
-
-				<p>
-					Средний балл за домашки:{" "}
-					<b>
-						{countMiddle(homeGrade, homeWork)} ({homeGrades5})
-					</b>
-				</p>
-
-				<p>
-					Средний балл за лабы:{" "}
-					<b>
-						{countMiddle(labGrade, labs)} ({labGrades5})
-					</b>
-				</p>
-			</div>
-		</>
+		<div className='inner_text'>
+			<TextBlock
+				text='Средний балл'
+				sum={countMiddle(gradeSum, grades)}
+				sum5={grade5Sum}
+			/>
+			<TextBlock
+				text='Средний балл за работу на паре'
+				sum={countMiddle(classGrade, classWork)}
+				sum5={classGrades5}
+			/>
+			<TextBlock
+				text='Средний балл за контрольные'
+				sum={countMiddle(controlGrade, controlWork)}
+				sum5={controlGrades5}
+			/>
+			<TextBlock
+				text='Средний балл за домашки'
+				sum={countMiddle(homeGrade, homeWork)}
+				sum5={homeGrades5}
+			/>
+			<TextBlock
+				text='Средний балл за лабы'
+				sum={countMiddle(labGrade, labs)}
+				sum5={labGrades5}
+			/>
+		</div>
 	);
 }

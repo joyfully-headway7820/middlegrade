@@ -1,4 +1,4 @@
-import { IData } from "./App";
+import { IData } from "../App";
 
 export default function Visits({ data }: IData) {
 	const studentWas: number[] = [];

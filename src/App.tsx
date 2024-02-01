@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import MiddleGrade from "./MiddleGrade.tsx";
-import Visits from "./Visits.tsx";
+import MiddleGrade from "./components/MiddleGrade/MiddleGrade.tsx";
+import Visits from "./components/Visits.tsx";
 
 export interface IData {
 	data: IDataElement[];
