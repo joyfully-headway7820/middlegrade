@@ -4,25 +4,25 @@ import MiddleGrade from "./MiddleGrade.tsx";
 import Visits from "./Visits.tsx";
 
 export interface IData {
-	data: [
-		{
-			date_visit: string;
-			lession_number: number;
-			status_was: number;
-			spec_id: number;
-			teacher_name: string;
-			spec_name: string;
-			lesson_theme: string;
-			control_work_mark: number | null;
-			home_work_mark: number | null;
-			lab_work_mark: number | null;
-			class_work_mark: number | null;
-		}
-	];
+	data: IDataElement[];
+}
+
+interface IDataElement {
+	date_visit: string;
+	lession_number: number;
+	status_was: number;
+	spec_id: number;
+	teacher_name: string;
+	spec_name: string;
+	lesson_theme: string;
+	control_work_mark: number | null;
+	home_work_mark: number | null;
+	lab_work_mark: number | null;
+	class_work_mark: number | null;
 }
 
 function App() {
-	const [data, setData] = useState<IData[]>([]);
+	const [data, setData] = useState<IDataElement[]>([]);
 	useEffect(() => {
 		(async (): Promise<void> => {
 			try {
