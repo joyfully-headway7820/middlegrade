@@ -41,36 +41,36 @@ export default function MiddleGrade({ data }: IData) {
 	// Перевод в пятибальную систему
 	function toFive(arr: (number | null)[]): (number | null)[] {
 		for (let i = 0; i < arr.length; i++) {
-			switch (true) {
-				case arr[i] === 1:
-				case arr[i] === 2:
-				case arr[i] === 3:
+			switch (arr[i]) {
+				case 1:
+				case 2:
+				case 3:
 					arr[i] = 2;
 					break;
-				case arr[i] === 4:
-				case arr[i] === 5:
-				case arr[i] === 6:
+				case 4:
+				case 5:
+				case 6:
 					arr[i] = 3;
 					break;
-				case arr[i] === 7:
-				case arr[i] === 8:
-				case arr[i] === 9:
+				case 7:
+				case 8:
+				case 9:
 					arr[i] = 4;
 					break;
-				case arr[i] === 10:
-				case arr[i] === 11:
-				case arr[i] === 12:
+				case 10:
+				case 11:
+				case 12:
 					arr[i] = 5;
 					break;
 				default:
-					console.warn("Ошибка перевода в пятибалльную систему");
+					break;
 			}
 		}
 
 		return arr;
 	}
 	function sumGradeArr(arr: (number | null)[], grade = 0): number {
-		toFive(arr).forEach((i: number | null): void => {
+		toFive(arr).forEach((i: number | null) => {
 			grade += i!;
 		});
 		return countMiddle(grade, arr);
