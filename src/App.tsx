@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
 import MiddleGrade from "./components/MiddleGrade/MiddleGrade.tsx";
 import Visits from "./components/Visits.tsx";
+import dataJson from "../public/data.json";
 
 export interface IData {
 	data: IDataElement[];
@@ -9,7 +8,7 @@ export interface IData {
 
 interface IDataElement {
 	date_visit: string;
-	lession_number: number;
+	lession_number?: number;
 	status_was: number;
 	spec_id: number;
 	teacher_name: string;
@@ -22,17 +21,8 @@ interface IDataElement {
 }
 
 function App() {
-	const [data, setData] = useState<IDataElement[]>([]);
-	useEffect(() => {
-		(async (): Promise<void> => {
-			try {
-				const { data } = await axios.get("/data.json");
-				setData(data);
-			} catch (error) {
-				console.warn("Файл data.json отсутствует или произошла ошибка");
-			}
-		})();
-	}, []);
+	const data: IDataElement[] = dataJson;
+
 	return (
 		<div className='App'>
 			{data.length ? (
