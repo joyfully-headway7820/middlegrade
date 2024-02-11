@@ -33,13 +33,14 @@ export default function Visits({ data }: IData) {
 		}
 		return "";
 	}
-	const allLessions = studentWas.length + studentLate.length;
+	const allLessions = [...studentWas, ...studentLate];
 	return (
 		<div className='inner_text'>
 			<p>
 				Посещаемость:{" "}
 				<b>
-					{allLessions} пар{ifLastA(allLessions)} ({countPercent(studentWas)}%)
+					{allLessions.length} пар{ifLastA(allLessions.length)} (
+					{countPercent(allLessions)}%)
 				</b>
 			</p>
 			<p>
