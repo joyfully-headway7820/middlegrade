@@ -7,11 +7,11 @@ export default function MiddleGrade({ data }: IData) {
 	const controlWork: (number | null)[] = [];
 	const homeWork: (number | null)[] = [];
 	const labs: (number | null)[] = [];
-	let gradeSum: number | null,
-		classGrade: number | null,
-		controlGrade: number | null,
-		homeGrade: number | null,
-		labGrade: number | null;
+	let gradeSum: number,
+		classGrade: number,
+		controlGrade: number,
+		homeGrade: number,
+		labGrade: number;
 	gradeSum = classGrade = controlGrade = homeGrade = labGrade = 0;
 	data.forEach((_, i) => {
 		data[i].class_work_mark && grades.push(data[i].class_work_mark);
@@ -32,12 +32,12 @@ export default function MiddleGrade({ data }: IData) {
 		labGrade! += data[i].lab_work_mark!;
 	});
 
-	const countMiddle = (grade: number, arr: (number | null)[]): number => {
-		if (grade > 0) {
+	function countMiddle(grade: number, arr: (number | null)[]): number {
+		if (grade) {
 			return +(grade / arr.length).toFixed(4);
 		}
 		return 0;
-	};
+	}
 	// Перевод в пятибальную систему
 	function toFive(arr: (number | null)[]): (number | null)[] {
 		for (let i = 0; i < arr.length; i++) {
@@ -66,7 +66,6 @@ export default function MiddleGrade({ data }: IData) {
 					break;
 			}
 		}
-
 		return arr;
 	}
 	function sumGradeArr(arr: (number | null)[], grade = 0): number {
@@ -75,38 +74,33 @@ export default function MiddleGrade({ data }: IData) {
 		});
 		return countMiddle(grade, arr);
 	}
-	const grade5Sum: number = sumGradeArr(grades);
-	const classGrades5: number = sumGradeArr(classWork);
-	const controlGrades5: number = sumGradeArr(controlWork);
-	const homeGrades5: number = sumGradeArr(homeWork);
-	const labGrades5: number = sumGradeArr(labs);
 
 	return (
 		<div className='inner_text'>
 			<TextBlock
 				text='Средний балл'
 				sum={countMiddle(gradeSum, grades)}
-				sum5={grade5Sum}
+				sum5={sumGradeArr(grades)}
 			/>
 			<TextBlock
 				text='Средний балл за работу на паре'
 				sum={countMiddle(classGrade, classWork)}
-				sum5={classGrades5}
+				sum5={sumGradeArr(classWork)}
 			/>
 			<TextBlock
 				text='Средний балл за контрольные'
 				sum={countMiddle(controlGrade, controlWork)}
-				sum5={controlGrades5}
+				sum5={sumGradeArr(controlWork)}
 			/>
 			<TextBlock
 				text='Средний балл за домашки'
 				sum={countMiddle(homeGrade, homeWork)}
-				sum5={homeGrades5}
+				sum5={sumGradeArr(homeWork)}
 			/>
 			<TextBlock
 				text='Средний балл за лабы'
 				sum={countMiddle(labGrade, labs)}
-				sum5={labGrades5}
+				sum5={sumGradeArr(labs)}
 			/>
 		</div>
 	);

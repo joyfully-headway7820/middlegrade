@@ -16,7 +16,6 @@ export default function Visits({ data }: IData) {
 				studentLate.push(i);
 				break;
 			default:
-				console.warn("Ошибка обновления данных посещаемости");
 		}
 	});
 	function countPercent(arr: number[]): number {
@@ -33,7 +32,7 @@ export default function Visits({ data }: IData) {
 		}
 		return "";
 	}
-	const allLessions = [...studentWas, ...studentLate];
+	const allLessions: number[] = [...studentWas, ...studentLate];
 	return (
 		<div className='inner_text'>
 			<p>
