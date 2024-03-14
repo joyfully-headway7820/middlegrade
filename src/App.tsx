@@ -26,6 +26,10 @@ function changeTheme(): void {
 
 function App() {
 	const data: IDataElement[] = dataJson;
+	// const arr: (string | null)[] = data.map((i: IDataElement) => i.spec_name);
+	// const specList = arr.filter(
+	// 	(item: string | null, pos: number) => arr.indexOf(item) === pos
+	// );
 
 	return (
 		<div className='App'>
@@ -37,9 +41,9 @@ function App() {
 					xmlns='http://www.w3.org/2000/svg'
 					aria-labelledby='nightModeIconTitle'
 					stroke='#eee'
-					stroke-width='1'
-					stroke-linecap='square'
-					stroke-linejoin='miter'
+					strokeWidth='1'
+					strokeLinecap='square'
+					strokeLinejoin='miter'
 					fill='none'
 					color='#eee'
 				>
@@ -54,6 +58,12 @@ function App() {
 				<>
 					<h1>Статистика</h1>
 					<h2>Средний балл</h2>
+					{/* <select>
+						<option>Все предметы</option>
+						{specList.map((e) => (
+							<option>{e}</option>
+						))}
+					</select> */}
 					<MiddleGrade data={data} />
 					<h2>Посещаемость</h2>
 					<Visits data={data} />
@@ -77,6 +87,9 @@ function App() {
 							создай.
 						</li>
 					</ol>
+					<a href='/video.mp4' className='open_video' target='_blank'>
+						Открыть видеоинструкцию
+					</a>
 				</div>
 			)}
 		</div>

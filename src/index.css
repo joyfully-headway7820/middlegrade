@@ -22,10 +22,6 @@ body {
 	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
 }
 
-.App {
-	margin-top: 8vh;
-}
-
 .text_block {
 	width: 50vw;
 	line-height: 1.5;
@@ -33,16 +29,18 @@ body {
 }
 
 .actuality {
-	margin-top: 3vh;
+	margin-top: 2vh;
 }
 
 .light_theme {
 	background-color: #fff;
 	color: #555;
 	.inner_text,
-	.text_block {
-		background: linear-gradient(#dadbf8, #ffffff);
+	.text_block,
+	select {
+		background: linear-gradient(#fff, #dadbf8);
 		color: #333;
+		outline: 1px solid #ddd;
 	}
 	.theme-btn {
 		svg {
@@ -65,4 +63,35 @@ body {
 
 .theme-btn:hover {
 	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+select {
+	background-color: #555;
+	color: #fff;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+	font-size: clamp(14px, 4.2vw, 20px);
+	width: 50vw;
+	margin: 20px;
+	border: none;
+	padding: 10px;
+	border-radius: 20px;
+}
+
+.open_video {
+	background-color: #fff;
+	color: #000;
+	text-decoration: none;
+	padding: 10px;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s linear;
+	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+.open_video:hover {
+	background-color: #eee;
+	box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
 }
