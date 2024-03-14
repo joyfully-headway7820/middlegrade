@@ -68,6 +68,9 @@ function App() {
 					<h2>Посещаемость</h2>
 					<Visits data={data} />
 					<div className='actuality'>Актуальность: {data[0].date_visit}</div>
+					<a href='/video.mp4' className='open_video' target='_blank'>
+						Чужие данные? Открой видеоинструкцию
+					</a>
 				</>
 			) : (
 				<div className='text_block'>

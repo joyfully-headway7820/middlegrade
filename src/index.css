@@ -79,14 +79,15 @@ select {
 }
 
 .open_video {
-	background-color: #fff;
+	width: 25vw;
+	display: block;
 	color: #000;
 	text-decoration: none;
-	padding: 10px;
+	text-align: center;
+	margin: 20px auto;
+	padding: 15px;
+	background-color: #fff;
 	border-radius: 10px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	transition: all 0.2s linear;
 	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
 }
