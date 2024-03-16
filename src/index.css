@@ -84,7 +84,7 @@ select {
 	color: #000;
 	text-decoration: none;
 	text-align: center;
-	margin: 20px auto;
+	margin: 20px auto 0;
 	padding: 15px;
 	background-color: #fff;
 	border-radius: 10px;

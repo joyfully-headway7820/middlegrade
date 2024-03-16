@@ -1,3 +1,4 @@
+import React from "react";
 import MiddleGrade from "./components/MiddleGrade/MiddleGrade.tsx";
 import Visits from "./components/Visits.tsx";
 import dataJson from "./data.json";
@@ -25,11 +26,11 @@ function changeTheme(): void {
 }
 
 function App() {
-	const data: IDataElement[] = dataJson;
-	// const arr: (string | null)[] = data.map((i: IDataElement) => i.spec_name);
-	// const specList = arr.filter(
-	// 	(item: string | null, pos: number) => arr.indexOf(item) === pos
-	// );
+	const [data, setData] = React.useState<IDataElement[]>(dataJson);
+	const arr: string[] = dataJson.map((i: IDataElement) => i.spec_name);
+	const specList = arr
+		.filter((item: string, pos: number) => arr.indexOf(item) === pos)
+		.sort();
 
 	return (
 		<div className='App'>
@@ -58,12 +59,18 @@ function App() {
 				<>
 					<h1>Статистика</h1>
 					<h2>Средний балл</h2>
-					{/* <select>
-						<option>Все предметы</option>
+					<select>
+						<option onClick={() => setData(dataJson)}>Все предметы</option>
 						{specList.map((e) => (
-							<option>{e}</option>
+							<option
+								onClick={() =>
+									setData(dataJson.filter((element) => element.spec_name === e))
+								}
+							>
+								{e}
+							</option>
 						))}
-					</select> */}
+					</select>
 					<MiddleGrade data={data} />
 					<h2>Посещаемость</h2>
 					<Visits data={data} />
