@@ -83,8 +83,9 @@ select {
 	width: 50vw;
 	margin: 20px;
 	border: none;
-	padding: 10px;
+	padding: 10px 15px;
 	border-radius: 20px;
+	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
 }
 
 .open_video {

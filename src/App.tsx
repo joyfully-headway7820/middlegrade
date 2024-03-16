@@ -26,15 +26,7 @@ function changeTheme(): void {
 }
 
 function App() {
-	function filterData(arr: IDataElement[]): IDataElement[] {
-		arr.forEach((element) => {
-			if (element.spec_name.includes("РПО")) {
-				element.spec_name.replace("РПО", "");
-			}
-		});
-		return arr;
-	}
-	const dataArr = filterData(dataJson);
+	const dataArr = dataJson;
 	const [data, setData] = React.useState<IDataElement[]>(dataArr);
 	const arr: string[] = dataJson.map((i: IDataElement) => i.spec_name);
 	const specList = arr
@@ -72,8 +64,15 @@ function App() {
 						<option onClick={() => setData(dataArr)}>Все предметы</option>
 						{specList.map((e) => (
 							<option
+								key={e}
 								onClick={() =>
-									setData(dataArr.filter((element) => element.spec_name === e))
+									setData(
+										dataArr.filter(
+											(element) =>
+												element.spec_name === e ||
+												element.spec_name === `${e} РПО`
+										)
+									)
 								}
 							>
 								{e}
