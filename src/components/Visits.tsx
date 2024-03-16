@@ -37,18 +37,18 @@ export default function Visits({ data }: IData) {
 		<div className='inner_text'>
 			<p>
 				Посещаемость:{" "}
-				<b>
+				<b className='green_text'>
 					{allLessions.length} пар{ifLastA(allLessions.length)} (
 					{countPercent(allLessions)}%)
 				</b>
 			</p>
 			<p>
 				Всего пар <b>{data.length}</b>, опозданий{" "}
-				<b>
+				<b className='yellow_text'>
 					{studentLate.length} ({countPercent(studentLate)}%)
 				</b>
 				, пропусков{" "}
-				<b>
+				<b className='red_text'>
 					{studentWasnt.length} ({countPercent(studentWasnt)}%)
 				</b>
 			</p>

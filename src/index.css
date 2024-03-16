@@ -38,7 +38,7 @@ body {
 	.inner_text,
 	.text_block,
 	select {
-		background: linear-gradient(#fff, #dadbf8);
+		background: #eee;
 		color: #333;
 		outline: 1px solid #ddd;
 	}
@@ -46,6 +46,15 @@ body {
 		svg {
 			fill: #000;
 		}
+	}
+	.green_text {
+		color: #028602;
+	}
+	.red_text {
+		color: #860202;
+	}
+	.yellow_text {
+		color: #ada205;
 	}
 }
 
@@ -95,4 +104,16 @@ select {
 .open_video:hover {
 	background-color: #eee;
 	box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+}
+
+.green_text {
+	color: #5bf75b;
+}
+
+.red_text {
+	color: #f75b5b;
+}
+
+.yellow_text {
+	color: #f7f45b;
 }

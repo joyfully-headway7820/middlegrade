@@ -26,7 +26,16 @@ function changeTheme(): void {
 }
 
 function App() {
-	const [data, setData] = React.useState<IDataElement[]>(dataJson);
+	function filterData(arr: IDataElement[]): IDataElement[] {
+		arr.forEach((element) => {
+			if (element.spec_name.includes("РПО")) {
+				element.spec_name.replace("РПО", "");
+			}
+		});
+		return arr;
+	}
+	const dataArr = filterData(dataJson);
+	const [data, setData] = React.useState<IDataElement[]>(dataArr);
 	const arr: string[] = dataJson.map((i: IDataElement) => i.spec_name);
 	const specList = arr
 		.filter((item: string, pos: number) => arr.indexOf(item) === pos)
@@ -60,11 +69,11 @@ function App() {
 					<h1>Статистика</h1>
 					<h2>Средний балл</h2>
 					<select>
-						<option onClick={() => setData(dataJson)}>Все предметы</option>
+						<option onClick={() => setData(dataArr)}>Все предметы</option>
 						{specList.map((e) => (
 							<option
 								onClick={() =>
-									setData(dataJson.filter((element) => element.spec_name === e))
+									setData(dataArr.filter((element) => element.spec_name === e))
 								}
 							>
 								{e}
