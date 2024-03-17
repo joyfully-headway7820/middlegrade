@@ -32,32 +32,6 @@ body {
 	margin-top: 2vh;
 }
 
-.light_theme {
-	background-color: #fff;
-	color: #555;
-	.inner_text,
-	.text_block,
-	select {
-		background: #eee;
-		color: #333;
-		outline: 1px solid #ddd;
-	}
-	.theme-btn {
-		svg {
-			fill: #000;
-		}
-	}
-	.green_text {
-		color: #028602;
-	}
-	.red_text {
-		color: #860202;
-	}
-	.yellow_text {
-		color: #ada205;
-	}
-}
-
 .theme-btn {
 	position: absolute;
 	padding: 5px;
@@ -117,4 +91,83 @@ select {
 
 .yellow_text {
 	color: #f7f45b;
+}
+
+.info {
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	background-color: #fff;
+	color: #000;
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+	cursor: help;
+	font-weight: 700;
+	font-style: italic;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s linear;
+}
+
+.info:hover {
+	background-color: #eee;
+}
+
+.description {
+	display: none;
+	position: absolute;
+	top: 22vh;
+	font-style: normal;
+	font-weight: 400;
+	background-color: #333;
+	color: #eee;
+	border-radius: 20px;
+	padding: 20px;
+	transition: all 0.2s linear;
+	width: 25vw;
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+}
+
+.info:hover .description {
+	display: block;
+}
+
+.flex {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.light_theme {
+	background-color: #fff;
+	color: #555;
+	.inner_text,
+	.text_block,
+	select {
+		background: #eee;
+		color: #333;
+		outline: 1px solid #ddd;
+	}
+	.theme-btn {
+		svg {
+			fill: #000;
+		}
+	}
+	.green_text {
+		color: #028602;
+	}
+	.red_text {
+		color: #860202;
+	}
+	.yellow_text {
+		color: #ada205;
+	}
+	.info {
+		color: #ddd;
+		background-color: #333;
+	}
+	.info:hover {
+		color: #fff;
+		background-color: #000;
+	}
 }

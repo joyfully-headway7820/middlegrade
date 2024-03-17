@@ -60,25 +60,34 @@ function App() {
 				<>
 					<h1>Статистика</h1>
 					<h2>Средний балл</h2>
-					<select>
-						<option onClick={() => setData(dataArr)}>Все предметы</option>
-						{specList.map((e) => (
-							<option
-								key={e}
-								onClick={() =>
-									setData(
-										dataArr.filter(
-											(element) =>
-												element.spec_name === e ||
-												element.spec_name === `${e} РПО`
+					<div className='flex'>
+						<select>
+							<option onClick={() => setData(dataArr)}>Все предметы</option>
+							{specList.map((e) => (
+								<option
+									key={e}
+									onClick={() =>
+										setData(
+											dataArr.filter(
+												(element) =>
+													element.spec_name === e ||
+													element.spec_name === `${e} РПО`
+											)
 										)
-									)
-								}
-							>
-								{e}
-							</option>
-						))}
-					</select>
+									}
+								>
+									{e}
+								</option>
+							))}
+						</select>
+						<div className='info'>
+							i
+							<div className='description'>
+								Примечание для групп РПО: Можно выбрать предмет без постфикса
+								"РПО", и тогда отобразится реальная статистика по предмету.
+							</div>
+						</div>
+					</div>
 					<MiddleGrade data={data} />
 					<h2>Посещаемость</h2>
 					<Visits data={data} />
