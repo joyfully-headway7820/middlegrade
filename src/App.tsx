@@ -32,6 +32,25 @@ function App() {
 	const specList = arr
 		.filter((item: string, pos: number) => arr.indexOf(item) === pos)
 		.sort();
+	const date = new Date(data[0]?.date_visit);
+	const day = date.getDate();
+	const month = date.getMonth();
+	const year = date.getFullYear();
+
+	const months = [
+		"января",
+		"февраля",
+		"марта",
+		"апреля",
+		"мая",
+		"июня",
+		"июля",
+		"августа",
+		"сентября",
+		"октября",
+		"ноября",
+		"декабря",
+	];
 
 	return (
 		<div className='App'>
@@ -56,7 +75,7 @@ function App() {
 					<path d='M5 12H2h3zM22 12h-3 3zM16.95 7.05L19.07 4.93 16.95 7.05zM4.929 19.071L7.05 16.95 4.93 19.07zM16.95 16.95l2.121 2.121-2.121-2.121zM4.929 4.929L7.05 7.05 4.93 4.93z' />{" "}
 				</svg>
 			</button>
-			{data.length ? (
+			{dataArr.length ? (
 				<>
 					<h1>Статистика</h1>
 					<h2>Средний балл</h2>
@@ -91,9 +110,9 @@ function App() {
 					<MiddleGrade data={data} />
 					<h2>Посещаемость</h2>
 					<Visits data={data} />
-					{dataArr === data && (
-						<div className='actuality'>Актуальность: {data[0].date_visit}</div>
-					)}
+					<div className='actuality'>
+						Последняя пара была {day} {months[month]} {year} г.
+					</div>
 					<a href='/video.mp4' className='open_video' target='_blank'>
 						Чужие данные? Открой видеоинструкцию
 					</a>

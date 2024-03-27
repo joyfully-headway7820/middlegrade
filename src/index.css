@@ -119,8 +119,8 @@ select {
 	top: 22vh;
 	font-style: normal;
 	font-weight: 400;
-	background-color: #333;
-	color: #eee;
+	background-color: #eee;
+	color: #000;
 	border-radius: 20px;
 	padding: 20px;
 	transition: all 0.2s linear;

@@ -19,7 +19,10 @@ export default function Visits({ data }: IData) {
 		}
 	});
 	function countPercent(arr: number[]): number {
-		return +(arr.length / (data.length / 100)).toFixed(2);
+		if (arr.length) {
+			return +(arr.length / (data.length / 100)).toFixed(2);
+		}
+		return 0;
 	}
 	function ifLastA(i: number): string {
 		if (i % 10 === 1) {
