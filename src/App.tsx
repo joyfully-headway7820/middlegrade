@@ -28,14 +28,16 @@ function changeTheme(): void {
 function App() {
 	const dataArr = dataJson;
 	const [data, setData] = React.useState<IDataElement[]>(dataArr);
-	const arr: string[] = dataJson.map((i: IDataElement) => i.spec_name);
-	const specList = arr
-		.filter((item: string, pos: number) => arr.indexOf(item) === pos)
-		.sort();
 	const date = new Date(data[0]?.date_visit);
 	const day = date.getDate();
 	const month = date.getMonth();
 	const year = date.getFullYear();
+	const arr: string[] = dataJson
+		.map((i: IDataElement) => i.spec_name)
+		.filter((_, pos) => dataJson[pos].date_visit > `${year - 1}-09-01`);
+	const specList = arr
+		.filter((item: string, pos: number) => arr.indexOf(item) === pos)
+		.sort();
 
 	const months = [
 		"января",

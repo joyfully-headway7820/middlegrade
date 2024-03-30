@@ -140,12 +140,12 @@ select {
 
 .light_theme {
 	background-color: #fff;
-	color: #555;
+	color: #000;
 	.inner_text,
 	.text_block,
 	select {
 		background: #eee;
-		color: #333;
+		color: #000;
 		outline: 1px solid #ddd;
 	}
 	.theme-btn {
