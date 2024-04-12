@@ -34,7 +34,7 @@ function App() {
 	const year = date.getFullYear();
 	const arr: string[] = dataJson
 		.map((i: IDataElement) => i.spec_name)
-		.filter((_, pos) => dataJson[pos].date_visit > `${year - 1}-09-01`);
+		.filter((_, pos) => dataJson[pos].date_visit > `${year}`);
 	const specList = arr
 		.filter((item: string, pos: number) => arr.indexOf(item) === pos)
 		.sort();

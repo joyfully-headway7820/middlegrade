@@ -13,6 +13,7 @@ export default function Visits({ data }: IData) {
 				studentWas.push(i);
 				break;
 			case 2:
+				studentWas.push(i);
 				studentLate.push(i);
 				break;
 			default:
@@ -35,14 +36,13 @@ export default function Visits({ data }: IData) {
 		}
 		return "";
 	}
-	const allLessions: number[] = [...studentWas, ...studentLate];
 	return (
 		<div className='inner_text'>
 			<p>
 				Посещаемость:{" "}
 				<b className='green_text'>
-					{allLessions.length} пар{ifLastA(allLessions.length)} (
-					{countPercent(allLessions)}%)
+					{studentWas.length} пар{ifLastA(studentWas.length)} (
+					{countPercent(studentWas)}%)
 				</b>
 			</p>
 			<p>
