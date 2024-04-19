@@ -80,7 +80,7 @@ function App() {
 			{dataArr.length ? (
 				<>
 					<h1>Статистика</h1>
-					<h2>Средний балл</h2>
+
 					<div className='flex'>
 						<select>
 							<option onClick={() => setData(dataArr)}>Все предметы</option>
@@ -109,6 +109,7 @@ function App() {
 							</div>
 						</div>
 					</div>
+					<h2>Средний балл</h2>
 					<MiddleGrade data={data} />
 					<h2>Посещаемость</h2>
 					<Visits data={data} />
