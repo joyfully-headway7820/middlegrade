@@ -116,9 +116,6 @@ function App() {
 					<div className='actuality'>
 						Последняя пара была {day} {months[month]} {year} г.
 					</div>
-					<a href='/video.mp4' className='open_video' target='_blank'>
-						Чужие данные? Открой видеоинструкцию
-					</a>
 				</>
 			) : (
 				<div className='text_block'>
