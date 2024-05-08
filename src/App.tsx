@@ -28,7 +28,7 @@ function changeTheme(): void {
 function App() {
 	const dataArr = dataJson;
 	const [data, setData] = React.useState<IDataElement[]>(dataArr);
-	const date = new Date(dataArr[0]?.date_visit);
+	const date = new Date(data[0]?.date_visit);
 	const day = date.getDate();
 	const month = date.getMonth();
 	const year = date.getFullYear();
@@ -80,7 +80,6 @@ function App() {
 			{dataArr.length ? (
 				<>
 					<h1>Статистика</h1>
-
 					<div className='flex'>
 						<select>
 							<option onClick={() => setData(dataArr)}>Все предметы</option>
