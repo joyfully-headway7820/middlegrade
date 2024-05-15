@@ -28,6 +28,8 @@ function changeTheme(): void {
 function App() {
 	const dataArr = dataJson;
 	const [data, setData] = React.useState<IDataElement[]>(dataArr);
+	const [activeSpec, setActiveSpec] = React.useState("Все предметы");
+	const [activeList, setActiveList] = React.useState(false);
 	const date = new Date(data[0]?.date_visit);
 	const day = date.getDate();
 	const month = date.getMonth();
@@ -55,7 +57,7 @@ function App() {
 	];
 
 	return (
-		<div className='App'>
+		<div className='App' onClick={() => setActiveList(false)}>
 			<button className='theme-btn' onClick={changeTheme}>
 				<svg
 					width='48px'
@@ -81,25 +83,48 @@ function App() {
 				<>
 					<h1>Статистика</h1>
 					<div className='flex'>
-						<select>
-							<option onClick={() => setData(dataArr)}>Все предметы</option>
-							{specList.map((e) => (
-								<option
-									key={e}
-									onClick={() =>
-										setData(
-											dataArr.filter(
-												(element) =>
-													element.spec_name === e ||
-													element.spec_name === `${e} РПО`
-											)
-										)
-									}
-								>
-									{e}
-								</option>
-							))}
-						</select>
+						<div>
+							<div
+								className='activeSpec'
+								onClick={(e) => {
+									e.stopPropagation();
+									setActiveList(true);
+								}}
+							>
+								{activeSpec}
+							</div>
+							{activeList && (
+								<ul>
+									<li
+										onClick={() => {
+											setData(dataArr);
+											setActiveSpec("Все предметы");
+											setActiveList(false);
+										}}
+									>
+										Все предметы
+									</li>
+									{specList.map((e) => (
+										<li
+											key={e}
+											onClick={() => {
+												setData(
+													dataArr.filter(
+														(element) =>
+															element.spec_name === e ||
+															element.spec_name === `${e} РПО`
+													)
+												);
+												setActiveSpec(e);
+												setActiveList(false);
+											}}
+										>
+											{e}
+										</li>
+									))}
+								</ul>
+							)}
+						</div>
 						<div className='info'>
 							i
 							<div className='description'>
@@ -130,7 +155,7 @@ function App() {
 							Справа откроется содержание запроса, нужно зайти в раздел "Ответ"
 							и скопировать оттуда всё содержимое, после чего перенести все
 							данные из журнала в файл data.json, который находится в этом
-							приложении в папке public/data.json.{" "}
+							приложении в папке src/data.json.{" "}
 							<b>Открыть файл можно в любом текстовом редакторе</b>, даже в
 							блокноте, то есть устанавливать среду разработки не нужно.
 						</li>
