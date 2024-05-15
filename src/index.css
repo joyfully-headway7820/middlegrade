@@ -166,10 +166,18 @@ ul li:hover {
 	color: #000;
 	.inner_text,
 	.text_block,
-	select {
+	.activeSpec,
+	ul li {
 		background: #fff;
 		color: #000;
 		outline: 1px solid #ddd;
+	}
+	ul li {
+		outline: none;
+	}
+	ul li:hover {
+		background-color: #ddd;
+		box-shadow: none;
 	}
 	.theme-btn {
 		svg {
