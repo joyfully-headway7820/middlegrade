@@ -71,6 +71,8 @@ ul {
 	list-style: none;
 	position: absolute;
 	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+	max-height: 80vh;
+	overflow-y: auto;
 }
 ul li {
 	background-color: #555;

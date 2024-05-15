@@ -26,22 +26,23 @@ function changeTheme(): void {
 }
 
 function App() {
-	const dataArr = dataJson;
+	const dataArr: IDataElement[] = dataJson;
 	const [data, setData] = React.useState<IDataElement[]>(dataArr);
-	const [activeSpec, setActiveSpec] = React.useState("Все предметы");
-	const [activeList, setActiveList] = React.useState(false);
+	const [activeSpec, setActiveSpec] = React.useState<string>("Все предметы");
+	const [activeList, setActiveList] = React.useState<boolean>(false);
 	const date = new Date(data[0]?.date_visit);
-	const day = date.getDate();
-	const month = date.getMonth();
-	const year = date.getFullYear();
+	const day: number = date.getDate();
+	const month: number = date.getMonth();
+	const year: number = date.getFullYear();
+	const arrDate: string = month >= 8 ? `${year - 1}-09-01` : `${year}`;
 	const arr: string[] = dataJson
 		.map((i: IDataElement) => i.spec_name)
-		.filter((_, pos) => dataJson[pos].date_visit > `${year}`);
-	const specList = arr
+		.filter((_, pos) => dataJson[pos].date_visit > arrDate);
+	const specList: string[] = arr
 		.filter((item: string, pos: number) => arr.indexOf(item) === pos)
 		.sort();
 
-	const months = [
+	const months: string[] = [
 		"января",
 		"февраля",
 		"марта",
