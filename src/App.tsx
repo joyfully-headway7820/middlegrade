@@ -88,7 +88,7 @@ function App() {
 								className='activeSpec'
 								onClick={(e) => {
 									e.stopPropagation();
-									setActiveList(true);
+									setActiveList(!activeList);
 								}}
 							>
 								{activeSpec}
