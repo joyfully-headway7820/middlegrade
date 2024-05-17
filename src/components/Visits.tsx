@@ -4,8 +4,8 @@ export default function Visits({ data }: IData) {
 	const studentWas: number[] = [];
 	const studentLate: number[] = [];
 	const studentWasnt: number[] = [];
-	data.forEach((_, i) => {
-		switch (data[i].status_was) {
+	data.forEach((element, i) => {
+		switch (element.status_was) {
 			case 0:
 				studentWasnt.push(i);
 				break;
@@ -25,12 +25,12 @@ export default function Visits({ data }: IData) {
 		}
 		return 0;
 	}
-	function ifLastA(i: number): string {
-		if (i % 10 === 1) {
+	function ifLastA(num: number): string {
+		if (num % 10 === 1) {
 			return "а";
 		} else if (
-			(i % 10 === 2 || i % 10 === 3 || i % 10 === 4) &&
-			+(i / 10).toFixed(0) !== 1
+			(num % 10 === 2 || num % 10 === 3 || num % 10 === 4) &&
+			+(num / 10).toFixed(0) !== 1
 		) {
 			return "ы";
 		}

@@ -1,11 +1,7 @@
 import React from "react";
-import MiddleGrade from "./components/MiddleGrade/MiddleGrade.tsx";
-import Visits from "./components/Visits.tsx";
+import MiddleGrade from "./components/MiddleGrade/MiddleGrade";
+import Visits from "./components/Visits";
 import dataJson from "./data.json";
-
-export interface IData {
-	data: IDataElement[];
-}
 
 interface IDataElement {
 	date_visit: string;
@@ -19,6 +15,10 @@ interface IDataElement {
 	home_work_mark: number | null;
 	lab_work_mark: number | null;
 	class_work_mark: number | null;
+}
+
+export interface IData {
+	data: IDataElement[];
 }
 
 function changeTheme(): void {
@@ -41,6 +41,11 @@ function App() {
 	const specList: string[] = arr
 		.filter((item: string, pos: number) => arr.indexOf(item) === pos)
 		.sort();
+	specList.forEach((element) => {
+		if (specList.includes(element) && specList.includes(`${element} РПО`)) {
+			specList.splice(specList.indexOf(`${element} РПО`), 1);
+		}
+	});
 
 	const months: string[] = [
 		"января",
@@ -87,8 +92,8 @@ function App() {
 						<div>
 							<div
 								className='activeSpec'
-								onClick={(e) => {
-									e.stopPropagation();
+								onClick={(event) => {
+									event.stopPropagation();
 									setActiveList(!activeList);
 								}}
 							>
@@ -105,33 +110,26 @@ function App() {
 									>
 										Все предметы
 									</li>
-									{specList.map((e) => (
+									{specList.map((spec) => (
 										<li
-											key={e}
+											key={spec}
 											onClick={() => {
 												setData(
 													dataArr.filter(
 														(element) =>
-															element.spec_name === e ||
-															element.spec_name === `${e} РПО`
+															element.spec_name === spec ||
+															element.spec_name === `${spec} РПО`
 													)
 												);
-												setActiveSpec(e);
+												setActiveSpec(spec);
 												setActiveList(false);
 											}}
 										>
-											{e}
+											{spec}
 										</li>
 									))}
 								</ul>
 							)}
-						</div>
-						<div className='info'>
-							i
-							<div className='description'>
-								Примечание для групп РПО: Можно выбрать предмет без постфикса
-								"РПО", и тогда отобразится реальная статистика по предмету.
-							</div>
 						</div>
 					</div>
 					<h2>Средний балл</h2>

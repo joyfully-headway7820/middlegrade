@@ -118,45 +118,6 @@ ul li:hover {
 	color: #f7f45b;
 }
 
-.info {
-	width: 25px;
-	height: 25px;
-	border-radius: 50%;
-	background-color: #fff;
-	color: #000;
-	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
-	cursor: help;
-	font-weight: 700;
-	font-style: italic;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: all 0.2s linear;
-}
-
-.info:hover {
-	background-color: #eee;
-}
-
-.description {
-	display: none;
-	position: absolute;
-	top: 13.5vh;
-	font-style: normal;
-	font-weight: 400;
-	background-color: #eee;
-	color: #000;
-	border-radius: 20px;
-	padding: 20px;
-	transition: all 0.2s linear;
-	width: 25vw;
-	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
-}
-
-.info:hover .description {
-	display: block;
-}
-
 .flex {
 	display: flex;
 	align-items: center;
@@ -194,13 +155,5 @@ ul li:hover {
 	}
 	.yellow_text {
 		color: #ada205;
-	}
-	.info {
-		color: #ddd;
-		background-color: #333;
-	}
-	.info:hover {
-		color: #fff;
-		background-color: #000;
 	}
 }

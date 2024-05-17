@@ -13,23 +13,23 @@ export default function MiddleGrade({ data }: IData) {
 		homeGrade: number,
 		labGrade: number;
 	gradeSum = classGrade = controlGrade = homeGrade = labGrade = 0;
-	data.forEach((_, i) => {
-		data[i].class_work_mark && grades.push(data[i].class_work_mark);
-		data[i].class_work_mark && classWork.push(data[i].class_work_mark);
-		data[i].control_work_mark && grades.push(data[i].control_work_mark);
-		data[i].control_work_mark && controlWork.push(data[i].control_work_mark);
-		data[i].home_work_mark && grades.push(data[i].home_work_mark);
-		data[i].home_work_mark && homeWork.push(data[i].home_work_mark);
-		data[i].lab_work_mark && grades.push(data[i].lab_work_mark);
-		data[i].lab_work_mark && labs.push(data[i].lab_work_mark);
-		gradeSum! += data[i].class_work_mark!;
-		classGrade! += data[i].class_work_mark!;
-		gradeSum! += data[i].control_work_mark!;
-		controlGrade! += data[i].control_work_mark!;
-		gradeSum! += data[i].home_work_mark!;
-		homeGrade! += data[i].home_work_mark!;
-		gradeSum! += data[i].lab_work_mark!;
-		labGrade! += data[i].lab_work_mark!;
+	data.forEach((element) => {
+		element.class_work_mark && grades.push(element.class_work_mark);
+		element.class_work_mark && classWork.push(element.class_work_mark);
+		element.control_work_mark && grades.push(element.control_work_mark);
+		element.control_work_mark && controlWork.push(element.control_work_mark);
+		element.home_work_mark && grades.push(element.home_work_mark);
+		element.home_work_mark && homeWork.push(element.home_work_mark);
+		element.lab_work_mark && grades.push(element.lab_work_mark);
+		element.lab_work_mark && labs.push(element.lab_work_mark);
+		gradeSum! += element.class_work_mark!;
+		classGrade! += element.class_work_mark!;
+		gradeSum! += element.control_work_mark!;
+		controlGrade! += element.control_work_mark!;
+		gradeSum! += element.home_work_mark!;
+		homeGrade! += element.home_work_mark!;
+		gradeSum! += element.lab_work_mark!;
+		labGrade! += element.lab_work_mark!;
 	});
 
 	function countMiddle(grade: number, arr: (number | null)[]): number {
@@ -39,7 +39,7 @@ export default function MiddleGrade({ data }: IData) {
 		return 0;
 	}
 	// Перевод в пятибальную систему
-	function toFive(arr: (number | null)[]): (number | null)[] {
+	function toFive(arr: (number | null)[], grade = 0): number {
 		for (let i = 0; i < arr.length; i++) {
 			switch (arr[i]) {
 				case 1:
@@ -66,10 +66,7 @@ export default function MiddleGrade({ data }: IData) {
 					break;
 			}
 		}
-		return arr;
-	}
-	function sumGradeArr(arr: (number | null)[], grade = 0): number {
-		toFive(arr).forEach((i: number | null) => {
+		arr.forEach((i: number | null) => {
 			grade += i!;
 		});
 		return countMiddle(grade, arr);
@@ -80,27 +77,27 @@ export default function MiddleGrade({ data }: IData) {
 			<TextBlock
 				text='Средний балл'
 				sum={countMiddle(gradeSum, grades)}
-				sum5={sumGradeArr(grades)}
+				sum5={toFive(grades)}
 			/>
 			<TextBlock
 				text='Средний балл за работу на паре'
 				sum={countMiddle(classGrade, classWork)}
-				sum5={sumGradeArr(classWork)}
+				sum5={toFive(classWork)}
 			/>
 			<TextBlock
 				text='Средний балл за контрольные'
 				sum={countMiddle(controlGrade, controlWork)}
-				sum5={sumGradeArr(controlWork)}
+				sum5={toFive(controlWork)}
 			/>
 			<TextBlock
 				text='Средний балл за домашки'
 				sum={countMiddle(homeGrade, homeWork)}
-				sum5={sumGradeArr(homeWork)}
+				sum5={toFive(homeWork)}
 			/>
 			<TextBlock
 				text='Средний балл за лабы'
 				sum={countMiddle(labGrade, labs)}
-				sum5={sumGradeArr(labs)}
+				sum5={toFive(labs)}
 			/>
 		</div>
 	);
