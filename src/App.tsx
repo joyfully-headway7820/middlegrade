@@ -2,8 +2,9 @@ import React from "react";
 import MiddleGrade from "./components/MiddleGrade/MiddleGrade";
 import Visits from "./components/Visits";
 import dataJson from "./data.json";
+import SpecList from "./components/SpecList";
 
-interface IDataElement {
+export interface IDataElement {
 	date_visit: string;
 	lession_number?: number;
 	status_was: number;
@@ -26,26 +27,13 @@ function changeTheme(): void {
 }
 
 function App() {
-	const dataArr: IDataElement[] = dataJson;
-	const [data, setData] = React.useState<IDataElement[]>(dataArr);
-	const [activeSpec, setActiveSpec] = React.useState<string>("Все предметы");
 	const [activeList, setActiveList] = React.useState<boolean>(false);
+	const [data, setData] = React.useState<IDataElement[]>(dataJson);
 	const date = new Date(data[0]?.date_visit);
 	const day: number = date.getDate();
 	const month: number = date.getMonth();
 	const year: number = date.getFullYear();
 	const arrDate: string = month >= 8 ? `${year - 1}-09-01` : `${year}`;
-	const arr: string[] = dataJson
-		.map((i: IDataElement) => i.spec_name)
-		.filter((_, pos) => dataJson[pos].date_visit > arrDate);
-	const specList: string[] = arr
-		.filter((item: string, pos: number) => arr.indexOf(item) === pos)
-		.sort();
-	specList.forEach((element) => {
-		if (specList.includes(element) && specList.includes(`${element} РПО`)) {
-			specList.splice(specList.indexOf(`${element} РПО`), 1);
-		}
-	});
 
 	const months: string[] = [
 		"января",
@@ -64,7 +52,7 @@ function App() {
 
 	return (
 		<div className='App' onClick={() => setActiveList(false)}>
-			<button className='theme-btn' onClick={changeTheme}>
+			<button className='theme-btn' onClick={() => changeTheme()}>
 				<svg
 					width='48px'
 					height='48px'
@@ -85,52 +73,16 @@ function App() {
 					<path d='M5 12H2h3zM22 12h-3 3zM16.95 7.05L19.07 4.93 16.95 7.05zM4.929 19.071L7.05 16.95 4.93 19.07zM16.95 16.95l2.121 2.121-2.121-2.121zM4.929 4.929L7.05 7.05 4.93 4.93z' />{" "}
 				</svg>
 			</button>
-			{dataArr.length ? (
+			{dataJson.length ? (
 				<>
 					<h1>Статистика</h1>
 					<div className='flex'>
-						<div>
-							<div
-								className='activeSpec'
-								onClick={(event) => {
-									event.stopPropagation();
-									setActiveList(!activeList);
-								}}
-							>
-								{activeSpec}
-							</div>
-							{activeList && (
-								<ul>
-									<li
-										onClick={() => {
-											setData(dataArr);
-											setActiveSpec("Все предметы");
-											setActiveList(false);
-										}}
-									>
-										Все предметы
-									</li>
-									{specList.map((spec) => (
-										<li
-											key={spec}
-											onClick={() => {
-												setData(
-													dataArr.filter(
-														(element) =>
-															element.spec_name === spec ||
-															element.spec_name === `${spec} РПО`
-													)
-												);
-												setActiveSpec(spec);
-												setActiveList(false);
-											}}
-										>
-											{spec}
-										</li>
-									))}
-								</ul>
-							)}
-						</div>
+						<SpecList
+							arrDate={arrDate}
+							setData={setData}
+							activeList={activeList}
+							setActiveList={setActiveList}
+						/>
 					</div>
 					<h2>Средний балл</h2>
 					<MiddleGrade data={data} />
