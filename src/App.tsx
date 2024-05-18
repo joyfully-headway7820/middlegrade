@@ -95,7 +95,7 @@ function App() {
 			) : (
 				<div className='text_block'>
 					Чтобы приложение заработало, нужно сделать следующее:
-					<ol>
+					<ol className='instruction'>
 						<li>Зайти в журнал и нажать F12 </li>
 						<li>Найти раздел "Сеть" и зайти в оценки</li>
 						<li>
