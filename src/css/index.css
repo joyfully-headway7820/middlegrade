@@ -1,6 +1,4 @@
-* {
-	box-sizing: border-box;
-}
+@import "reset";
 
 body {
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -11,28 +9,46 @@ body {
 	font-weight: 400;
 }
 
+.app__heading {
+	font-size: clamp(30px, 2.5vw, 40px);
+	font-weight: 700;
+	margin: 2vh 0;
+	text-align: center;
+	width: 100%;
+}
+
+.sec__heading {
+	font-size: clamp(16px, 2vw, 24px);
+	font-weight: 700;
+	margin: 2vh 0;
+	text-align: center;
+	width: 100%;
+}
+
 .inner_text,
 .text_block {
 	background-color: #555;
 	width: 60vw;
-	margin: 0 auto;
+	margin: 20px auto;
 	font-size: clamp(14px, 4.2vw, 20px);
 	padding: 2.6rem;
 	border-radius: 30px;
+	line-height: 2;
 	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+	padding: 3vw 4vw;
 }
 
 .text_block {
 	width: 50vw;
-	line-height: 1.5;
 	text-align: left;
 }
 
 .actuality {
 	margin-top: 2vh;
+	font-size: clamp(12px, 1vw, 16px);
 }
 
-.theme-btn {
+.theme_btn {
 	position: absolute;
 	padding: 5px;
 	top: 3vh;
@@ -44,11 +60,11 @@ body {
 	transition: all 0.2s linear;
 }
 
-.theme-btn:hover {
+.theme_btn:hover {
 	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 }
 
-.activeSpec {
+.active_spec {
 	background-color: #555;
 	color: #fff;
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -64,7 +80,7 @@ body {
 	user-select: none;
 }
 
-ul {
+.spec_list {
 	width: 35vw;
 	margin: 0 20px;
 	padding: 0;
@@ -74,7 +90,7 @@ ul {
 	max-height: 80vh;
 	overflow-y: auto;
 }
-ul li {
+.spec_list__item {
 	background-color: #555;
 	cursor: pointer;
 	padding: 5px;
@@ -82,7 +98,7 @@ ul li {
 	font-size: 18px;
 }
 
-ul li:hover {
+.spec_list__item:hover {
 	background-color: #333;
 	box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
 }
@@ -129,20 +145,20 @@ ul li:hover {
 	color: #000;
 	.inner_text,
 	.text_block,
-	.activeSpec,
-	ul li {
+	.active_spec,
+	.spec_list__item {
 		background: #fff;
 		color: #000;
 		outline: 1px solid #ddd;
 	}
-	ul li {
+	.spec_list__item {
 		outline: none;
 	}
-	ul li:hover {
+	.spec_list__item:hover {
 		background-color: #ddd;
 		box-shadow: none;
 	}
-	.theme-btn {
+	.theme_btn {
 		svg {
 			fill: #000;
 		}

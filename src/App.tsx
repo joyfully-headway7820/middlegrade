@@ -51,8 +51,8 @@ function App() {
 	];
 
 	return (
-		<div className='App' onClick={() => setActiveList(false)}>
-			<button className='theme-btn' onClick={() => changeTheme()}>
+		<div className='app' onClick={() => setActiveList(false)}>
+			<button className='theme_btn' onClick={() => changeTheme()}>
 				<svg
 					width='48px'
 					height='48px'
@@ -75,7 +75,7 @@ function App() {
 			</button>
 			{dataJson.length ? (
 				<>
-					<h1>Статистика</h1>
+					<h1 className='app__heading'>Статистика</h1>
 					<div className='flex'>
 						<SpecList
 							arrDate={arrDate}
@@ -84,9 +84,9 @@ function App() {
 							setActiveList={setActiveList}
 						/>
 					</div>
-					<h2>Средний балл</h2>
+					<h2 className='sec__heading'>Средний балл</h2>
 					<MiddleGrade data={data} />
-					<h2>Посещаемость</h2>
+					<h2 className='sec__heading'>Посещаемость</h2>
 					<Visits data={data} />
 					<div className='actuality'>
 						Последняя пара была {day} {months[month]} {year} г.

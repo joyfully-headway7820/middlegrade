@@ -31,7 +31,7 @@ export default function SpecList({
 	return (
 		<div>
 			<div
-				className='activeSpec'
+				className='active_spec'
 				onClick={(event) => {
 					event.stopPropagation();
 					setActiveList(!activeList);
@@ -40,8 +40,9 @@ export default function SpecList({
 				{activeSpec}
 			</div>
 			{activeList && (
-				<ul>
+				<ul className='spec_list'>
 					<li
+						className='spec_list__item'
 						onClick={() => {
 							setData(dataJson);
 							setActiveSpec("Все предметы");
@@ -52,6 +53,7 @@ export default function SpecList({
 					</li>
 					{specList.map((spec) => (
 						<li
+							className='spec_list__item'
 							key={spec}
 							onClick={() => {
 								setData(
