@@ -1,189 +1,201 @@
-@import "reset";
+@import "reset.css";
 
 body {
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-		Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-	background-color: #333;
-	color: #eee;
-	text-align: center;
-	font-weight: 400;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    background-color: #333;
+    color: #eee;
+    text-align: center;
+    font-weight: 400;
 }
 
 .app__heading {
-	font-size: 32px;
-	font-weight: 700;
-	margin: 3vh 0;
-	text-align: center;
-	width: 100%;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 3vh 0;
+    text-align: center;
+    width: 100%;
 }
 
 .sec__heading {
-	font-size: 24px;
-	font-weight: 700;
-	margin: 3vh 0;
-	text-align: center;
-	width: 100%;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 3vh 0;
+    text-align: center;
+    width: 100%;
 }
 
 .inner_text,
 .text_block {
-	background-color: #555;
-	width: 60vw;
-	margin: 20px auto;
-	font-size: clamp(14px, 4.2vw, 20px);
-	padding: 2.6rem;
-	border-radius: 30px;
-	line-height: 2;
-	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
-	padding: 3vw 4vw;
+    background-color: #555;
+    width: 60vw;
+    margin: 20px auto;
+    font-size: clamp(14px, 4.2vw, 20px);
+    padding: 4rem;
+    border-radius: 30px;
+    line-height: 2;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
 }
 
 .text_block {
-	width: 50vw;
-	text-align: left;
+    width: 50vw;
+    text-align: left;
 }
 
 .actuality {
-	margin-top: 2vh;
-	font-size: 16px;
+    margin-top: 2vh;
+    font-size: 16px;
 }
 
 .theme_btn {
-	position: absolute;
-	padding: 5px;
-	top: 3vh;
-	right: 3vw;
-	border-radius: 50%;
-	background: none;
-	border: none;
-	cursor: pointer;
-	transition: all 0.2s linear;
+    position: absolute;
+    padding: 5px;
+    top: 3vh;
+    right: 3vw;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s linear;
 }
 
 .theme_btn:hover {
-	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 }
 
 .active_spec {
-	background-color: #555;
-	color: #fff;
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-		Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-	font-size: 20px;
-	width: 35vw;
-	margin: 0 20px;
-	border: none;
-	padding: 15px;
-	border-radius: 20px;
-	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
-	cursor: pointer;
-	user-select: none;
+    background-color: #555;
+    color: #fff;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-size: 20px;
+    width: 35vw;
+    margin: 0 20px;
+    border: none;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    user-select: none;
 }
 
 .spec_list {
-	width: 35vw;
-	margin: 0 20px;
-	padding: 0;
-	list-style: none;
-	position: absolute;
-	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
-	max-height: 80vh;
-	overflow-y: auto;
+    width: 35vw;
+    margin: 0 20px;
+    padding: 0;
+    list-style: none;
+    position: absolute;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+    max-height: 80vh;
+    overflow-y: auto;
+    user-select: none;
 }
+
 .spec_list__item {
-	background-color: #555;
-	cursor: pointer;
-	padding: 8px 0;
-	transition: all 0.2s linear;
-	font-size: 18px;
+    background-color: #555;
+    cursor: pointer;
+    padding: 8px 0;
+    transition: all 0.2s linear;
+    font-size: 18px;
 }
 
 .spec_list__item:hover {
-	background-color: #333;
-	box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+    background-color: #333;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
 }
 
 .open_video {
-	width: 25vw;
-	display: block;
-	color: #000;
-	text-decoration: none;
-	text-align: center;
-	margin: 20px auto 0;
-	padding: 15px;
-	background-color: #fff;
-	border-radius: 30px;
-	transition: all 0.2s linear;
-	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+    width: 25vw;
+    display: block;
+    color: #000;
+    text-decoration: none;
+    text-align: center;
+    margin: 20px auto 0;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 30px;
+    transition: all 0.2s linear;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
 }
 
 .open_video:hover {
-	background-color: #eee;
-	box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+    background-color: #eee;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
 }
 
 .green_text {
-	color: #5bf75b;
+    color: #5bf75b;
 }
 
 .red_text {
-	color: #f75b5b;
+    color: #f75b5b;
 }
 
 .yellow_text {
-	color: #f7f45b;
+    color: #f7f45b;
 }
 
-.flex {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .instruction {
-	line-height: 1.5;
-	li {
-		margin-left: 20px;
-	}
+    line-height: 1.5;
+
+    li {
+        margin-left: 20px;
+    }
 }
 
+/******* Светлая тема *******/
 .light_theme {
-	background-color: #eee;
-	color: #000;
-	.inner_text,
-	.text_block,
-	.active_spec,
-	.spec_list__item {
-		background: #fff;
-		color: #000;
-		outline: 1px solid #ddd;
-	}
-	.spec_list__item {
-		outline: none;
-	}
-	.spec_list__item:hover {
-		background-color: #ccc;
-		box-shadow: none;
-	}
-	.theme_btn {
-		svg {
-			fill: #000;
-		}
-	}
-	.green_text {
-		color: #028602;
-	}
-	.red_text {
-		color: #860202;
-	}
-	.yellow_text {
-		color: #ada205;
-	}
-	.open_video {
-		background-color: #fff;
-		outline: 1px solid #999;
-	}
-	.open_video:hover {
-		background-color: #daffda;
-	}
+    background-color: #eee;
+    color: #000;
+
+    .inner_text,
+    .text_block,
+    .active_spec,
+    .spec_list__item {
+        background: #fff;
+        color: #000;
+        outline: 1px solid #ddd;
+    }
+
+    .spec_list__item {
+        outline: none;
+    }
+
+    .spec_list__item:hover {
+        background-color: #ccc;
+        box-shadow: none;
+    }
+
+    .theme_btn {
+        svg {
+            fill: #000;
+        }
+    }
+
+    .green_text {
+        color: #028602;
+    }
+
+    .red_text {
+        color: #860202;
+    }
+
+    .yellow_text {
+        color: #ada205;
+    }
+
+    .open_video {
+        background-color: #fff;
+        outline: 1px solid #999;
+    }
+
+    .open_video:hover {
+        background-color: #daffda;
+    }
 }

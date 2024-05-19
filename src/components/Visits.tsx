@@ -1,6 +1,6 @@
-import { IData } from "../App";
+import {IData} from "../App";
 
-export default function Visits({ data }: IData) {
+export default function Visits({data}: IData) {
 	const studentWas: number[] = [];
 	const studentLate: number[] = [];
 	const studentWasnt: number[] = [];
@@ -19,39 +19,41 @@ export default function Visits({ data }: IData) {
 			default:
 		}
 	});
+
 	function countPercent(arr: number[]): number {
 		if (arr.length) {
 			return +(arr.length / (data.length / 100)).toFixed(2);
 		}
 		return 0;
 	}
+
 	function ifLastA(num: number): string {
-		if (num % 10 === 1) {
+		if (num % 10 === 1 && num !== 11) {
 			return "а";
 		} else if (
 			(num % 10 === 2 || num % 10 === 3 || num % 10 === 4) &&
-			+(num / 10).toFixed(0) !== 1
-		) {
+			Math.floor(num / 10) !== 1) {
 			return "ы";
 		}
 		return "";
 	}
+
 	return (
-		<div className='inner_text'>
+		<div className="inner_text">
 			<p>
 				Посещаемость:{" "}
-				<b className='green_text'>
+				<b className="green_text">
 					{studentWas.length} пар{ifLastA(studentWas.length)} (
 					{countPercent(studentWas)}%)
 				</b>
 			</p>
 			<p>
 				Всего пар <b>{data.length}</b>, опозданий{" "}
-				<b className='yellow_text'>
+				<b className="yellow_text">
 					{studentLate.length} ({countPercent(studentLate)}%)
 				</b>
 				, пропусков{" "}
-				<b className='red_text'>
+				<b className="red_text">
 					{studentWasnt.length} ({countPercent(studentWasnt)}%)
 				</b>
 			</p>
