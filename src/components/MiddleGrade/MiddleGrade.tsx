@@ -8,11 +8,11 @@ export default function MiddleGrade({data}: IData) {
 	const homeWork: (number | null)[] = [];
 	const labs: (number | null)[] = [];
 	let gradeSum: number,
-		classGrade: number,
-		controlGrade: number,
-		homeGrade: number,
-		labGrade: number;
-	gradeSum = classGrade = controlGrade = homeGrade = labGrade = 0;
+		classGradeSum: number,
+		controlGradeSum: number,
+		homeGradeSum: number,
+		labGradeSum: number;
+	gradeSum = classGradeSum = controlGradeSum = homeGradeSum = labGradeSum = 0;
 	data.forEach((element) => {
 		element.class_work_mark && grades.push(element.class_work_mark);
 		element.class_work_mark && classWork.push(element.class_work_mark);
@@ -23,24 +23,25 @@ export default function MiddleGrade({data}: IData) {
 		element.lab_work_mark && grades.push(element.lab_work_mark);
 		element.lab_work_mark && labs.push(element.lab_work_mark);
 		gradeSum! += element.class_work_mark!;
-		classGrade! += element.class_work_mark!;
+		classGradeSum! += element.class_work_mark!;
 		gradeSum! += element.control_work_mark!;
-		controlGrade! += element.control_work_mark!;
+		controlGradeSum! += element.control_work_mark!;
 		gradeSum! += element.home_work_mark!;
-		homeGrade! += element.home_work_mark!;
+		homeGradeSum! += element.home_work_mark!;
 		gradeSum! += element.lab_work_mark!;
-		labGrade! += element.lab_work_mark!;
+		labGradeSum! += element.lab_work_mark!;
 	});
 
-	function countMiddle(grade: number, arr: (number | null)[]): number {
-		if (grade) {
-			return +(grade / arr.length).toFixed(4);
+	function countMiddle(sum: number, arr: (number | null)[]): number {
+		if (sum) {
+			return +(sum / arr.length).toFixed(4)
 		}
-		return 0;
+		return 0
 	}
 
 	// Перевод в пятибалльную систему
-	function toFive(arr: (number | null)[], grade = 0): number {
+	function toFive(arr: (number | null)[]): number {
+		let grade: number = 0
 		for (let i = 0; i < arr.length; i++) {
 			switch (arr[i]) {
 				case 1:
@@ -82,22 +83,22 @@ export default function MiddleGrade({data}: IData) {
 			/>
 			<TextBlock
 				text="Средний балл за работу на паре"
-				sum={countMiddle(classGrade, classWork)}
+				sum={countMiddle(classGradeSum, classWork)}
 				sum5={toFive(classWork)}
 			/>
 			<TextBlock
 				text="Средний балл за контрольные"
-				sum={countMiddle(controlGrade, controlWork)}
+				sum={countMiddle(controlGradeSum, controlWork)}
 				sum5={toFive(controlWork)}
 			/>
 			<TextBlock
 				text="Средний балл за домашки"
-				sum={countMiddle(homeGrade, homeWork)}
+				sum={countMiddle(homeGradeSum, homeWork)}
 				sum5={toFive(homeWork)}
 			/>
 			<TextBlock
 				text="Средний балл за лабы"
-				sum={countMiddle(labGrade, labs)}
+				sum={countMiddle(labGradeSum, labs)}
 				sum5={toFive(labs)}
 			/>
 		</div>
