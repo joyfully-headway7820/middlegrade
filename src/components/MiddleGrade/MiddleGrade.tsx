@@ -1,7 +1,7 @@
-import {IData} from "../../App";
+import { IData } from "../../App";
 import TextBlock from "./TextBlock";
 
-export default function MiddleGrade({data}: IData) {
+export default function MiddleGrade({ data }: IData) {
 	const grades: (number | null)[] = [];
 	const classWork: (number | null)[] = [];
 	const controlWork: (number | null)[] = [];
@@ -34,14 +34,14 @@ export default function MiddleGrade({data}: IData) {
 
 	function countMiddle(sum: number, arr: (number | null)[]): number {
 		if (sum) {
-			return +(sum / arr.length).toFixed(4)
+			return +(sum / arr.length).toFixed(4);
 		}
-		return 0
+		return 0;
 	}
 
 	// Перевод в пятибалльную систему
 	function toFive(arr: (number | null)[]): number {
-		let grade: number = 0
+		let grade: number = 0;
 		for (let i = 0; i < arr.length; i++) {
 			switch (arr[i]) {
 				case 1:
@@ -75,29 +75,29 @@ export default function MiddleGrade({data}: IData) {
 	}
 
 	return (
-		<div className="inner_text">
+		<div className='inner_text'>
 			<TextBlock
-				text="Средний балл"
+				text='Средний балл'
 				sum={countMiddle(gradeSum, grades)}
 				sum5={toFive(grades)}
 			/>
 			<TextBlock
-				text="Средний балл за работу на паре"
+				text='Средний балл за работу на паре'
 				sum={countMiddle(classGradeSum, classWork)}
 				sum5={toFive(classWork)}
 			/>
 			<TextBlock
-				text="Средний балл за контрольные"
+				text='Средний балл за контрольные'
 				sum={countMiddle(controlGradeSum, controlWork)}
 				sum5={toFive(controlWork)}
 			/>
 			<TextBlock
-				text="Средний балл за домашки"
+				text='Средний балл за домашки'
 				sum={countMiddle(homeGradeSum, homeWork)}
 				sum5={toFive(homeWork)}
 			/>
 			<TextBlock
-				text="Средний балл за лабы"
+				text='Средний балл за лабы'
 				sum={countMiddle(labGradeSum, labs)}
 				sum5={toFive(labs)}
 			/>
