@@ -1,7 +1,13 @@
-import { IData } from "../../App";
+import { IDataElement, IZachetkaElement } from "../../App";
 import TextBlock from "./TextBlock";
 
-export default function MiddleGrade({ data }: IData) {
+export default function MiddleGrade({
+	data,
+	zData,
+}: {
+	data: IDataElement[];
+	zData: IZachetkaElement[];
+}) {
 	const grades: (number | null)[] = [];
 	const classWork: (number | null)[] = [];
 	const controlWork: (number | null)[] = [];
@@ -30,6 +36,15 @@ export default function MiddleGrade({ data }: IData) {
 		homeGradeSum! += element.home_work_mark!;
 		gradeSum! += element.lab_work_mark!;
 		labGradeSum! += element.lab_work_mark!;
+	});
+
+	// Зачётка
+	const zGrades: number[] = [];
+	let zSum: number = 0;
+
+	zData.forEach((element) => {
+		element.mark && zGrades.push(element.mark);
+		zSum += element.mark;
 	});
 
 	function countMiddle(sum: number, arr: (number | null)[]): number {
@@ -101,6 +116,15 @@ export default function MiddleGrade({ data }: IData) {
 				sum={countMiddle(labGradeSum, labs)}
 				sum5={toFive(labs)}
 			/>
+			{zData.length ? (
+				<TextBlock
+					text='Средний балл за экзамены'
+					sum={countMiddle(zSum, zGrades)}
+					sum5={toFive(zGrades)}
+				/>
+			) : (
+				""
+			)}
 		</div>
 	);
 }

@@ -1,8 +1,31 @@
 import React from "react";
 import MiddleGrade from "./components/MiddleGrade/MiddleGrade";
 import Visits from "./components/Visits";
-import dataJson from "./data.json";
 import SpecList from "./components/SpecList";
+import Zachetka from "./components/Zachetka/Zachetka";
+
+import zData from "./zachetka.json";
+import dataJson from "./data.json";
+
+export interface IZachetkaElement {
+	teacher: string;
+	mark: number;
+	mark_type: number;
+	date: string;
+	ex_file_name: string | null;
+	id_file: number;
+	exam_id: number;
+	file_path: string | null;
+	comment_teach: string | null;
+	need_access: number;
+	need_access_stud: number | null;
+	comment_delete_file: string | null;
+	spec: string;
+}
+
+export interface IZachetka {
+	data: IZachetkaElement[];
+}
 
 export interface IDataElement {
 	date_visit: string;
@@ -24,6 +47,7 @@ export interface IData {
 
 function App() {
 	const [activeList, setActiveList] = React.useState<boolean>(false);
+	const [openZachetka, setOpenZachetka] = React.useState<boolean>(false);
 	const [data, setData] = React.useState<IDataElement[]>(dataJson);
 	const date = new Date(data[0]?.date_visit);
 	const day: number = date.getDate();
@@ -51,16 +75,14 @@ function App() {
 			{dataJson.length ? (
 				<>
 					<h1 className='app__heading'>Статистика</h1>
-
 					<SpecList
 						arrDate={arrDate}
 						setData={setData}
 						activeList={activeList}
 						setActiveList={setActiveList}
 					/>
-
 					<h2 className='sec__heading'>Средний балл</h2>
-					<MiddleGrade data={data} />
+					<MiddleGrade data={data} zData={zData} />
 					<h2 className='sec__heading'>Посещаемость</h2>
 					<Visits data={data} />
 					<div className='actuality'>
@@ -91,6 +113,17 @@ function App() {
 					</a>
 				</div>
 			)}
+			{zData.length ? (
+				<button
+					className='open_video'
+					onClick={() => setOpenZachetka(!openZachetka)}
+				>
+					{openZachetka ? "Закрыть зачётку" : "Открыть зачётку"}
+				</button>
+			) : (
+				""
+			)}
+			{openZachetka && <Zachetka data={zData} />}
 		</div>
 	);
 }

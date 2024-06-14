@@ -1,0 +1,21 @@
+.zachetka {
+	width: 30vw;
+	margin: 20px auto;
+	font-size: 20px;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+	text-align: left;
+}
+.zachetka__element {
+	display: flex;
+	justify-content: space-between;
+	margin: 20px 0;
+}
+.zachetka__grade {
+	padding: 10px 15px;
+	border-radius: 50%;
+	background-color: #eeeeee;
+	color: #000;
+}
