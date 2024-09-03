@@ -1,16 +1,12 @@
 interface IProps {
-	text: string;
-	sum: number;
-	sum5: number;
+  text: string;
+  sum: number;
 }
 
-export default function TextBlock({ text, sum, sum5 }: IProps) {
-	return (
-		<p>
-			{text}:{" "}
-			<b>
-				{sum} ({sum5})
-			</b>
-		</p>
-	);
+export default function TextBlock({ text, sum }: IProps) {
+  return (
+    <p>
+      {text}: <b>{sum}</b>
+    </p>
+  );
 }
