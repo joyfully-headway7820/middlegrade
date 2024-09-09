@@ -66,8 +66,13 @@ export default function MiddleGrade({
   let zSum: number = 0;
 
   zData.forEach((element) => {
-    element.mark && zGrades.push(element.mark);
-    zSum += element.mark;
+    if (new Date(element.date) < new Date("2024-09-01")) {
+      element.mark && zGrades.push(toFive(element.mark)!);
+      zSum += toFive(element.mark)!;
+    } else {
+      element.mark && zGrades.push(element.mark);
+      zSum += element.mark;
+    }
   });
 
   function countMiddle(sum: number, arr: (number | null)[]): number {
