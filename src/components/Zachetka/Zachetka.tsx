@@ -8,7 +8,10 @@ export default function Zachetka({ data }: IZachetka) {
       {data.map((element) => (
         <div className="zachetka__element">
           <div className="zachetka__name">{element.spec}</div>
-          <div className="zachetka__grade">{toFive(element.mark)}</div>
+          <div className="zachetka__grade">
+            {element.date <= "2024-09-01" ? toFive(element.mark) : element.mark}
+          </div>
+          <div className="zachetka__date">{element.date}</div>
         </div>
       ))}
     </div>
