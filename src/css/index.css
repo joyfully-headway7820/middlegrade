@@ -79,9 +79,11 @@ body {
   padding: 15px;
   border-radius: 20px;
   width: 40vw;
+  height: 50px;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
   cursor: pointer;
   user-select: none;
+  position: relative;
 }
 
 .spec_list {
@@ -90,6 +92,8 @@ body {
   list-style: none;
   text-align: center;
   position: absolute;
+  top: 50px;
+  left: 0;
   z-index: 1;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
   max-height: 80vh;
@@ -236,4 +240,28 @@ body {
   background: linear-gradient(130deg, #f7f45b, #fffa00);
   color: #32322c;
   box-shadow: 3px 3px 10px #f7f45b3f;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.toggle_consider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: all 0.2s linear;
+}
+
+.toggle_consider:hover {
+  background-color: #eee;
 }
