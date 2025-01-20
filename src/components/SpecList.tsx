@@ -18,7 +18,11 @@ export default function SpecList({
   const [activeSpec, setActiveSpec] = React.useState<string>("Все предметы");
   const [considerPast, setConsiderPast] = React.useState<boolean>(false);
   const arr: string[] = dataJson
-    .filter((_, pos) => new Date(dataJson[pos].date_visit) > new Date(arrDate))
+    .filter((_, pos) =>
+      considerPast
+        ? true
+        : new Date(dataJson[pos].date_visit) > new Date(arrDate),
+    )
     .map((i) => i.spec_name);
   const specList: string[] = arr
     .filter((item: string, pos: number) => arr.indexOf(item) === pos)

@@ -52,6 +52,7 @@ body {
 .text_block {
   width: 50vw;
   text-align: left;
+  margin: 10vh auto;
 }
 
 .actuality {
