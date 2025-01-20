@@ -8,19 +8,19 @@ import zData from "./zachetka.json";
 import dataJson from "./data.json";
 
 export interface IZachetkaElement {
-  teacher: string;
-  mark: number;
-  mark_type: number;
-  date: string;
+  teacher: string | null;
+  mark: number | null;
+  mark_type: number | null;
+  date: string | null;
   ex_file_name: string | null;
-  id_file: number;
-  exam_id: number;
+  id_file: number | null;
+  exam_id: number | null;
   file_path: string | null;
   comment_teach: string | null;
   need_access: number;
   need_access_stud: number | null;
   comment_delete_file: string | null;
-  spec: string;
+  spec: string | null;
 }
 
 export interface IZachetka {

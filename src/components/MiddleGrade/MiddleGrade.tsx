@@ -66,6 +66,7 @@ export default function MiddleGrade({
   let zSum: number = 0;
 
   zData.forEach((element) => {
+    if (!element.date || !element.mark) return;
     if (new Date(element.date) < new Date("2024-09-01")) {
       element.mark && zGrades.push(toFive(element.mark)!);
       zSum += toFive(element.mark)!;
@@ -83,28 +84,33 @@ export default function MiddleGrade({
   }
 
   return (
-    <div className="inner_text">
-      <TextBlock text="Средний балл" sum={countMiddle(gradeSum, grades)} />
+    <div className="cards">
+      <TextBlock text="Средний балл" sum={countMiddle(gradeSum, grades)} color="card--white" />
       <TextBlock
         text="Средний балл за работу на паре"
         sum={countMiddle(classGradeSum, classWork)}
+        color="card--blue"
       />
       <TextBlock
         text="Средний балл за контрольные"
         sum={countMiddle(controlGradeSum, controlWork)}
+        color="card--green"
       />
       <TextBlock
         text="Средний балл за домашки"
         sum={countMiddle(homeGradeSum, homeWork)}
+        color="card--red"
       />
       <TextBlock
         text="Средний балл за лабы"
         sum={countMiddle(labGradeSum, labs)}
+        color="card--purple"
       />
       {zData.length ? (
         <TextBlock
           text="Средний балл за экзамены"
           sum={countMiddle(zSum, zGrades)}
+          color="card--orange"
         />
       ) : (
         <></>

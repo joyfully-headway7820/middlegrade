@@ -17,8 +17,8 @@ export default function SpecList({
 }: IProps) {
   const [activeSpec, setActiveSpec] = React.useState<string>("Все предметы");
   const arr: string[] = dataJson
-    .map((i) => i.spec_name)
-    .filter((_, pos) => new Date(dataJson[pos].date_visit) > new Date(arrDate));
+    .filter((_, pos) => new Date(dataJson[pos].date_visit) > new Date(arrDate))
+    .map((i) => i.spec_name);
   const specList: string[] = arr
     .filter((item: string, pos: number) => arr.indexOf(item) === pos)
     .sort();
@@ -35,52 +35,50 @@ export default function SpecList({
   });
 
   return (
-    <div className="center">
-      <div>
-        <div
-          className="active_spec"
-          onClick={(event) => {
-            event.stopPropagation();
-            setActiveList(!activeList);
-          }}
-        >
-          {activeSpec}
-        </div>
-        {activeList && (
-          <ul className="spec_list">
+    <>
+      <div
+        className="active_spec"
+        onClick={(event) => {
+          event.stopPropagation();
+          setActiveList(!activeList);
+        }}
+      >
+        {activeSpec}
+      </div>
+      {activeList && (
+        <ul className="spec_list">
+          <li
+            className="spec_list__item"
+            onClick={() => {
+              setData(dataJson);
+              setActiveSpec("Все предметы");
+              setActiveList(false);
+            }}
+          >
+            Все предметы
+          </li>
+          {specList.map((spec) => (
             <li
               className="spec_list__item"
+              key={spec}
               onClick={() => {
-                setData(dataJson);
-                setActiveSpec("Все предметы");
+                setData(
+                  dataJson.filter(
+                    (element) =>
+                      element.spec_name === spec ||
+                      element.spec_name === `${spec} РПО` ||
+                      element.spec_name === `${spec} ГД`
+                  )
+                );
+                setActiveSpec(spec);
                 setActiveList(false);
               }}
             >
-              Все предметы
+              {spec}
             </li>
-            {specList.map((spec) => (
-              <li
-                className="spec_list__item"
-                key={spec}
-                onClick={() => {
-                  setData(
-                    dataJson.filter(
-                      (element) =>
-                        element.spec_name === spec ||
-                        element.spec_name === `${spec} РПО` ||
-                        element.spec_name === `${spec} ГД`,
-                    ),
-                  );
-                  setActiveSpec(spec);
-                  setActiveList(false);
-                }}
-              >
-                {spec}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
+          ))}
+        </ul>
+      )}
+    </>
   );
 }
