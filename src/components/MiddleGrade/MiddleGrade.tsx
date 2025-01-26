@@ -1,13 +1,13 @@
-import { IDataElement, IZachetkaElement } from "../../App";
+import { IDataElement, IExamsElement } from "../../App";
 import TextBlock from "./TextBlock";
 import { toFive } from "../../utils/toFive.ts";
 
 export default function MiddleGrade({
   data,
-  zData,
+  exams,
 }: {
   data: IDataElement[];
-  zData: IZachetkaElement[];
+  exams: IExamsElement[];
 }) {
   const grades: (number | null)[] = [];
   const classWork: (number | null)[] = [];
@@ -65,7 +65,7 @@ export default function MiddleGrade({
   const zGrades: number[] = [];
   let zSum: number = 0;
 
-  zData.forEach((element) => {
+  exams.forEach((element) => {
     if (!element.date || !element.mark) return;
     if (new Date(element.date) < new Date("2024-09-01")) {
       element.mark && zGrades.push(toFive(element.mark)!);
@@ -85,7 +85,11 @@ export default function MiddleGrade({
 
   return (
     <div className="cards">
-      <TextBlock text="Средний балл" sum={countMiddle(gradeSum, grades)} color="card--white" />
+      <TextBlock
+        text="Средний балл"
+        sum={countMiddle(gradeSum, grades)}
+        color="card--white"
+      />
       <TextBlock
         text="Средний балл за работу на паре"
         sum={countMiddle(classGradeSum, classWork)}
@@ -106,7 +110,7 @@ export default function MiddleGrade({
         sum={countMiddle(labGradeSum, labs)}
         color="card--purple"
       />
-      {zData.length ? (
+      {exams.length ? (
         <TextBlock
           text="Средний балл за экзамены"
           sum={countMiddle(zSum, zGrades)}

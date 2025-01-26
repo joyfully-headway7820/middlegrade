@@ -1,13 +1,14 @@
 import React from "react";
 import MiddleGrade from "./components/MiddleGrade/MiddleGrade";
 import Visits from "./components/Visits";
-import SpecList from "./components/SpecList";
-import Zachetka from "./components/Zachetka/Zachetka";
+import SpecList from "./components/SpecList/SpecList.tsx";
+import Exams from "./components/Exams/Exams.tsx";
 
-import zData from "./zachetka.json";
-import dataJson from "./data.json";
+import exams from "./exams.json";
+import { useCookies } from "react-cookie";
+import { LoginForm } from "./components/LoginForm/LoginForm.tsx";
 
-export interface IZachetkaElement {
+export interface IExamsElement {
   teacher: string | null;
   mark: number | null;
   mark_type: number | null;
@@ -23,8 +24,8 @@ export interface IZachetkaElement {
   spec: string | null;
 }
 
-export interface IZachetka {
-  data: IZachetkaElement[];
+export interface IExams {
+  data: IExamsElement[];
 }
 
 export interface IDataElement {
@@ -46,9 +47,10 @@ export interface IData {
 }
 
 function App() {
+  const [cookies] = useCookies(["access_token"]);
   const [activeList, setActiveList] = React.useState<boolean>(false);
-  const [openZachetka, setOpenZachetka] = React.useState<boolean>(false);
-  const [data, setData] = React.useState<IDataElement[]>(dataJson);
+  const [openExams, setOpenExams] = React.useState<boolean>(false);
+  const [data, setData] = React.useState<IDataElement[]>([]);
   const date = new Date(data[0]?.date_visit);
   const day: number = date.getDate();
   const month: number = date.getMonth();
@@ -72,7 +74,7 @@ function App() {
 
   return (
     <div className="app" onClick={() => setActiveList(false)}>
-      {dataJson.length ? (
+      {cookies.access_token ? (
         <>
           <h1 className="app__heading">Статистика</h1>
           <SpecList
@@ -82,7 +84,7 @@ function App() {
             setActiveList={setActiveList}
           />
           <h2 className="sec__heading">Средний балл</h2>
-          <MiddleGrade data={data} zData={zData} />
+          <MiddleGrade data={data} exams={exams} />
           <h2 className="sec__heading">Посещаемость</h2>
           <Visits data={data} />
           <div className="actuality">
@@ -90,40 +92,16 @@ function App() {
           </div>
         </>
       ) : (
-        <div className="text_block">
-          Чтобы приложение заработало, нужно сделать следующее:
-          <ol className="instruction">
-            <li>Зайти в журнал и нажать F12</li>
-            <li>Найти раздел "Сеть" и зайти в оценки</li>
-            <li>
-              В консоли ищешь GET-запрос с именем "student-visits", он будет
-              снизу, нажимаешь на него
-            </li>
-            <li>
-              Справа откроется содержание запроса, нужно зайти в раздел "Ответ"
-              и скопировать оттуда всё содержимое, после чего перенести все
-              данные из журнала в файл data.json, который находится в этом
-              приложении в папке src/data.json.{" "}
-              <b>Открыть файл можно в любом текстовом редакторе</b>, даже в
-              блокноте, то есть устанавливать среду разработки не нужно.
-            </li>
-          </ol>
-          <a href="/video.mp4" className="open_video" target="_blank">
-            Открыть видеоинструкцию
-          </a>
-        </div>
+        <LoginForm />
       )}
-      {zData.length ? (
-        <button
-          className="open_video"
-          onClick={() => setOpenZachetka(!openZachetka)}
-        >
-          {openZachetka ? "Закрыть зачётку" : "Открыть зачётку"}
+      {exams.length ? (
+        <button className="open_video" onClick={() => setOpenExams(!openExams)}>
+          {openExams ? "Закрыть зачётку" : "Открыть зачётку"}
         </button>
       ) : (
         ""
       )}
-      {openZachetka && <Zachetka data={zData} />}
+      {openExams && <Exams data={exams} />}
     </div>
   );
 }

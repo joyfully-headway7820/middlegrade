@@ -1,0 +1,16 @@
+services:
+  front:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    tty: true
+
+  back:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    tty: true

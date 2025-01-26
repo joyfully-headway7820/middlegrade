@@ -1,6 +1,6 @@
 import React from "react";
-import dataJson from "../data.json";
-import { IDataElement } from "../App";
+import dataJson from "../../data.json";
+import { IDataElement } from "../../App.tsx";
 
 interface IProps {
   arrDate: string;
