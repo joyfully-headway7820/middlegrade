@@ -8,7 +8,7 @@ export default function Exams({ data }: IExams) {
       {data.map(
         (element) =>
           element.date && (
-            <div className={styles.exams__element}>
+            <div key={element.exam_id} className={styles.exams__element}>
               <div className={styles.exams__name}>{element.spec}</div>
               <div className={styles.exams__grade}>
                 {element.date <= "2024-09-01"

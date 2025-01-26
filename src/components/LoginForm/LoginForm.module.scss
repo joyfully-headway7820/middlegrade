@@ -15,7 +15,6 @@
     font-size: 20px;
     text-align: center;
   }
-  &__input,
   &__button {
     max-width: 600px;
     width: 100%;
@@ -26,14 +25,11 @@
     border-radius: 10px;
     font-size: 16px;
     transition: all 0.15s linear;
-    &:hover,
-    &:focus {
-      background-color: #333;
-      box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
-    }
-  }
-  &__button {
     cursor: pointer;
+    &:hover {
+      background-color: vars.$accent-color;
+      border: 1px solid vars.$accent-color;
+    }
   }
   &__error {
     color: vars.$red;

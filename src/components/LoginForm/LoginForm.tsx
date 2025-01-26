@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
 import { useCookies } from "react-cookie";
-import { applicationKey } from "../../constants/constants.ts";
 import styles from "./LoginForm.module.scss";
+import { Input } from "../Input/Input.tsx";
 
 const formLoginSchema = z.object({
   username: z.string().min(4, "Введите свой логин от журнала"),
@@ -19,7 +19,8 @@ interface ILoginResponse {
 }
 
 export const LoginForm = () => {
-  const [cookies, setCookie] = useCookies(["access_token"]);
+  const [cookies, setCookie] = useCookies();
+  const [responseError, setResponseError] = React.useState(false);
   const form = useForm<TFormLogin>({
     resolver: zodResolver(formLoginSchema),
     defaultValues: {
@@ -32,23 +33,24 @@ export const LoginForm = () => {
 
   const onSubmit = async (data: TFormLogin) => {
     try {
-      console.log(data);
+      setResponseError(false);
+      setCookie("username", data.username.trim());
+      setCookie("password", data.password.trim());
 
       const response = await axios.post<ILoginResponse>(
-        "http://localhost:8080/login",
+        "http://localhost:3000/auth",
         {
-          username: data.username,
-          password: data.password,
-          application_key: applicationKey,
+          username: data.username.trim(),
+          password: data.password.trim(),
         },
       );
-      if (!response.data.access_token) return;
+      if (!response.data) return;
 
-      const accessToken: string = response.data.access_token;
-      console.log(accessToken);
+      const accessToken = response.data;
 
       setCookie("access_token", accessToken);
     } catch (e) {
+      setResponseError(true);
       console.error(`OnSubmitLoginForm: ${e}`);
     }
   };
@@ -62,14 +64,14 @@ export const LoginForm = () => {
       <form className={styles.loginForm} onSubmit={handleSubmit(onSubmit)}>
         <h1 className={styles.loginForm__title}>Привет</h1>
         <h2 className={styles.loginForm__subtitle}>
-          Введи логин и пароль от Journal, чтобы увидеть свою статистику
+          Введи логин и пароль от Journal, чтобы увидеть свою статистику.
         </h2>
-        <input
+        <Input
           className={styles.loginForm__input}
           {...register("username")}
           placeholder="Логин"
         />
-        <input
+        <Input
           className={styles.loginForm__input}
           {...register("password")}
           type="password"
@@ -81,6 +83,11 @@ export const LoginForm = () => {
         {errors && (
           <p className={styles.loginForm__error}>
             {errors.username?.message || errors.password?.message}
+          </p>
+        )}
+        {responseError && (
+          <p className={styles.loginForm__error}>
+            Неправильный логин или пароль
           </p>
         )}
       </form>

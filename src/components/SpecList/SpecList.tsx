@@ -1,9 +1,9 @@
 import React from "react";
-import dataJson from "../../data.json";
 import { IDataElement } from "../../App.tsx";
 import styles from "./SpecList.module.scss";
 
 interface IProps {
+  initialMarks: IDataElement[];
   arrDate: string;
   setData: (data: IDataElement[]) => void;
   activeList: boolean;
@@ -11,11 +11,13 @@ interface IProps {
 }
 
 export default function SpecList({
+  initialMarks,
   arrDate,
   setData,
   activeList,
   setActiveList,
 }: IProps) {
+  const dataJson = initialMarks;
   const [activeSpec, setActiveSpec] = React.useState<string>("Все предметы");
   const [considerPast, setConsiderPast] = React.useState<boolean>(false);
   const arr: string[] = dataJson

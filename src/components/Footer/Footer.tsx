@@ -1,8 +1,10 @@
 import React from "react";
 import styles from "./Footer.module.scss";
 import { Github, UsersRound } from "lucide-react";
+import authorModalStore from "../../store/authorModal.ts";
 
 export default function Footer() {
+  const { toggleOpen } = authorModalStore();
   return (
     <footer className={styles.footer}>
       <a
@@ -14,7 +16,7 @@ export default function Footer() {
         Исходный код
       </a>
       <div className={styles.footer__separator} />
-      <button className={styles.footer__link}>
+      <button onClick={toggleOpen} className={styles.footer__link}>
         <UsersRound className={styles.footer__link__icon} size={20} />
         Авторство
       </button>

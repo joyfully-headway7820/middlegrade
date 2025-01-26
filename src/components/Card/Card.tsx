@@ -9,7 +9,7 @@ interface IProps {
 
 export default function Card({ text, sum, percent, color }: IProps) {
   return (
-    <p className={`${styles.card} ${styles[color]}`}>
+    <div className={`${styles.card} ${styles[color]}`}>
       {percent ? (
         <>
           <p className={styles.card__small}>{sum}</p>
@@ -19,6 +19,6 @@ export default function Card({ text, sum, percent, color }: IProps) {
         <b className={styles.card__sum}>{sum}</b>
       )}
       <p className={styles.card__text}>{text}</p>
-    </p>
+    </div>
   );
 }

@@ -3,11 +3,13 @@ import MiddleGrade from "./components/MiddleGrade/MiddleGrade";
 import Visits from "./components/Visits/Visits.tsx";
 import SpecList from "./components/SpecList/SpecList.tsx";
 import Exams from "./components/Exams/Exams.tsx";
-
-import exams from "./exams.json";
 import { useCookies } from "react-cookie";
 import { LoginForm } from "./components/LoginForm/LoginForm.tsx";
 import Footer from "./components/Footer/Footer.tsx";
+import authorModalStore from "./store/authorModal.ts";
+import AuthorModal from "./components/AuthorModal/AuthorModal.tsx";
+import axios from "axios";
+import Logout from "./components/Logout/Logout.tsx";
 
 export interface IExamsElement {
   teacher: string | null;
@@ -48,21 +50,58 @@ export interface IData {
 }
 
 function App() {
-  const [cookies] = useCookies(["access_token"]);
+  const [cookies, setCookies, removeCookie] = useCookies();
   const [activeList, setActiveList] = React.useState<boolean>(false);
   const [openExams, setOpenExams] = React.useState<boolean>(false);
   const [data, setData] = React.useState<IDataElement[]>([]);
+  const [initialMarks, setInitialMarks] = React.useState<IDataElement[]>([]);
+
   const date = new Date(data[0]?.date_visit);
   const month: number = date.getMonth();
   const year: number = date.getFullYear();
   const arrDate: string = month >= 8 ? `${year}-09-01` : `${year - 1}-09-01`;
+  const { isOpen } = authorModalStore();
+
+  const [exams, setExams] = React.useState<IExamsElement[]>([]);
+
+  React.useEffect(() => {
+    (async () => {
+      if (cookies.access_token) {
+        try {
+          const marks = await axios.post("http://localhost:3000/marks", {
+            token: cookies.access_token,
+          });
+          const exams = await axios.post("http://localhost:3000/exams", {
+            token: cookies.access_token,
+          });
+          setData(marks.data);
+          setInitialMarks(marks.data);
+          setExams(exams.data);
+        } catch (error) {
+          try {
+            removeCookie("access_token");
+            const token = await axios.post("http://localhost:3000/auth");
+            setCookies("access_token", token.data);
+          } catch (error) {
+            console.error(error);
+            removeCookie("access_token");
+          }
+        }
+      }
+    })();
+  }, [cookies.access_token]);
 
   return (
     <div className="app" onClick={() => setActiveList(false)}>
-      {!cookies.access_token ? (
+      {isOpen && <AuthorModal />}
+      {cookies.access_token ? (
         <>
-          <h1 className="app__heading">Статистика</h1>
+          <h1 className="app__heading">
+            Статистика
+            <Logout />
+          </h1>
           <SpecList
+            initialMarks={initialMarks}
             arrDate={arrDate}
             setData={setData}
             activeList={activeList}
@@ -72,17 +111,21 @@ function App() {
           <MiddleGrade data={data} exams={exams} />
           <h2 className="app__subheading">Посещаемость</h2>
           <Visits data={data} />
+          {exams.length > 0 && (
+            <button
+              className="app__button"
+              onClick={() => setOpenExams(!openExams)}
+            >
+              {openExams ? "Закрыть зачётку" : "Открыть зачётку"}
+            </button>
+          )}
         </>
       ) : (
-        <LoginForm />
+        <div className="app__login">
+          <LoginForm />
+        </div>
       )}
-      {exams.length ? (
-        <button className="open_video" onClick={() => setOpenExams(!openExams)}>
-          {openExams ? "Закрыть зачётку" : "Открыть зачётку"}
-        </button>
-      ) : (
-        ""
-      )}
+
       {openExams && <Exams data={exams} />}
       <Footer />
     </div>

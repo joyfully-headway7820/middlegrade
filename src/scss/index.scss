@@ -9,18 +9,37 @@ body {
   margin: 0 auto;
 }
 
+::-webkit-scrollbar {
+  background-color: #333;
+}
+
 .app {
+  position: relative;
   max-width: 1500px;
   margin: 0 auto;
   height: 90vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  @media (max-width: vars.$mobile-bp) {
+    text-align: center;
+  }
+  &__login {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
   &__heading {
     font-size: 32px;
     font-weight: 700;
     margin: 3vh 0;
     width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    @media (max-width: vars.$mobile-bp) {
+      text-align: center;
+      justify-content: center;
+    }
   }
   &__subheading {
     font-size: 24px;
@@ -29,12 +48,13 @@ body {
     width: 100%;
   }
   &__button {
-    width: 25vw;
+    width: 80vw;
+    font-size: 16px;
+    margin: 20px auto;
     display: block;
     color: #000;
     text-decoration: none;
     text-align: center;
-    margin: 20px 0;
     padding: 15px;
     background-color: #fff;
     border-radius: 30px;

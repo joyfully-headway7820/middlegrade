@@ -1,3 +1,5 @@
+@use "../../scss/vars";
+
 .card {
   width: 200px;
   height: 200px;
@@ -10,6 +12,10 @@
   flex-direction: column;
   justify-content: center;
   position: relative;
+
+  @media (max-width: vars.$mobile-bp) {
+    width: 80%;
+  }
 
   &__text {
     font-size: 16px;
