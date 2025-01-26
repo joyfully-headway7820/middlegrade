@@ -1,6 +1,7 @@
 import React from "react";
 import dataJson from "../../data.json";
 import { IDataElement } from "../../App.tsx";
+import styles from "./SpecList.module.scss";
 
 interface IProps {
   arrDate: string;
@@ -40,9 +41,9 @@ export default function SpecList({
   });
 
   return (
-    <div className="flex">
+    <div className={styles.specList}>
       <div
-        className="active_spec"
+        className={styles.specList__list}
         onClick={(event) => {
           event.stopPropagation();
           setActiveList(!activeList);
@@ -50,9 +51,9 @@ export default function SpecList({
       >
         {activeSpec}
         {activeList && (
-          <ul className="spec_list">
+          <ul className={styles.specList__list__active}>
             <li
-              className="spec_list__item"
+              className={styles.specList__list__active__item}
               onClick={() => {
                 setData(dataJson);
                 setActiveSpec("Все предметы");
@@ -63,7 +64,7 @@ export default function SpecList({
             </li>
             {specList.map((spec) => (
               <li
-                className="spec_list__item"
+                className={styles.specList__list__active__item}
                 key={spec}
                 onClick={() => {
                   if (considerPast) {
@@ -99,7 +100,7 @@ export default function SpecList({
       </div>
 
       <button
-        className="toggle_consider"
+        className={styles.specList__button}
         onClick={() => setConsiderPast(!considerPast)}
       >
         {considerPast ? "За всё время" : "За текущий курс"}

@@ -1,12 +1,13 @@
 import React from "react";
 import MiddleGrade from "./components/MiddleGrade/MiddleGrade";
-import Visits from "./components/Visits";
+import Visits from "./components/Visits/Visits.tsx";
 import SpecList from "./components/SpecList/SpecList.tsx";
 import Exams from "./components/Exams/Exams.tsx";
 
 import exams from "./exams.json";
 import { useCookies } from "react-cookie";
 import { LoginForm } from "./components/LoginForm/LoginForm.tsx";
+import Footer from "./components/Footer/Footer.tsx";
 
 export interface IExamsElement {
   teacher: string | null;
@@ -52,29 +53,13 @@ function App() {
   const [openExams, setOpenExams] = React.useState<boolean>(false);
   const [data, setData] = React.useState<IDataElement[]>([]);
   const date = new Date(data[0]?.date_visit);
-  const day: number = date.getDate();
   const month: number = date.getMonth();
   const year: number = date.getFullYear();
   const arrDate: string = month >= 8 ? `${year}-09-01` : `${year - 1}-09-01`;
 
-  const months: string[] = [
-    "января",
-    "февраля",
-    "марта",
-    "апреля",
-    "мая",
-    "июня",
-    "июля",
-    "августа",
-    "сентября",
-    "октября",
-    "ноября",
-    "декабря",
-  ];
-
   return (
     <div className="app" onClick={() => setActiveList(false)}>
-      {cookies.access_token ? (
+      {!cookies.access_token ? (
         <>
           <h1 className="app__heading">Статистика</h1>
           <SpecList
@@ -83,13 +68,10 @@ function App() {
             activeList={activeList}
             setActiveList={setActiveList}
           />
-          <h2 className="sec__heading">Средний балл</h2>
+          <h2 className="app__subheading">Средний балл</h2>
           <MiddleGrade data={data} exams={exams} />
-          <h2 className="sec__heading">Посещаемость</h2>
+          <h2 className="app__subheading">Посещаемость</h2>
           <Visits data={data} />
-          <div className="actuality">
-            Последняя пара была {day} {months[month]} {year} г.
-          </div>
         </>
       ) : (
         <LoginForm />
@@ -102,6 +84,7 @@ function App() {
         ""
       )}
       {openExams && <Exams data={exams} />}
+      <Footer />
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import { IDataElement, IExamsElement } from "../../App";
-import TextBlock from "./TextBlock";
 import { toFive } from "../../utils/toFive.ts";
+import "./Middlegrade.module.scss";
+import Card from "../Card/Card.tsx";
+import styles from "./Middlegrade.module.scss";
 
 export default function MiddleGrade({
   data,
@@ -84,34 +86,34 @@ export default function MiddleGrade({
   }
 
   return (
-    <div className="cards">
-      <TextBlock
+    <div className={styles.middlegrade}>
+      <Card
         text="Средний балл"
         sum={countMiddle(gradeSum, grades)}
         color="card--white"
       />
-      <TextBlock
+      <Card
         text="Средний балл за работу на паре"
         sum={countMiddle(classGradeSum, classWork)}
         color="card--blue"
       />
-      <TextBlock
+      <Card
         text="Средний балл за контрольные"
         sum={countMiddle(controlGradeSum, controlWork)}
         color="card--green"
       />
-      <TextBlock
+      <Card
         text="Средний балл за домашки"
         sum={countMiddle(homeGradeSum, homeWork)}
         color="card--red"
       />
-      <TextBlock
+      <Card
         text="Средний балл за лабы"
         sum={countMiddle(labGradeSum, labs)}
         color="card--purple"
       />
       {exams.length ? (
-        <TextBlock
+        <Card
           text="Средний балл за экзамены"
           sum={countMiddle(zSum, zGrades)}
           color="card--orange"

@@ -1,11 +1,23 @@
-.login-form {
-  margin: 20px auto;
+@use "../../scss/vars";
+
+.loginForm {
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
   gap: 20px;
-  padding: 20px 200px;
+  padding: 20px;
+  &__title {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  &__subtitle {
+    font-size: 20px;
+    text-align: center;
+  }
   &__input,
   &__button {
+    max-width: 600px;
     width: 100%;
     padding: 10px;
     background-color: #222;
@@ -24,7 +36,7 @@
     cursor: pointer;
   }
   &__error {
-    color: #f75b5b;
+    color: vars.$red;
     font-size: 16px;
   }
 }

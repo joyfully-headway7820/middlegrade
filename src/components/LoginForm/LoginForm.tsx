@@ -5,7 +5,7 @@ import { z } from "zod";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { applicationKey } from "../../constants/constants.ts";
-import "./login-form.scss";
+import styles from "./LoginForm.module.scss";
 
 const formLoginSchema = z.object({
   username: z.string().min(4, "Введите свой логин от журнала"),
@@ -59,23 +59,29 @@ export const LoginForm = () => {
   });
   return (
     <FormProvider {...form}>
-      <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
+      <form className={styles.loginForm} onSubmit={handleSubmit(onSubmit)}>
+        <h1 className={styles.loginForm__title}>Привет</h1>
+        <h2 className={styles.loginForm__subtitle}>
+          Введи логин и пароль от Journal, чтобы увидеть свою статистику
+        </h2>
         <input
-          className="login-form__input"
+          className={styles.loginForm__input}
           {...register("username")}
           placeholder="Логин"
         />
         <input
-          className="login-form__input login-form__input--password"
+          className={styles.loginForm__input}
           {...register("password")}
           type="password"
           placeholder="Пароль"
         />
-        <button className="login-form__button" type="submit">
+        <button className={styles.loginForm__button} type="submit">
           Войти
         </button>
         {errors && (
-          <p className="login-form__error">{errors.username?.message}</p>
+          <p className={styles.loginForm__error}>
+            {errors.username?.message || errors.password?.message}
+          </p>
         )}
       </form>
     </FormProvider>

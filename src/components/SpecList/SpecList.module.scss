@@ -1,0 +1,64 @@
+@use "../../scss/vars";
+
+.specList {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  &__list {
+    background-color: #555;
+    color: #fff;
+    font-family: vars.$font-family;
+    font-size: 20px;
+    border: none;
+    padding: 15px;
+    border-radius: 20px;
+    width: 40vw;
+    height: 50px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    &__active {
+      width: 40vw;
+      padding: 0;
+      list-style: none;
+      text-align: center;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      z-index: 1;
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+      max-height: 80vh;
+      overflow-y: auto;
+      user-select: none;
+      border-radius: 20px;
+      &__item {
+        background-color: #555;
+        cursor: pointer;
+        padding: 8px 0;
+        transition: all 0.2s linear;
+        font-size: 18px;
+        &:hover {
+          background-color: #333;
+          box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+        }
+      }
+    }
+  }
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: all 0.2s linear;
+    &:hover {
+      background-color: #eee;
+    }
+  }
+}
