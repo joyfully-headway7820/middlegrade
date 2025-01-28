@@ -6,6 +6,7 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 import styles from "./LoginForm.module.scss";
 import { Input } from "../Input/Input.tsx";
+import { serverAlias } from "../../constants/constants.ts";
 
 const formLoginSchema = z.object({
   username: z.string().min(4, "Введите свой логин от журнала"),
@@ -38,7 +39,7 @@ export const LoginForm = () => {
       setCookie("password", data.password.trim());
 
       const response = await axios.post<ILoginResponse>(
-        "http://localhost:3000/auth",
+        `${serverAlias}/auth/`,
         {
           username: data.username.trim(),
           password: data.password.trim(),

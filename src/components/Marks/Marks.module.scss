@@ -1,0 +1,109 @@
+@use "../../scss/vars";
+.marks {
+  position: relative;
+}
+
+.mark {
+  max-width: 90vw;
+  margin: 0 auto 10px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  background: #2d2d2d;
+  border-radius: 8px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+  position: relative;
+  @media (max-width: vars.$mobile-bp) {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__status {
+    @media (max-width: vars.$mobile-bp) {
+      position: absolute;
+    }
+    top: 20px;
+    left: 20px;
+    &.green {
+      color: vars.$green;
+    }
+    &.red {
+      color: vars.$red;
+    }
+    &.yellow {
+      color: vars.$yellow;
+    }
+  }
+
+  &__left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 120px;
+
+    &__date {
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    &__number {
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  &__marks {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-width: 120px;
+    justify-content: center;
+
+    &__item {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+
+      &.green {
+        background-color: vars.$green;
+        color: #000;
+      }
+      &.red {
+        background-color: vars.$red;
+      }
+      &.purple {
+        background-color: vars.$purple;
+      }
+      &.blue {
+        background-color: vars.$blue;
+        color: #000;
+      }
+    }
+  }
+
+  &__right {
+    flex-grow: 1;
+
+    &__spec {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    &__teacher {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 4px;
+    }
+
+    &__theme {
+      font-size: 14px;
+      color: #888;
+    }
+  }
+}

@@ -12,6 +12,10 @@
     @media (max-width: vars.$mobile-bp) {
       width: 80vw;
     }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
     width: 40vw;
     background-color: #555;
     color: #fff;
@@ -20,11 +24,19 @@
     border: none;
     padding: 15px;
     border-radius: 20px;
-    height: 50px;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
     cursor: pointer;
     user-select: none;
     position: relative;
+    &__text {
+      -ms-text-overflow: ellipsis;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      @media (max-width: vars.$mobile-bp) {
+        font-size: 16px;
+      }
+    }
     &__active {
       @media (max-width: vars.$mobile-bp) {
         width: 80vw;

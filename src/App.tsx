@@ -7,9 +7,13 @@ import { useCookies } from "react-cookie";
 import { LoginForm } from "./components/LoginForm/LoginForm.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import authorModalStore from "./store/authorModal.ts";
-import AuthorModal from "./components/AuthorModal/AuthorModal.tsx";
+import AboutModal from "./components/AboutModal/AboutModal.tsx";
 import axios from "axios";
 import Logout from "./components/Logout/Logout.tsx";
+import { serverAlias } from "./constants/constants.ts";
+import Marks from "./components/Marks/Marks.tsx";
+import { ChevronDown } from "lucide-react";
+import UpButton from "./components/UpButton/UpButton.tsx";
 
 export interface IExamsElement {
   teacher: string | null;
@@ -53,6 +57,7 @@ function App() {
   const [cookies, setCookies, removeCookie] = useCookies();
   const [activeList, setActiveList] = React.useState<boolean>(false);
   const [openExams, setOpenExams] = React.useState<boolean>(false);
+  const [openMarks, setOpenMarks] = React.useState<boolean>(false);
   const [data, setData] = React.useState<IDataElement[]>([]);
   const [initialMarks, setInitialMarks] = React.useState<IDataElement[]>([]);
 
@@ -68,10 +73,10 @@ function App() {
     (async () => {
       if (cookies.access_token) {
         try {
-          const marks = await axios.post("http://localhost:3000/marks", {
+          const marks = await axios.post(`${serverAlias}/marks/`, {
             token: cookies.access_token,
           });
-          const exams = await axios.post("http://localhost:3000/exams", {
+          const exams = await axios.post(`${serverAlias}/exams/`, {
             token: cookies.access_token,
           });
           setData(marks.data);
@@ -80,7 +85,7 @@ function App() {
         } catch (error) {
           try {
             removeCookie("access_token");
-            const token = await axios.post("http://localhost:3000/auth");
+            const token = await axios.post(`${serverAlias}/auth/`);
             setCookies("access_token", token.data);
           } catch (error) {
             console.error(error);
@@ -93,7 +98,7 @@ function App() {
 
   return (
     <div className="app" onClick={() => setActiveList(false)}>
-      {isOpen && <AuthorModal />}
+      {isOpen && <AboutModal />}
       {cookies.access_token ? (
         <>
           <h1 className="app__heading">
@@ -119,6 +124,19 @@ function App() {
               {openExams ? "Закрыть зачётку" : "Открыть зачётку"}
             </button>
           )}
+          {openExams && <Exams data={exams} />}
+          <div className="app__marks" onClick={() => setOpenMarks(!openMarks)}>
+            <h2 className="app__subheading">Оценки</h2>
+            <ChevronDown
+              className={
+                openMarks
+                  ? "app__marks__button app__marks__button__active"
+                  : "app__marks__button"
+              }
+              size={25}
+            />
+          </div>
+          {openMarks && <Marks marks={data} />}
         </>
       ) : (
         <div className="app__login">
@@ -126,7 +144,6 @@ function App() {
         </div>
       )}
 
-      {openExams && <Exams data={exams} />}
       <Footer />
     </div>
   );

@@ -62,8 +62,20 @@ $animationTime: 0.2s;
       margin-bottom: 20px;
     }
     &__text {
+      max-width: 800px;
       font-size: 20px;
       text-align: center;
+      line-height: 1.5;
+      p {
+        margin-bottom: 10px;
+      }
+      a {
+        color: vars.$blue;
+        transition: all 0.15s linear;
+        &:hover {
+          color: vars.$purple;
+        }
+      }
     }
   }
 }

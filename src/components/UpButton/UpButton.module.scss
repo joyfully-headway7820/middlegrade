@@ -1,0 +1,23 @@
+@use "../../scss/vars";
+
+.button {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 50;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 10px;
+  color: #000;
+  transition: all 0.15s linear;
+  box-shadow: 3px 3px 10px rgba(255, 255, 255, 0.34);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background-color: vars.$accent-color;
+    box-shadow: 3px 3px 10px rgba(vars.$accent-color, 0.34);
+    color: #fff;
+  }
+}

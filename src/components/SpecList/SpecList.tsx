@@ -51,7 +51,7 @@ export default function SpecList({
           setActiveList(!activeList);
         }}
       >
-        {activeSpec}
+        <div className={styles.specList__list__text}>{activeSpec}</div>
         {activeList && (
           <ul className={styles.specList__list__active}>
             <li

@@ -1,16 +1,16 @@
 @use "reset";
 @use "vars";
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: vars.$font-family;
   background-color: #111111;
   color: #fff;
   font-weight: 400;
   margin: 0 auto;
-}
-
-::-webkit-scrollbar {
-  background-color: #333;
 }
 
 .app {
@@ -20,6 +20,27 @@ body {
   height: 90vh;
   @media (max-width: vars.$mobile-bp) {
     text-align: center;
+  }
+  &__marks {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    &__button {
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &__active {
+        transition: all 0.2s linear;
+        transform: rotate(180deg);
+      }
+    }
+    @media (max-width: vars.$mobile-bp) {
+      margin: 0 auto;
+      justify-content: center;
+      text-align: center;
+    }
   }
   &__login {
     height: 80vh;
@@ -45,12 +66,11 @@ body {
     font-size: 24px;
     font-weight: 700;
     margin: 3vh 0;
-    width: 100%;
   }
   &__button {
     width: 80vw;
     font-size: 16px;
-    margin: 20px auto;
+    margin: 20px auto 0;
     display: block;
     color: #000;
     text-decoration: none;
