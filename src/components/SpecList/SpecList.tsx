@@ -34,6 +34,9 @@ export default function SpecList({
     if (specList.includes(element) && specList.includes(`${element} РПО`)) {
       specList.splice(specList.indexOf(`${element} РПО`), 1);
     }
+    if (specList.includes(element) && specList.includes(`${element} ГД`)) {
+      specList.splice(specList.indexOf(`${element} ГД`), 1);
+    }
     if (element.includes(" РПО")) {
       specList[pos] = element.replace(" РПО", "");
     }
@@ -41,6 +44,35 @@ export default function SpecList({
       specList[pos] = element.replace(" ГД", "");
     }
   });
+
+  const switchData = (spec: string, considerPast: boolean) => {
+    if (spec === "Все предметы") {
+      return;
+    }
+    if (considerPast) {
+      setData(
+        dataJson.filter(
+          (element) =>
+            element.spec_name === spec ||
+            element.spec_name === `${spec} РПО` ||
+            element.spec_name === `${spec} ГД`,
+        ),
+      );
+    } else {
+      setData(
+        dataJson.filter(
+          (element) =>
+            (element.spec_name === spec ||
+              element.spec_name === `${spec} РПО` ||
+              element.spec_name === `${spec} ГД`) &&
+            new Date(element.date_visit) > new Date(arrDate),
+        ),
+      );
+    }
+
+    setActiveSpec(spec);
+    setActiveList(false);
+  };
 
   return (
     <div className={styles.specList}>
@@ -68,31 +100,7 @@ export default function SpecList({
               <li
                 className={styles.specList__list__active__item}
                 key={spec}
-                onClick={() => {
-                  if (considerPast) {
-                    setData(
-                      dataJson.filter(
-                        (element) =>
-                          element.spec_name === spec ||
-                          element.spec_name === `${spec} РПО` ||
-                          element.spec_name === `${spec} ГД`,
-                      ),
-                    );
-                  } else {
-                    setData(
-                      dataJson.filter(
-                        (element) =>
-                          (element.spec_name === spec ||
-                            element.spec_name === `${spec} РПО` ||
-                            element.spec_name === `${spec} ГД`) &&
-                          new Date(element.date_visit) > new Date(arrDate),
-                      ),
-                    );
-                  }
-
-                  setActiveSpec(spec);
-                  setActiveList(false);
-                }}
+                onClick={() => switchData(spec, considerPast)}
               >
                 {spec}
               </li>
@@ -103,7 +111,10 @@ export default function SpecList({
 
       <button
         className={styles.specList__button}
-        onClick={() => setConsiderPast(!considerPast)}
+        onClick={() => {
+          switchData(activeSpec, !considerPast);
+          setConsiderPast(!considerPast);
+        }}
       >
         {considerPast ? "За всё время" : "За текущий курс"}
       </button>

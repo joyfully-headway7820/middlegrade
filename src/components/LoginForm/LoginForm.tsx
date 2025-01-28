@@ -7,6 +7,7 @@ import { useCookies } from "react-cookie";
 import styles from "./LoginForm.module.scss";
 import { Input } from "../Input/Input.tsx";
 import { serverAlias } from "../../constants/constants.ts";
+import { Lock } from "lucide-react";
 
 const formLoginSchema = z.object({
   username: z.string().min(4, "Введите свой логин от журнала"),
@@ -65,7 +66,7 @@ export const LoginForm = () => {
       <form className={styles.loginForm} onSubmit={handleSubmit(onSubmit)}>
         <h1 className={styles.loginForm__title}>Привет</h1>
         <h2 className={styles.loginForm__subtitle}>
-          Введи логин и пароль от Journal, чтобы увидеть свою статистику.
+          Введите логин и пароль от Journal, чтобы увидеть свою статистику.
         </h2>
         <Input
           className={styles.loginForm__input}
@@ -91,6 +92,13 @@ export const LoginForm = () => {
             Неправильный логин или пароль
           </p>
         )}
+        <div className={styles.loginForm__info}>
+          <Lock size={20} />
+          <span>
+            Ваши данные не будут переданы третьим лицам и защищены
+            SSL-сертификатом.
+          </span>
+        </div>
       </form>
     </FormProvider>
   );

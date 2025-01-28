@@ -30,7 +30,7 @@ $animationTime: 0.2s;
     background-color: #222222;
     position: relative;
     z-index: 1000;
-    padding: 50px;
+    padding: 30px 20px;
     border: 1px solid #333;
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
     animation: showModal $animationTime ease-in-out;
@@ -73,7 +73,7 @@ $animationTime: 0.2s;
         color: vars.$blue;
         transition: all 0.15s linear;
         &:hover {
-          color: vars.$purple;
+          color: vars.$accent-color;
         }
       }
     }
