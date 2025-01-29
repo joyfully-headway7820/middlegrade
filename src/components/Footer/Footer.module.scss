@@ -1,0 +1,26 @@
+@use "../../scss/vars";
+
+.footer {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &__link {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    gap: 10px;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.2s linear;
+    &:hover {
+      color: vars.$accent-color;
+    }
+  }
+  &__separator {
+    width: 2px;
+    height: 30px;
+    background-color: #777;
+    margin: 0 20px;
+  }
+}

@@ -1,0 +1,12 @@
+services:
+  backend:
+    image: node:22.13.0-alpine
+    container_name: backend
+    tty: true
+    command: npm run start
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"

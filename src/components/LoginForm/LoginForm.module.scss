@@ -1,0 +1,49 @@
+@use "../../scss/vars";
+
+.loginForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  &__title {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  &__subtitle {
+    font-size: 20px;
+    text-align: center;
+  }
+  &__button {
+    max-width: 600px;
+    width: 100%;
+    padding: 10px;
+    background-color: #222;
+    border: 1px solid #777;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.15s linear;
+    cursor: pointer;
+    &:hover {
+      background-color: vars.$accent-color;
+      border: 1px solid vars.$accent-color;
+    }
+  }
+  &__error {
+    color: vars.$red;
+    font-size: 16px;
+  }
+  &__info {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1.2;
+    color: vars.$green;
+    svg {
+      flex: 0 0 20px;
+    }
+  }
+}

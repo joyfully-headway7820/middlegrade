@@ -1,0 +1,85 @@
+@use "../../scss/vars";
+$animationTime: 0.2s;
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn $animationTime ease-in-out;
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  &__content {
+    border-radius: 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #222222;
+    position: relative;
+    z-index: 1000;
+    padding: 30px 20px;
+    border: 1px solid #333;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+    animation: showModal $animationTime ease-in-out;
+    transition: all $animationTime ease-in-out;
+    @keyframes showModal {
+      0% {
+        transform: translateY(2%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    &__close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      color: #fff;
+      transition: all 0.15s linear;
+      &:hover {
+        color: vars.$accent-color;
+      }
+    }
+    &__title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    &__text {
+      max-width: 800px;
+      font-size: 20px;
+      text-align: center;
+      line-height: 1.5;
+      p {
+        margin-top: 16px;
+      }
+      a {
+        color: vars.$blue;
+        transition: all 0.15s linear;
+        &:hover {
+          color: vars.$accent-color;
+        }
+      }
+    }
+  }
+}
+
+.closing {
+  transform: translateY(2%);
+  opacity: 0;
+}

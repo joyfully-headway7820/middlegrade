@@ -1,13 +1,20 @@
 import React from "react";
 import MiddleGrade from "./components/MiddleGrade/MiddleGrade";
-import Visits from "./components/Visits";
-import SpecList from "./components/SpecList";
-import Zachetka from "./components/Zachetka/Zachetka";
+import Visits from "./components/Visits/Visits.tsx";
+import SpecList from "./components/SpecList/SpecList.tsx";
+import Exams from "./components/Exams/Exams.tsx";
+import { useCookies } from "react-cookie";
+import { LoginForm } from "./components/LoginForm/LoginForm.tsx";
+import Footer from "./components/Footer/Footer.tsx";
+import authorModalStore from "./store/authorModal.ts";
+import AboutModal from "./components/AboutModal/AboutModal.tsx";
+import axios from "axios";
+import Logout from "./components/Logout/Logout.tsx";
+import { serverAlias } from "./constants/constants.ts";
+import Marks from "./components/Marks/Marks.tsx";
+import { ChevronDown } from "lucide-react";
 
-import zData from "./zachetka.json";
-import dataJson from "./data.json";
-
-export interface IZachetkaElement {
+export interface IExamsElement {
   teacher: string | null;
   mark: number | null;
   mark_type: number | null;
@@ -23,8 +30,8 @@ export interface IZachetkaElement {
   spec: string | null;
 }
 
-export interface IZachetka {
-  data: IZachetkaElement[];
+export interface IExams {
+  data: IExamsElement[];
 }
 
 export interface IDataElement {
@@ -46,84 +53,97 @@ export interface IData {
 }
 
 function App() {
+  const [cookies, setCookies, removeCookie] = useCookies();
   const [activeList, setActiveList] = React.useState<boolean>(false);
-  const [openZachetka, setOpenZachetka] = React.useState<boolean>(false);
-  const [data, setData] = React.useState<IDataElement[]>(dataJson);
+  const [openExams, setOpenExams] = React.useState<boolean>(false);
+  const [openMarks, setOpenMarks] = React.useState<boolean>(false);
+  const [data, setData] = React.useState<IDataElement[]>([]);
+  const [initialMarks, setInitialMarks] = React.useState<IDataElement[]>([]);
+
   const date = new Date(data[0]?.date_visit);
-  const day: number = date.getDate();
   const month: number = date.getMonth();
   const year: number = date.getFullYear();
   const arrDate: string = month >= 8 ? `${year}-09-01` : `${year - 1}-09-01`;
+  const { isOpen } = authorModalStore();
 
-  const months: string[] = [
-    "января",
-    "февраля",
-    "марта",
-    "апреля",
-    "мая",
-    "июня",
-    "июля",
-    "августа",
-    "сентября",
-    "октября",
-    "ноября",
-    "декабря",
-  ];
+  const [exams, setExams] = React.useState<IExamsElement[]>([]);
+
+  React.useEffect(() => {
+    (async () => {
+      if (cookies.access_token) {
+        try {
+          const marks = await axios.post(`${serverAlias}/marks/`, {
+            token: cookies.access_token,
+          });
+          const exams = await axios.post(`${serverAlias}/exams/`, {
+            token: cookies.access_token,
+          });
+          setData(marks.data);
+          setInitialMarks(marks.data);
+          setExams(exams.data);
+        } catch (error) {
+          try {
+            removeCookie("access_token");
+            const token = await axios.post(`${serverAlias}/auth/`);
+            setCookies("access_token", token.data);
+          } catch (error) {
+            console.error(error);
+            removeCookie("access_token");
+          }
+        }
+      }
+    })();
+  }, [cookies.access_token]);
 
   return (
     <div className="app" onClick={() => setActiveList(false)}>
-      {dataJson.length ? (
+      {isOpen && <AboutModal />}
+      {cookies.access_token ? (
         <>
-          <h1 className="app__heading">Статистика</h1>
+          <h1 className="app__heading">
+            Статистика
+            <Logout />
+          </h1>
           <SpecList
+            initialMarks={initialMarks}
             arrDate={arrDate}
             setData={setData}
             activeList={activeList}
             setActiveList={setActiveList}
           />
-          <h2 className="sec__heading">Средний балл</h2>
-          <MiddleGrade data={data} zData={zData} />
-          <h2 className="sec__heading">Посещаемость</h2>
+          <h2 className="app__subheading">Средний балл</h2>
+          <MiddleGrade data={data} exams={exams} />
+          <h2 className="app__subheading">Посещаемость</h2>
           <Visits data={data} />
-          <div className="actuality">
-            Последняя пара была {day} {months[month]} {year} г.
+          {exams.length > 0 && (
+            <button
+              className="app__button"
+              onClick={() => setOpenExams(!openExams)}
+            >
+              {openExams ? "Закрыть зачётку" : "Открыть зачётку"}
+            </button>
+          )}
+          {openExams && <Exams data={exams} />}
+          <div className="app__marks" onClick={() => setOpenMarks(!openMarks)}>
+            <h2 className="app__subheading">Оценки</h2>
+            <ChevronDown
+              className={
+                openMarks
+                  ? "app__marks__button app__marks__button__active"
+                  : "app__marks__button"
+              }
+              size={25}
+            />
           </div>
+          {openMarks && <Marks marks={data} />}
         </>
       ) : (
-        <div className="text_block">
-          Чтобы приложение заработало, нужно сделать следующее:
-          <ol className="instruction">
-            <li>Зайти в журнал и нажать F12</li>
-            <li>Найти раздел "Сеть" и зайти в оценки</li>
-            <li>
-              В консоли ищешь GET-запрос с именем "student-visits", он будет
-              снизу, нажимаешь на него
-            </li>
-            <li>
-              Справа откроется содержание запроса, нужно зайти в раздел "Ответ"
-              и скопировать оттуда всё содержимое, после чего перенести все
-              данные из журнала в файл data.json, который находится в этом
-              приложении в папке src/data.json.{" "}
-              <b>Открыть файл можно в любом текстовом редакторе</b>, даже в
-              блокноте, то есть устанавливать среду разработки не нужно.
-            </li>
-          </ol>
-          <a href="/video.mp4" className="open_video" target="_blank">
-            Открыть видеоинструкцию
-          </a>
+        <div className="app__login">
+          <LoginForm />
         </div>
       )}
-      {zData.length ? (
-        <button
-          className="open_video"
-          onClick={() => setOpenZachetka(!openZachetka)}
-        >
-          {openZachetka ? "Закрыть зачётку" : "Открыть зачётку"}
-        </button>
-      ) : (
-        ""
-      )}
-      {openZachetka && <Zachetka data={zData} />}
+
+      <Footer />
     </div>
   );
 }

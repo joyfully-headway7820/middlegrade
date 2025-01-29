@@ -1,0 +1,88 @@
+@use "reset";
+@use "vars";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: vars.$font-family;
+  background-color: #111111;
+  color: #fff;
+  font-weight: 400;
+  margin: 0 auto;
+}
+
+.app {
+  position: relative;
+  max-width: 1500px;
+  margin: 0 auto;
+  height: 90vh;
+  @media (max-width: vars.$mobile-bp) {
+    text-align: center;
+  }
+  &__marks {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    &__button {
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &__active {
+        transition: all 0.2s linear;
+        transform: rotate(180deg);
+      }
+    }
+    @media (max-width: vars.$mobile-bp) {
+      margin: 0 auto;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+  &__login {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  &__heading {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 3vh 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    @media (max-width: vars.$mobile-bp) {
+      text-align: center;
+      justify-content: center;
+    }
+  }
+  &__subheading {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 3vh 0;
+  }
+  &__button {
+    width: 80vw;
+    font-size: 16px;
+    margin: 20px auto 0;
+    display: block;
+    color: #000;
+    text-decoration: none;
+    text-align: center;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 30px;
+    transition: all 0.2s linear;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+    &:hover {
+      background-color: #eee;
+      box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+    }
+  }
+}

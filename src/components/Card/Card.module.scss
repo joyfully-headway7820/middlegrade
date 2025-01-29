@@ -1,0 +1,110 @@
+@use "../../scss/vars";
+@use "sass:color";
+
+$gradient-degree: 130deg;
+$shadow-opacity: 0.3;
+$color-difference: -15%;
+
+.card {
+  width: 200px;
+  height: 200px;
+  border-radius: 20px;
+  text-align: left;
+  padding: 20px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+
+  @media (max-width: vars.$mobile-bp) {
+    width: 80%;
+  }
+
+  &__text {
+    font-size: 16px;
+  }
+
+  &__sum {
+    font-size: 36px;
+    font-weight: 700;
+  }
+
+  &__smalltext {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    color: #000;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  &--white {
+    background: linear-gradient($gradient-degree, #fff, #acacac);
+    color: #151515;
+    box-shadow: 3px 3px 10px rgba(#fff, $shadow-opacity);
+  }
+
+  &--blue {
+    background: linear-gradient(
+      $gradient-degree,
+      vars.$blue,
+      adjust-color(vars.$blue, $lightness: $color-difference)
+    );
+    box-shadow: 3px 3px 10px rgba(vars.$blue, $shadow-opacity);
+  }
+
+  &--green {
+    background: linear-gradient(
+      $gradient-degree,
+      vars.$green,
+      adjust-color(vars.$green, $lightness: $color-difference)
+    );
+    color: #203c23;
+    box-shadow: 3px 3px 10px rgba(vars.$green, $shadow-opacity);
+  }
+
+  &--red {
+    background: linear-gradient(
+      $gradient-degree,
+      vars.$red,
+      adjust-color(vars.$red, $lightness: $color-difference)
+    );
+    color: #fff;
+    box-shadow: 3px 3px 10px rgba(vars.$red, $shadow-opacity);
+  }
+
+  &--purple {
+    background: linear-gradient(
+      $gradient-degree,
+      vars.$purple,
+      adjust-color(vars.$purple, $lightness: $color-difference)
+    );
+    color: #fff;
+    box-shadow: 3px 3px 10px rgba(vars.$purple, $shadow-opacity);
+  }
+
+  &--orange {
+    background: linear-gradient(
+      $gradient-degree,
+      vars.$orange,
+      adjust-color(vars.$orange, $lightness: $color-difference)
+    );
+    color: #221616;
+    box-shadow: 3px 3px 10px rgba(vars.$orange, $shadow-opacity);
+  }
+
+  &--yellow {
+    background: linear-gradient(
+      $gradient-degree,
+      vars.$yellow,
+      adjust-color(vars.$yellow, $lightness: $color-difference)
+    );
+    color: #32322c;
+    box-shadow: 3px 3px 10px rgba(vars.$yellow, $shadow-opacity);
+  }
+}
