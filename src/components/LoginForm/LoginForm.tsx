@@ -66,7 +66,7 @@ export const LoginForm = () => {
       <form className={styles.loginForm} onSubmit={handleSubmit(onSubmit)}>
         <h1 className={styles.loginForm__title}>Привет</h1>
         <h2 className={styles.loginForm__subtitle}>
-          Введите логин и пароль от Journal, чтобы увидеть свою статистику.
+          Введи логин и пароль от Journal, чтобы увидеть свою статистику.
         </h2>
         <Input
           className={styles.loginForm__input}
@@ -95,8 +95,7 @@ export const LoginForm = () => {
         <div className={styles.loginForm__info}>
           <Lock size={20} />
           <span>
-            Ваши данные не будут переданы третьим лицам и защищены
-            SSL-сертификатом.
+            Данные нигде не хранятся и не передаются никуда, кроме API Journal.
           </span>
         </div>
       </form>

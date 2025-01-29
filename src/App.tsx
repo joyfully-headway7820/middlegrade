@@ -12,7 +12,7 @@ import axios from "axios";
 import Logout from "./components/Logout/Logout.tsx";
 import { serverAlias } from "./constants/constants.ts";
 import Marks from "./components/Marks/Marks.tsx";
-import { ChevronDown, Lock } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 export interface IExamsElement {
   teacher: string | null;

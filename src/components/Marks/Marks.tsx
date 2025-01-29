@@ -3,22 +3,37 @@ import styles from "./Marks.module.scss";
 import React from "react";
 import Mark from "./Mark.tsx";
 import UpButton from "../UpButton/UpButton.tsx";
+import activeSpecStore from "../../store/activeSpec.ts";
 
 interface Props {
   marks: IDataElement[];
 }
 
 export default function Marks({ marks }: Props) {
-  const reversedMarks = React.useMemo(() => [...marks].reverse(), [marks]);
+  const [showAll, setShowAll] = React.useState<boolean>(false);
+  let reversedMarks = React.useMemo(
+    () => [...marks].reverse(),
+    [marks, showAll],
+  ).map((mark, index) => ({
+    ...mark,
+    index,
+  }));
+
+  const { activeSpec } = activeSpecStore();
+  const isAll = activeSpec === "Все предметы";
+
+  if (isAll && !showAll) {
+    reversedMarks = reversedMarks.slice(marks.length - 50, marks.length);
+  }
 
   return (
     <div className={styles.marks}>
       {reversedMarks
-        .map((mark, index) => (
+        .map((mark) => (
           <Mark
             key={`${mark.date_visit}_${mark.lesson_number}_${mark.spec_name}`}
             date={mark.date_visit}
-            number={index}
+            number={mark.index}
             control_work_mark={mark.control_work_mark}
             home_work_mark={mark.home_work_mark}
             lab_work_mark={mark.lab_work_mark}
@@ -30,6 +45,12 @@ export default function Marks({ marks }: Props) {
           />
         ))
         .reverse()}
+      <button
+        className={styles.marks__button}
+        onClick={() => setShowAll((prev) => !prev)}
+      >
+        {showAll && isAll ? "Скрыть" : "Показать все"}
+      </button>
       <UpButton />
     </div>
   );

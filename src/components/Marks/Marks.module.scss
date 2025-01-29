@@ -1,6 +1,31 @@
 @use "../../scss/vars";
 .marks {
   position: relative;
+  &__button {
+    max-width: 90vw;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2d2d2d;
+    color: #fff;
+    padding: 15px;
+    font-size: 16px;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: all 0.2s linear;
+    &:hover {
+      background-color: vars.$accent-color;
+      color: #fff;
+    }
+    &.loading {
+      background-color: #9f9f9f;
+    }
+  }
 }
 
 .mark {

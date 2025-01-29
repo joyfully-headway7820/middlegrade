@@ -34,11 +34,12 @@ export default function AboutModal() {
             пор.
           </p>
           <p>
-            Связаться со мной для обратной связи можно в{" "}
+            Связаться со мной можно в{" "}
             <a href="https://t.me/psychomorphism" target="_blank">
               Telegram.
             </a>
           </p>
+          <p>Поддержать проект можно по <a href="https://pay.cloudtips.ru/p/8fc421a5">этой ссылке.</a></p>
           <p>Рад стараться.</p>
           <p>❤️</p>
         </article>

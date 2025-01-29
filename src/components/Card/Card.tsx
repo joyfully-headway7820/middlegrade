@@ -12,7 +12,7 @@ export default function Card({ text, sum, percent, color }: IProps) {
     <div className={`${styles.card} ${styles[color]}`}>
       {percent ? (
         <>
-          <p className={styles.card__small}>{sum}</p>
+          <p className={styles.card__smalltext}>{sum}</p>
           <p className={styles.card__sum}>{percent}%</p>
         </>
       ) : (
