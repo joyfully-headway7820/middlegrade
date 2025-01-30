@@ -109,15 +109,17 @@ export default function SpecList({
         )}
       </div>
 
-      <button
-        className={styles.specList__button}
-        onClick={() => {
-          switchData(activeSpec, !considerPast);
-          setConsiderPast(!considerPast);
-        }}
-      >
-        {considerPast ? "За всё время" : "За текущий курс"}
-      </button>
+      {activeSpec !== "Все предметы" && (
+        <button
+          className={styles.specList__button}
+          onClick={() => {
+            switchData(activeSpec, !considerPast);
+            setConsiderPast(!considerPast);
+          }}
+        >
+          {considerPast ? "За всё время" : "За текущий курс"}
+        </button>
+      )}
     </div>
   );
 }
