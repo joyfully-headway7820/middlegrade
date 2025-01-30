@@ -45,12 +45,14 @@ export default function Marks({ marks }: Props) {
           />
         ))
         .reverse()}
-      <button
-        className={styles.marks__button}
-        onClick={() => setShowAll((prev) => !prev)}
-      >
-        {showAll && isAll ? "Скрыть" : "Показать все"}
-      </button>
+      {isAll && (
+        <button
+          className={styles.marks__button}
+          onClick={() => setShowAll((prev) => !prev)}
+        >
+          {showAll ? "Скрыть" : "Показать все"}
+        </button>
+      )}
       <UpButton />
     </div>
   );

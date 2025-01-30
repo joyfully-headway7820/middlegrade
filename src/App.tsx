@@ -115,15 +115,7 @@ function App() {
           <MiddleGrade data={data} exams={exams} />
           <h2 className="app__subheading">Посещаемость</h2>
           <Visits data={data} />
-          {exams.length > 0 && (
-            <button
-              className="app__button"
-              onClick={() => setOpenExams(!openExams)}
-            >
-              {openExams ? "Закрыть зачётку" : "Открыть зачётку"}
-            </button>
-          )}
-          {openExams && <Exams data={exams} />}
+
           <div className="app__marks" onClick={() => setOpenMarks(!openMarks)}>
             <h2 className="app__subheading">Оценки</h2>
             <ChevronDown
@@ -136,6 +128,15 @@ function App() {
             />
           </div>
           {openMarks && <Marks marks={data} />}
+          {exams.length > 0 && (
+            <button
+              className="app__button"
+              onClick={() => setOpenExams(!openExams)}
+            >
+              {openExams ? "Закрыть зачётку" : "Открыть зачётку"}
+            </button>
+          )}
+          {openExams && <Exams data={exams} />}
         </>
       ) : (
         <div className="app__login">
