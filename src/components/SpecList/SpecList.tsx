@@ -1,7 +1,6 @@
 import React from "react";
 import { IDataElement } from "../../App.tsx";
 import styles from "./SpecList.module.scss";
-import activeSpecStore from "../../store/activeSpec.ts";
 
 interface IProps {
   initialMarks: IDataElement[];
@@ -19,7 +18,7 @@ export default function SpecList({
   setActiveList,
 }: IProps) {
   const dataJson = initialMarks;
-  const {activeSpec, setActiveSpec} = activeSpecStore();
+  const [activeSpec, setActiveSpec] = React.useState<string>("Все предметы");
   const [considerPast, setConsiderPast] = React.useState<boolean>(false);
   const arr: string[] = dataJson
     .filter((_, pos) =>
