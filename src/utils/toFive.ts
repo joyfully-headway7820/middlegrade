@@ -1,6 +1,7 @@
 export function toFive(num: number | null): number | null {
   switch (num) {
     case 1:
+      return 1;
     case 2:
     case 3:
       return 2;
