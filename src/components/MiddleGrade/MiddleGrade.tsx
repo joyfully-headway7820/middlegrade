@@ -4,8 +4,7 @@ import "./Middlegrade.module.scss";
 import Card from "../Card/Card.tsx";
 import styles from "./Middlegrade.module.scss";
 import distributeData from "./distributeData.ts";
-
-const FIVE_GRADE_SYSTEM_DATE = new Date("2024-09-01");
+import { FIVE_GRADE_SYSTEM_DATE } from "../../constants/constants.ts";
 
 export default function MiddleGrade({
   data,

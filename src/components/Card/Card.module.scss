@@ -53,7 +53,7 @@ $color-difference: -15%;
     background: linear-gradient(
       $gradient-degree,
       vars.$blue,
-      adjust-color(vars.$blue, $lightness: $color-difference)
+      color.adjust(vars.$blue, $lightness: $color-difference)
     );
     box-shadow: 3px 3px 10px rgba(vars.$blue, $shadow-opacity);
   }
@@ -62,7 +62,7 @@ $color-difference: -15%;
     background: linear-gradient(
       $gradient-degree,
       vars.$green,
-      adjust-color(vars.$green, $lightness: $color-difference)
+      color.adjust(vars.$green, $lightness: $color-difference)
     );
     color: #203c23;
     box-shadow: 3px 3px 10px rgba(vars.$green, $shadow-opacity);
@@ -72,7 +72,7 @@ $color-difference: -15%;
     background: linear-gradient(
       $gradient-degree,
       vars.$red,
-      adjust-color(vars.$red, $lightness: $color-difference)
+      color.adjust(vars.$red, $lightness: $color-difference)
     );
     color: #fff;
     box-shadow: 3px 3px 10px rgba(vars.$red, $shadow-opacity);
@@ -82,7 +82,7 @@ $color-difference: -15%;
     background: linear-gradient(
       $gradient-degree,
       vars.$purple,
-      adjust-color(vars.$purple, $lightness: $color-difference)
+      color.adjust(vars.$purple, $lightness: $color-difference)
     );
     color: #fff;
     box-shadow: 3px 3px 10px rgba(vars.$purple, $shadow-opacity);
@@ -92,7 +92,7 @@ $color-difference: -15%;
     background: linear-gradient(
       $gradient-degree,
       vars.$orange,
-      adjust-color(vars.$orange, $lightness: $color-difference)
+      color.adjust(vars.$orange, $lightness: $color-difference)
     );
     color: #221616;
     box-shadow: 3px 3px 10px rgba(vars.$orange, $shadow-opacity);
@@ -102,7 +102,7 @@ $color-difference: -15%;
     background: linear-gradient(
       $gradient-degree,
       vars.$yellow,
-      adjust-color(vars.$yellow, $lightness: $color-difference)
+      color.adjust(vars.$yellow, $lightness: $color-difference)
     );
     color: #32322c;
     box-shadow: 3px 3px 10px rgba(vars.$yellow, $shadow-opacity);

@@ -6,7 +6,7 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 import styles from "./LoginForm.module.scss";
 import { Input } from "../Input/Input.tsx";
-import { serverAlias } from "../../constants/constants.ts";
+import { COOKIE_EXPIRY_DATE, serverAlias } from "../../constants/constants.ts";
 import { Lock } from "lucide-react";
 
 const formLoginSchema = z.object({
@@ -36,8 +36,16 @@ export const LoginForm = () => {
   const onSubmit = async (data: TFormLogin) => {
     try {
       setResponseError(false);
-      setCookie("username", data.username.trim());
-      setCookie("password", data.password.trim());
+      setCookie("username", data.username.trim(), {
+        sameSite: "lax",
+        secure: true,
+        expires: COOKIE_EXPIRY_DATE,
+      });
+      setCookie("password", data.password.trim(), {
+        sameSite: "lax",
+        secure: true,
+        expires: COOKIE_EXPIRY_DATE,
+      });
 
       const response = await axios.post<ILoginResponse>(
         `${serverAlias}/auth/`,
@@ -50,7 +58,11 @@ export const LoginForm = () => {
 
       const accessToken = response.data;
 
-      setCookie("access_token", accessToken);
+      setCookie("access_token", accessToken, {
+        sameSite: "lax",
+        secure: true,
+        expires: COOKIE_EXPIRY_DATE,
+      });
     } catch (e) {
       setResponseError(true);
       console.error(`OnSubmitLoginForm: ${e}`);

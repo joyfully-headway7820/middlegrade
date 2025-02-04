@@ -10,7 +10,7 @@ import authorModalStore from "./store/authorModal.ts";
 import AboutModal from "./components/AboutModal/AboutModal.tsx";
 import axios from "axios";
 import Logout from "./components/Logout/Logout.tsx";
-import { serverAlias } from "./constants/constants.ts";
+import { COOKIE_EXPIRY_DATE, serverAlias } from "./constants/constants.ts";
 import Marks from "./components/Marks/Marks.tsx";
 import { ChevronDown } from "lucide-react";
 
@@ -82,18 +82,28 @@ function App() {
           setInitialMarks(marks.data);
           setExams(exams.data);
         } catch (error) {
-          try {
-            removeCookie("access_token");
-            const token = await axios.post(`${serverAlias}/auth/`);
-            setCookies("access_token", token.data);
-          } catch (error) {
-            console.error(error);
-            removeCookie("access_token");
-          }
+          console.log("Токен протух, восстанавливаем");
+          removeCookie("access_token");
         }
+      } else {
+        const token = await axios.post(`${serverAlias}/auth/`, {
+          username: cookies.username,
+          password: cookies.password,
+        });
+        setCookies("access_token", token.data, {
+          sameSite: "lax",
+          secure: true,
+          expires: COOKIE_EXPIRY_DATE,
+        });
       }
     })();
-  }, [cookies.access_token]);
+  }, [
+    cookies.access_token,
+    cookies.password,
+    cookies.username,
+    removeCookie,
+    setCookies,
+  ]);
 
   return (
     <div className="app" onClick={() => setActiveList(false)}>
