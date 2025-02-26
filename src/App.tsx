@@ -72,11 +72,11 @@ function App() {
     (async () => {
       if (cookies.access_token) {
         try {
-          const marks = await axios.post(`${serverAlias}/marks/`, {
-            token: cookies.access_token,
+          const marks = await axios.get(`${serverAlias}/marks/`, {
+            headers: { Authorization: cookies.access_token },
           });
-          const exams = await axios.post(`${serverAlias}/exams/`, {
-            token: cookies.access_token,
+          const exams = await axios.get(`${serverAlias}/exams/`, {
+            headers: { Authorization: cookies.access_token },
           });
           setData(marks.data);
           setInitialMarks(marks.data);

@@ -1,7 +1,7 @@
 import { IDataElement } from "../../App.tsx";
 import { toFive } from "../../utils/toFive.ts";
 
-interface IMarks {
+export interface IMarks {
   grades: number[];
   classWork: number[];
   controlWork: number[];
@@ -14,7 +14,10 @@ interface IMarks {
   labGradeSum: number;
 }
 
-const distributeData = (data: IDataElement[], FIVE_GRADE_SYSTEM_DATE: Date) => {
+const distributeData = (
+  data: IDataElement[],
+  FIVE_GRADE_SYSTEM_DATE: Date,
+): IMarks => {
   return data.reduce<IMarks>(
     (acc, element) => {
       const checkFive = (mark: number | null) => {

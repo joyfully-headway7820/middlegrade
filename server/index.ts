@@ -14,7 +14,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("ну и что тебе тут понадобилось?");
 });
 
-app.post("/auth", cors(), jsonParser, async (req: Request, res: Response) => {
+app.post("/auth", jsonParser, async (req: Request, res: Response) => {
   try {
     const response = await axios.post(
       "https://msapi.top-academy.ru/api/v2/auth/login",
@@ -26,7 +26,6 @@ app.post("/auth", cors(), jsonParser, async (req: Request, res: Response) => {
       },
       {
         headers: {
-          "Content-Type": "application/json",
           Referer: "https://journal.top-academy.ru",
         },
       },
@@ -43,9 +42,9 @@ app.post("/auth", cors(), jsonParser, async (req: Request, res: Response) => {
   }
 });
 
-app.post("/marks", cors(), jsonParser, async (req: Request, res: Response) => {
+app.get("/marks", cors(), jsonParser, async (req: Request, res: Response) => {
   try {
-    let token = req.body.token;
+    let token = req.headers.authorization;
 
     if (!token) {
       token = await axios.post("http://localhost:3000/auth");
@@ -68,9 +67,9 @@ app.post("/marks", cors(), jsonParser, async (req: Request, res: Response) => {
   }
 });
 
-app.post("/exams", cors(), jsonParser, async (req: Request, res: Response) => {
+app.get("/exams", cors(), jsonParser, async (req: Request, res: Response) => {
   try {
-    let token = req.body.token;
+    let token = req.headers.authorization;
 
     if (!token) {
       token = await axios.post("http://localhost:3000/auth");
