@@ -21,7 +21,7 @@ interface ILoginResponse {
 }
 
 export const LoginForm = () => {
-  const [cookies, setCookie] = useCookies();
+  const [, setCookie] = useCookies();
   const [responseError, setResponseError] = React.useState(false);
   const form = useForm<TFormLogin>({
     resolver: zodResolver(formLoginSchema),
@@ -52,7 +52,7 @@ export const LoginForm = () => {
         {
           username: data.username.trim(),
           password: data.password.trim(),
-        },
+        }
       );
       if (!response.data) return;
 
@@ -68,6 +68,7 @@ export const LoginForm = () => {
       console.error(`OnSubmitLoginForm: ${e}`);
     }
   };
+
   React.useEffect(() => {
     if (formState.isSubmitSuccessful) {
       form.reset();

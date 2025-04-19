@@ -89,4 +89,25 @@
       color: #fff;
     }
   }
+  &__filter {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 16px;
+    &__checkbox {
+      overflow: hidden;
+      border: 2px solid vars.$accent-color;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      transition: all 250ms cubic-bezier(0.4, 0, 0.23, 1);
+      &__check {
+        background-color: vars.$accent-color;
+      }
+    }
+  }
 }

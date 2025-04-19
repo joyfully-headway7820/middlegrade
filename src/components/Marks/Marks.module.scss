@@ -1,6 +1,7 @@
 @use "../../scss/vars";
 .marks {
   position: relative;
+  margin-bottom: 10px;
   &__button {
     max-width: 90vw;
     margin: 0 auto;

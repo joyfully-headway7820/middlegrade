@@ -1,7 +1,10 @@
-import React from "react";
-import { IDataElement } from "../../App.tsx";
+import React, { useState, useEffect } from "react";
+import { IDataElement, IExamsElement } from "../../App.tsx";
 import styles from "./SpecList.module.scss";
 import activeSpecStore from "../../store/activeSpec.ts";
+import { Check } from "lucide-react";
+import { useCookies } from "react-cookie";
+import { COOKIE_EXPIRY_DATE } from "../../constants/constants.ts";
 
 interface IProps {
   initialMarks: IDataElement[];
@@ -9,6 +12,7 @@ interface IProps {
   setData: (data: IDataElement[]) => void;
   activeList: boolean;
   setActiveList: (activeList: boolean) => void;
+  exams: IExamsElement[];
 }
 
 export default function SpecList({
@@ -17,62 +21,67 @@ export default function SpecList({
   setData,
   activeList,
   setActiveList,
+  exams,
 }: IProps) {
-  const dataJson = initialMarks;
+  const [cookies, setCookies] = useCookies(["disableDone"]);
+  const [considerPast, setConsiderPast] = useState<boolean>(false);
+  const [settingDisableDone, setSettingDisableDone] = useState<boolean>(
+    cookies.disableDone !== undefined ? cookies.disableDone : true,
+  );
   const { activeSpec, setActiveSpec } = activeSpecStore();
-  const [considerPast, setConsiderPast] = React.useState<boolean>(false);
-  const arr: string[] = dataJson
-    .filter((_, pos) =>
-      considerPast
-        ? true
-        : new Date(dataJson[pos].date_visit) > new Date(arrDate),
-    )
-    .map((i) => i.spec_name);
-  const specList: string[] = arr
-    .filter((item: string, pos: number) => arr.indexOf(item) === pos)
-    .sort();
-  specList.forEach((element, pos) => {
-    if (specList.includes(element) && specList.includes(`${element} РПО`)) {
-      specList.splice(specList.indexOf(`${element} РПО`), 1);
+
+  const examsNames: string[] = exams
+    .filter((element) => element.mark != 0)
+    .map((exam) => exam.spec.replace(" РПО", "").replace(" ГД", ""));
+
+  const getSpecList = (): string[] => {
+    let arr: string[] = initialMarks
+      .filter((item, pos) =>
+        considerPast ? true : new Date(item.date_visit) > new Date(arrDate),
+      )
+      .map((i) => i.spec_name.replace(" РПО", "").replace(" ГД", ""));
+
+    arr = arr.filter((item, pos) => arr.indexOf(item) === pos).sort();
+
+    if (settingDisableDone) {
+      arr = arr.filter((item) => !examsNames.includes(item));
     }
-    if (specList.includes(element) && specList.includes(`${element} ГД`)) {
-      specList.splice(specList.indexOf(`${element} ГД`), 1);
-    }
-    if (element.includes(" РПО")) {
-      specList[pos] = element.replace(" РПО", "");
-    }
-    if (element.includes(" ГД")) {
-      specList[pos] = element.replace(" ГД", "");
-    }
-  });
+
+    return arr;
+  };
+
+  const [specList, setSpecList] = useState<string[]>(getSpecList());
+
+  useEffect(() => {
+    setSpecList(getSpecList());
+  }, [initialMarks, arrDate, considerPast, settingDisableDone, exams]);
 
   const switchData = (spec: string, considerPast: boolean) => {
     if (spec === "Все предметы") {
-      return;
-    }
-    if (considerPast) {
-      setData(
-        dataJson.filter(
-          (element) =>
-            element.spec_name === spec ||
-            element.spec_name === `${spec} РПО` ||
-            element.spec_name === `${spec} ГД`,
-        ),
-      );
+      setData(initialMarks);
     } else {
       setData(
-        dataJson.filter(
+        initialMarks.filter(
           (element) =>
             (element.spec_name === spec ||
               element.spec_name === `${spec} РПО` ||
               element.spec_name === `${spec} ГД`) &&
-            new Date(element.date_visit) > new Date(arrDate),
+            (considerPast || new Date(element.date_visit) > new Date(arrDate)),
         ),
       );
     }
-
     setActiveSpec(spec);
     setActiveList(false);
+  };
+
+  const onClickDisableDone = () => {
+    const newValue = !settingDisableDone;
+    setSettingDisableDone(newValue);
+    setCookies("disableDone", newValue, {
+      sameSite: "lax",
+      secure: true,
+      expires: COOKIE_EXPIRY_DATE,
+    });
   };
 
   return (
@@ -90,7 +99,7 @@ export default function SpecList({
             <li
               className={styles.specList__list__active__item}
               onClick={() => {
-                setData(dataJson);
+                setData(initialMarks);
                 setActiveSpec("Все предметы");
                 setActiveList(false);
               }}
@@ -114,13 +123,27 @@ export default function SpecList({
         <button
           className={styles.specList__button}
           onClick={() => {
-            switchData(activeSpec, !considerPast);
             setConsiderPast(!considerPast);
+            switchData(activeSpec, !considerPast);
           }}
         >
           {considerPast ? "За всё время" : "За текущий курс"}
         </button>
       )}
+      <button
+        onClick={onClickDisableDone}
+        title="Убирает из списка дисциплины, по которым уже прошёл зачёт или экзамен"
+        className={styles.specList__filter}
+      >
+        <div className={styles.specList__filter__checkbox}>
+          {settingDisableDone && (
+            <div className={styles.specList__filter__checkbox__check}>
+              <Check size={16} />
+            </div>
+          )}
+        </div>
+        <span className={styles.specList_filter__text}>Убрать завершённые</span>
+      </button>
     </div>
   );
 }

@@ -32,6 +32,7 @@ body {
   position: relative;
   max-width: 1500px;
   margin: 0 auto;
+  padding: 0 20px;
   height: 90vh;
   @media (max-width: vars.$mobile-bp) {
     text-align: center;
@@ -83,9 +84,8 @@ body {
     margin: 3vh 0;
   }
   &__button {
-    width: 80vw;
+    width: 100%;
     font-size: 16px;
-    margin: 20px auto 0;
     display: block;
     color: #000;
     text-decoration: none;

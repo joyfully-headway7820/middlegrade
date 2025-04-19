@@ -14,6 +14,13 @@ app.get("/", (req: Request, res: Response) => {
   res.send("ну и что тебе тут понадобилось?");
 });
 
+const checkToken = async (token?: string) => {
+  if (!token) {
+    token = await axios.post("http://localhost:3000/auth");
+  }
+  return token;
+};
+
 app.post("/auth", jsonParser, async (req: Request, res: Response) => {
   try {
     const response = await axios.post(
@@ -44,11 +51,7 @@ app.post("/auth", jsonParser, async (req: Request, res: Response) => {
 
 app.get("/marks", cors(), jsonParser, async (req: Request, res: Response) => {
   try {
-    let token = req.headers.authorization;
-
-    if (!token) {
-      token = await axios.post("http://localhost:3000/auth");
-    }
+    const token = await checkToken(req.headers.authorization);
 
     const response = await axios.get(
       "https://msapi.top-academy.ru/api/v2/progress/operations/student-visits",
@@ -69,14 +72,32 @@ app.get("/marks", cors(), jsonParser, async (req: Request, res: Response) => {
 
 app.get("/exams", cors(), jsonParser, async (req: Request, res: Response) => {
   try {
-    let token = req.headers.authorization;
-
-    if (!token) {
-      token = await axios.post("http://localhost:3000/auth");
-    }
+    const token = await checkToken(req.headers.authorization);
 
     const response = await axios.get(
       "https://msapi.top-academy.ru/api/v2/progress/operations/student-exams",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Referer: "https://journal.top-academy.ru",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    res.send(response.data);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+app.get("/month_schedule", jsonParser, async (req: Request, res: Response) => {
+  try {
+    const token = await checkToken(req.headers.authorization);
+    const day = req.query.day;
+
+    const response = await axios.get(
+      `https://msapi.top-academy.ru/api/v2/schedule/operations/get-month?date_filter=${day}`,
       {
         headers: {
           "Content-Type": "application/json",

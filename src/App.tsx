@@ -27,7 +27,7 @@ export interface IExamsElement {
   need_access: number;
   need_access_stud: number | null;
   comment_delete_file: string | null;
-  spec: string | null;
+  spec: string;
 }
 
 export interface IExams {
@@ -115,6 +115,7 @@ function App() {
             <Logout />
           </h1>
           <SpecList
+            exams={exams}
             initialMarks={initialMarks}
             arrDate={arrDate}
             setData={setData}
