@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import axios from "axios";
+import formidable from "formidable";
 
 const app: Express = express();
 const jsonParser = bodyParser.json();
@@ -42,14 +43,14 @@ app.post("/auth", jsonParser, async (req: Request, res: Response) => {
       res.status(401).send("Unauthorized");
     }
 
-    res.send(response.data.access_token);
+    res.send({ token: response.data.access_token });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
   }
 });
 
-app.get("/marks", cors(), jsonParser, async (req: Request, res: Response) => {
+app.get("/marks", cors(), async (req: Request, res: Response) => {
   try {
     const token = await checkToken(req.headers.authorization);
 
@@ -70,7 +71,7 @@ app.get("/marks", cors(), jsonParser, async (req: Request, res: Response) => {
   }
 });
 
-app.get("/exams", cors(), jsonParser, async (req: Request, res: Response) => {
+app.get("/exams", cors(), async (req: Request, res: Response) => {
   try {
     const token = await checkToken(req.headers.authorization);
 
@@ -91,7 +92,7 @@ app.get("/exams", cors(), jsonParser, async (req: Request, res: Response) => {
   }
 });
 
-app.get("/month_schedule", jsonParser, async (req: Request, res: Response) => {
+app.get("/month_schedule", cors(), async (req: Request, res: Response) => {
   try {
     const token = await checkToken(req.headers.authorization);
     const day = req.query.day;
@@ -111,6 +112,114 @@ app.get("/month_schedule", jsonParser, async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).send(error);
   }
+});
+
+app.get("/user", cors(), async (req: Request, res: Response) => {
+  const token = await checkToken(req.headers.authorization);
+
+  const response = await axios.get(
+    "https://msapi.top-academy.ru/api/v2/settings/user-info",
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Referer: "https://journal.top-academy.ru",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  res.send(response.data);
+});
+
+app.get("/group_history", cors(), async (req: Request, res: Response) => {
+  const token = await checkToken(req.headers.authorization);
+
+  const response = await axios.get(
+    "https://msapi.top-academy.ru/api/v2/homework/settings/group-history",
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Referer: "https://journal.top-academy.ru",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  res.send(response.data);
+});
+
+app.get("/homework", cors(), async (req: Request, res: Response) => {
+  const token = await checkToken(req.headers.authorization);
+  const groupId = req.query.group_id;
+  const status = req.query.status;
+  const page = req.query.page;
+
+  const response = await axios.get(
+    `https://msapi.top-academy.ru/api/v2/homework/operations/list?page=${page}&status=${status}&type=0&group_id=${groupId}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Referer: "https://journal.top-academy.ru",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  res.send(response.data);
+});
+
+app.get("/labs", cors(), async (req: Request, res: Response) => {
+  const token = await checkToken(req.headers.authorization);
+  const groupId = req.query.group_id;
+  const status = req.query.status;
+  const page = req.query.page;
+
+  const response = await axios.get(
+    `https://msapi.top-academy.ru/api/v2/homework/operations/list?page=${page}&status=${status}&type=1&group_id=${groupId}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Referer: "https://journal.top-academy.ru",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  res.send(response.data);
+});
+
+app.post(
+  "/homework",
+  cors(),
+  jsonParser,
+  async (req: Request, res: Response) => {
+    // const token = await checkToken(req.headers.authorization);
+    // const form = formidable({ multiples: true });
+    // form.parse(req, (err, fields, files) => {
+    //   console.log(fields);
+    //   console.log(files);
+    // TODO: разобраться, что оно возвращает
+    // });
+  },
+);
+
+app.delete("/homework:id", cors(), async (req: Request, res: Response) => {
+  const token = await checkToken(req.headers.authorization);
+  const { id } = req.params;
+
+  const response = await axios.post(
+    "https://msapi.top-academy.ru/api/v2/homework/operations/delete",
+    { id },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Referer: "https://journal.top-academy.ru",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  res.send(response.data);
 });
 
 app.listen(port, () => {
