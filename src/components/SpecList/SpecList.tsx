@@ -23,6 +23,14 @@ export default function SpecList({
   setActiveList,
   exams,
 }: IProps) {
+  const skipSpecs = [
+    "Иностранный язык",
+    "Иностранный язык РПО",
+    "Физическая культура",
+    "Физическая культура РПО",
+    "История",
+    "История РПО",
+  ];
   const [cookies, setCookies] = useCookies(["disableDone"]);
   const [considerPast, setConsiderPast] = useState<boolean>(false);
   const [settingDisableDone, setSettingDisableDone] = useState<boolean>(
@@ -44,7 +52,9 @@ export default function SpecList({
     arr = arr.filter((item, pos) => arr.indexOf(item) === pos).sort();
 
     if (settingDisableDone) {
-      arr = arr.filter((item) => !examsNames.includes(item));
+      arr = arr.filter(
+        (item) => !examsNames.includes(item) || skipSpecs.includes(item),
+      );
     }
 
     return arr;

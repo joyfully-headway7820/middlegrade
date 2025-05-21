@@ -5,6 +5,9 @@
   flex-wrap: wrap;
   gap: 20px;
   @media (max-width: vars.$mobile-bp) {
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    gap: 5px;
   }
 }

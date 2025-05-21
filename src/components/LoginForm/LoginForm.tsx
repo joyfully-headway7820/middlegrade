@@ -16,10 +16,6 @@ const formLoginSchema = z.object({
 
 type TFormLogin = z.infer<typeof formLoginSchema>;
 
-interface ILoginResponse {
-  access_token: string;
-}
-
 export const LoginForm = () => {
   const [, setCookie] = useCookies();
   const [responseError, setResponseError] = React.useState(false);
@@ -47,18 +43,15 @@ export const LoginForm = () => {
         expires: COOKIE_EXPIRY_DATE,
       });
 
-      const response = await axios.post<ILoginResponse>(
-        `${serverAlias}/auth/`,
-        {
-          username: data.username.trim(),
-          password: data.password.trim(),
-        }
-      );
+      const response = await axios.post(`${serverAlias}/auth/`, {
+        username: data.username.trim(),
+        password: data.password.trim(),
+      });
       if (!response.data) return;
 
-      const accessToken = response.data;
+      const { token } = response.data;
 
-      setCookie("access_token", accessToken, {
+      setCookie("access_token", token, {
         sameSite: "lax",
         secure: true,
         expires: COOKIE_EXPIRY_DATE,

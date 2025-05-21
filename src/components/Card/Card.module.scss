@@ -24,11 +24,19 @@ $color-difference: -15%;
 
   &__text {
     font-size: 16px;
+    @media (max-width: vars.$mobile-bp) {
+      text-align: center;
+      font-size: 14px;
+    }
   }
 
   &__sum {
     font-size: 36px;
     font-weight: 700;
+    @media (max-width: vars.$mobile-bp) {
+      font-size: 28px;
+      text-align: center;
+    }
   }
 
   &__smalltext {
