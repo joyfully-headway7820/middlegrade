@@ -86,11 +86,14 @@ function App() {
           removeCookie("access_token");
         }
       } else {
-        const token = await axios.post(`${serverAlias}/auth/`, {
-          username: cookies.username,
-          password: cookies.password,
-        });
-        setCookies("access_token", token.data, {
+        const { token } = (
+          await axios.post(`${serverAlias}/auth/`, {
+            username: cookies.username,
+            password: cookies.password,
+          })
+        ).data;
+
+        setCookies("access_token", token, {
           sameSite: "lax",
           secure: true,
           expires: COOKIE_EXPIRY_DATE,
