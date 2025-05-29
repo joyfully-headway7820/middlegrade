@@ -1,5 +1,5 @@
 import { IData } from "../../App.tsx";
-import Card from "../Card/Card.tsx";
+import Card from "../Card";
 import styles from "./Visits.module.scss";
 import { distributeVisits } from "./distributeVisits.ts";
 

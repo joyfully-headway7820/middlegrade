@@ -1,7 +1,7 @@
 import { IDataElement, IExamsElement } from "../../App";
 import { toFive } from "../../utils/toFive.ts";
 import "./Middlegrade.module.scss";
-import Card from "../Card/Card.tsx";
+import Card from "../Card";
 import styles from "./Middlegrade.module.scss";
 import distributeData from "./distributeData.ts";
 import { FIVE_GRADE_SYSTEM_DATE } from "../../constants/constants.ts";

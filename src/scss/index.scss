@@ -65,19 +65,7 @@ body {
     justify-content: center;
     align-items: center;
   }
-  &__heading {
-    font-size: 32px;
-    font-weight: 700;
-    margin: 3vh 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    @media (max-width: vars.$mobile-bp) {
-      text-align: center;
-      justify-content: center;
-    }
-  }
+
   &__subheading {
     font-size: 24px;
     font-weight: 700;
