@@ -1,4 +1,4 @@
-import { IDataElement, IExamsElement } from "../src/App";
+import { IDataElement, IExamsElement } from "../src/components/Stats";
 
 export const examsMockData: IExamsElement[] = [
   {

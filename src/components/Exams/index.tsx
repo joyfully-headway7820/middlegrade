@@ -1,9 +1,9 @@
-import { IExams } from "../../App";
 import styles from "./Exams.module.scss";
 import { toFive } from "../../utils/toFive";
 import { FIVE_GRADE_SYSTEM_DATE } from "../../constants/constants.ts";
+import { IExamsElement } from "../Stats";
 
-export default function Exams({ data }: IExams) {
+export default function Exams({ data }: { data: IExamsElement[] }) {
   return (
     <div className={styles.exams}>
       {data.map(
