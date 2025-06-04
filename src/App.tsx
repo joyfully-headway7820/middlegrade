@@ -6,6 +6,7 @@ import authorModalStore from "./store/authorModal.ts";
 import AboutModal from "./components/AboutModal";
 import { Header } from "./components/Header";
 import { Stats } from "./components/Stats";
+import { Schedule } from "./components/Schedule";
 
 function App() {
   const [cookies] = useCookies();
@@ -26,7 +27,7 @@ function App() {
           {activeTab === "stats" ? (
             <Stats activeList={activeList} setActiveList={setActiveList} />
           ) : (
-            <></>
+            <Schedule></Schedule>
           )}
         </>
       ) : (

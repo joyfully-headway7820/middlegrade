@@ -1,0 +1,80 @@
+@use "../../scss/vars";
+.react-calendar {
+  width: 100% !important;
+  background-color: #333 !important;
+  border-radius: 10px;
+  border: 1px solid #a0a0a0;
+  padding: 5px;
+
+  &__tile {
+    &--now {
+      background-color: vars.$red !important;
+    }
+
+    &--active {
+      background-color: vars.$accent-color !important;
+    }
+  }
+
+  &__navigation {
+    display: flex;
+    height: 44px;
+    margin-bottom: 1rem;
+    &__label {
+      background: none !important;
+    }
+    & button:disabled {
+      background-color: #474747 !important;
+    }
+    & button {
+      min-width: 44px;
+      background: none;
+      color: #fff;
+      border-radius: 20px;
+      transition: all 0.15s linear;
+      font-size: 16px;
+      &:hover {
+        background-color: #666 !important;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+  &__month-view {
+    &__weekdays__weekday {
+      font-size: 16px;
+      & abbr {
+        text-decoration: none;
+      }
+    }
+    &__days__day {
+      font-size: 16px !important;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      color: #fff;
+      transition: all 0.15s linear;
+      &--neighboringMonth {
+        color: #757575;
+      }
+      &--weekend {
+        color: vars.$red !important;
+      }
+      &:hover {
+        background-color: #ececec !important;
+        color: #000;
+      }
+    }
+  }
+  &__century-view__decades__decade,
+  &__decade-view__years__year,
+  &__year-view__months__month {
+    color: #fff !important;
+    transition: all 0.15s linear;
+    &:hover {
+      background-color: #666 !important;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
