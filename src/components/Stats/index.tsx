@@ -5,9 +5,13 @@ import Visits from "../Visits";
 import { ChevronDown } from "lucide-react";
 import Marks from "../Marks";
 import Exams from "../Exams";
-import axios from "axios";
-import { COOKIE_EXPIRY_DATE, serverAlias } from "../../constants/constants.ts";
+import { COOKIE_EXPIRY_DATE } from "../../constants/constants.ts";
 import { useCookies } from "react-cookie";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { marksQuery } from "../../queries/marksQuery.ts";
+import { examsQuery } from "../../queries/examsQuery.ts";
+import authStore from "../../store/authStore.ts";
+import { authQuery } from "../../queries/authQuery.ts";
 
 export interface IExamsElement {
   teacher: string | null;
@@ -46,96 +50,100 @@ type Props = {
 
 export const Stats = ({ activeList, setActiveList }: Props) => {
   const [cookies, setCookies, removeCookie] = useCookies();
-  const [openExams, setOpenExams] = React.useState<boolean>(false);
-  const [openMarks, setOpenMarks] = React.useState<boolean>(false);
-
+  const [openExams, setOpenExams] = React.useState(false);
+  const [openMarks, setOpenMarks] = React.useState(false);
   const [data, setData] = React.useState<IDataElement[]>([]);
-  const [initialMarks, setInitialMarks] = React.useState<IDataElement[]>([]);
+  const { setIsLoggedIn } = authStore();
+  const queryClient = useQueryClient();
 
-  const date = new Date(data[0]?.date_visit);
-  const month: number = date.getMonth();
-  const year: number = date.getFullYear();
+  const marks = useQuery<IDataElement[]>({
+    queryKey: ["marks"],
+    queryFn: async () => await marksQuery(cookies.access_token),
+  });
 
-  const arrDate: string = month >= 8 ? `${year}-09-01` : `${year - 1}-09-01`;
+  const exams = useQuery<IExamsElement[]>({
+    queryKey: ["exams"],
+    queryFn: async () => await examsQuery(cookies.access_token),
+  });
 
-  const [exams, setExams] = React.useState<IExamsElement[]>([]);
+  const firstMarkDate = marks.data?.[0]?.date_visit;
+  const date = firstMarkDate ? new Date(firstMarkDate) : new Date();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  const arrDate = month >= 8 ? `${year}-09-01` : `${year - 1}-09-01`;
 
   React.useEffect(() => {
-    (async () => {
-      if (cookies.access_token) {
-        try {
-          const marks = await axios.get(`${serverAlias}/marks/`, {
-            headers: { Authorization: cookies.access_token },
-          });
-          const exams = await axios.get(`${serverAlias}/exams/`, {
-            headers: { Authorization: cookies.access_token },
-          });
-          setData(marks.data);
-          setInitialMarks(marks.data);
-          setExams(exams.data);
-        } catch (error) {
-          console.log("Токен протух, восстанавливаем");
-          removeCookie("access_token");
-        }
-      } else {
-        const { token } = (
-          await axios.post(`${serverAlias}/auth/`, {
-            username: cookies.username,
-            password: cookies.password,
-          })
-        ).data;
+    const handleError = async () => {
+      try {
+        removeCookie("access_token");
+        const token = await authQuery(cookies.username, cookies.password);
 
         setCookies("access_token", token, {
           sameSite: "lax",
           secure: true,
           expires: COOKIE_EXPIRY_DATE,
         });
+
+        await queryClient.invalidateQueries({ queryKey: ["marks", "exams"] });
+      } catch (error) {
+        setIsLoggedIn(false);
+        console.error("Auth failed:", error);
       }
-    })();
-  }, [
-    cookies.access_token,
-    cookies.password,
-    cookies.username,
-    removeCookie,
-    setCookies,
-  ]);
+    };
+
+    if (marks.error || exams.error) {
+      handleError();
+    }
+  }, [marks.error, exams.error]);
+
+  React.useEffect(() => {
+    if (marks.data) {
+      setData(marks.data);
+    }
+  }, [marks.data]);
 
   return (
     <div>
-      <SpecList
-        exams={exams}
-        initialMarks={initialMarks}
-        arrDate={arrDate}
-        setData={setData}
-        activeList={activeList}
-        setActiveList={setActiveList}
-      />
-      <h2 className="app__subheading">Средний балл</h2>
-      <MiddleGrade data={data} exams={exams} />
-      <h2 className="app__subheading">Посещаемость</h2>
-      <Visits data={data} />
+      {marks.isLoading || exams.isLoading ? (
+        <div className="app__loader">Загрузка...</div>
+      ) : (
+        <>
+          <SpecList
+            exams={exams.data || []}
+            initialMarks={marks.data || []}
+            arrDate={arrDate}
+            setData={setData}
+            activeList={activeList}
+            setActiveList={setActiveList}
+          />
+          <h2 className="app__subheading">Средний балл</h2>
+          <MiddleGrade data={data} exams={exams.data || []} />
+          <h2 className="app__subheading">Посещаемость</h2>
+          <Visits data={data} />
 
-      <div className="app__marks" onClick={() => setOpenMarks(!openMarks)}>
-        <h2 className="app__subheading">Оценки</h2>
-        <ChevronDown
-          className={
-            openMarks
-              ? "app__marks__button app__marks__button__active"
-              : "app__marks__button"
-          }
-          size={25}
-        />
-      </div>
-      {openMarks && <Marks marks={data} />}
-      {exams.length > 0 && (
-        <button
-          className="app__button"
-          onClick={() => setOpenExams(!openExams)}
-        >
-          {openExams ? "Закрыть зачётку" : "Открыть зачётку"}
-        </button>
+          <div className="app__marks" onClick={() => setOpenMarks(!openMarks)}>
+            <h2 className="app__subheading">Оценки</h2>
+            <ChevronDown
+              className={
+                openMarks
+                  ? "app__marks__button app__marks__button__active"
+                  : "app__marks__button"
+              }
+              size={25}
+            />
+          </div>
+          {openMarks && <Marks marks={data} />}
+          {exams.data?.length && (
+            <button
+              className="app__button"
+              onClick={() => setOpenExams(!openExams)}
+            >
+              {openExams ? "Закрыть зачётку" : "Открыть зачётку"}
+            </button>
+          )}
+          {openExams && <Exams data={exams.data || []} />}
+        </>
       )}
-      {openExams && <Exams data={exams} />}
     </div>
   );
 };

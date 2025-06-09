@@ -130,3 +130,29 @@ export const marksMockData: IDataElement[] = [
     class_work_mark: null,
   },
 ];
+
+function generateMarks(count: number) {
+  const marks: IDataElement[] = [];
+
+  for (let i = 0; i < count; i++) {
+    marks.push({
+      date_visit: "2023-01-16",
+      lesson_number: 6,
+      status_was: 2,
+      spec_id: 61,
+      teacher_name: "Андреев Андрей Андреевич",
+      spec_name: `Разработка на C# ${i}`,
+      lesson_theme: "Использование стандартных интерфейсов",
+      control_work_mark: null,
+      home_work_mark: 12,
+      lab_work_mark: 12,
+      class_work_mark: null,
+    });
+  }
+
+  return marks;
+}
+
+export const marks_1000 = generateMarks(1000);
+export const marks_2000 = generateMarks(2000);
+export const marks_10000 = generateMarks(10000);

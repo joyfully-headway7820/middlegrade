@@ -8,6 +8,8 @@ import styles from "./LoginForm.module.scss";
 import { Input } from "../Input";
 import { COOKIE_EXPIRY_DATE, serverAlias } from "../../constants/constants.ts";
 import { Lock } from "lucide-react";
+import { authQuery } from "../../queries/authQuery.ts";
+import authStore from "../../store/authStore.ts";
 
 const formLoginSchema = z.object({
   username: z.string().min(4, "Введите свой логин от журнала"),
@@ -26,6 +28,8 @@ export const LoginForm = () => {
       password: "",
     },
   });
+
+  const { setIsLoggedIn } = authStore();
   const { register, handleSubmit, formState } = form;
   const { errors } = formState;
 
@@ -43,19 +47,14 @@ export const LoginForm = () => {
         expires: COOKIE_EXPIRY_DATE,
       });
 
-      const response = await axios.post(`${serverAlias}/auth/`, {
-        username: data.username.trim(),
-        password: data.password.trim(),
-      });
-      if (!response.data) return;
-
-      const { token } = response.data;
+      const token = await authQuery(data.username, data.password);
 
       setCookie("access_token", token, {
         sameSite: "lax",
         secure: true,
         expires: COOKIE_EXPIRY_DATE,
       });
+      setIsLoggedIn(true);
     } catch (e) {
       setResponseError(true);
       console.error(`OnSubmitLoginForm: ${e}`);

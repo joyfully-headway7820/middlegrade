@@ -7,9 +7,29 @@ import AboutModal from "./components/AboutModal";
 import { Header } from "./components/Header";
 import { Stats } from "./components/Stats";
 import { Schedule } from "./components/Schedule";
+import { QueryClient, useMutation } from "@tanstack/react-query";
+import { authQuery } from "./queries/authQuery.ts";
+import authStore from "./store/authStore.ts";
 
 function App() {
   const [cookies] = useCookies();
+  const queryClient = new QueryClient();
+
+  const { isLoggedIn, setIsLoggedIn } = authStore();
+
+  const authMutation = useMutation({
+    mutationFn: async () => {
+      await authQuery(cookies.username, cookies.password);
+    },
+    onSuccess: () => {
+      setIsLoggedIn(true);
+      queryClient.invalidateQueries({ queryKey: ["marks", "exams"] });
+    },
+    onError: () => {
+      setIsLoggedIn(false);
+    },
+    retry: false,
+  });
 
   const [activeTab, setActiveTab] = React.useState<"stats" | "schedule">(
     "stats",
@@ -18,16 +38,24 @@ function App() {
   const [activeList, setActiveList] = React.useState<boolean>(false);
   const { isOpen } = authorModalStore();
 
+  React.useEffect(() => {
+    if (cookies.access_token) {
+      setIsLoggedIn(true);
+    } else {
+      authMutation.mutate();
+    }
+  }, []);
+
   return (
     <div className="app" onClick={() => setActiveList(false)}>
       {isOpen && <AboutModal />}
-      {cookies.access_token ? (
+      {isLoggedIn ? (
         <>
           <Header activeTab={activeTab} setActiveTab={setActiveTab} />
           {activeTab === "stats" ? (
             <Stats activeList={activeList} setActiveList={setActiveList} />
           ) : (
-            <Schedule></Schedule>
+            <Schedule />
           )}
         </>
       ) : (

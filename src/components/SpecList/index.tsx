@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { IDataElement, IExamsElement } from "../../App.tsx";
+import { IDataElement, IExamsElement } from "../Stats";
 import styles from "./SpecList.module.scss";
 import activeSpecStore from "../../store/activeSpec.ts";
 import { Check } from "lucide-react";

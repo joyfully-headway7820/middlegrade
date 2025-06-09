@@ -1,9 +1,9 @@
-import { IData } from "../../App.tsx";
 import Card from "../Card";
 import styles from "./Visits.module.scss";
 import { distributeVisits } from "./distributeVisits.ts";
+import { IDataElement } from "../Stats";
 
-export default function Visits({ data }: IData) {
+export default function Visits({ data }: { data: IDataElement[] }) {
   const {
     studentWas,
     studentLate,

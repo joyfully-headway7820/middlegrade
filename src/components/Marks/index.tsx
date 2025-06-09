@@ -1,4 +1,4 @@
-import { IDataElement } from "../../App.tsx";
+import { IDataElement } from "../Stats";
 import styles from "./Marks.module.scss";
 import React from "react";
 import Mark from "./Mark.tsx";
