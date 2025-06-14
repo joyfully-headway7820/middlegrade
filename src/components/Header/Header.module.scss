@@ -5,19 +5,32 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   &__left {
     display: flex;
     gap: 20px;
     align-items: center;
     justify-content: space-between;
+    @media (max-width: vars.$mobile-bp) {
+      padding: 20px 0;
+      flex-direction: column;
+      width: 100%;
+    }
   }
   &__separator {
     background-color: #ddd;
     height: 30px;
     width: 2px;
+    @media (max-width: vars.$mobile-bp) {
+      display: none;
+    }
   }
 
   &__avatar {
+    // TEMPORARY
+    @media (max-width: vars.$mobile-bp) {
+      display: none;
+    }
     justify-content: flex-end;
     cursor: pointer;
     &__img {
@@ -43,5 +56,6 @@
   @media (max-width: vars.$mobile-bp) {
     text-align: center;
     justify-content: center;
+    margin: 0;
   }
 }

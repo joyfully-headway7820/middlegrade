@@ -15,4 +15,9 @@
     background-color: vars.$accent-color;
     color: #fff;
   }
+  @media (max-width: vars.$mobile-bp) {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
 }

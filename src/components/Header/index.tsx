@@ -40,13 +40,7 @@ export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
         </h2>
         <Logout />
       </div>
-      <div className={styled.header__avatar}>
-        <img
-          className={styled.header__avatar__img}
-          src="https://fs.top-academy.ru/api/v1/files/wUZOkcWYWQXNZ6YSdJh3PI9Zck60QBmd"
-          alt="le avatar"
-        />
-      </div>
+      <div className={styled.header__avatar}></div>
     </header>
   );
 };

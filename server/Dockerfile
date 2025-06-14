@@ -1,7 +1,7 @@
 FROM node:22.13.0-alpine
 
-WORKDIR ./
-COPY ./ ./
+WORKDIR /app
+COPY . .
 
 RUN npm install
 

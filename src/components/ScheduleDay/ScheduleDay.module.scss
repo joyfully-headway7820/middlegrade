@@ -1,3 +1,5 @@
+@use "../../scss/vars";
+
 .day {
   background-color: #222;
   padding: 10px;
@@ -6,4 +8,19 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  &.blue {
+    background: vars.$blue;
+    color: #fff;
+  }
+
+  &__time {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #e3e3e3;
+    padding: 5px 10px;
+    border-radius: 10px;
+    color: #000;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+  }
 }

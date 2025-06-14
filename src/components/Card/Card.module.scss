@@ -19,7 +19,7 @@ $color-difference: -15%;
   position: relative;
 
   @media (max-width: vars.$mobile-bp) {
-    width: 80%;
+    width: 100%;
   }
 
   &__text {

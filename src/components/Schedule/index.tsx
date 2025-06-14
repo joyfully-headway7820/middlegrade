@@ -56,6 +56,16 @@ export const Schedule = () => {
     sundaySchedule,
   ];
 
+  const days = [
+    "Понедельник",
+    "Вторник",
+    "Среда",
+    "Четверг",
+    "Пятница",
+    "Суббота",
+    "Воскресенье",
+  ];
+
   const [cookies] = useCookies();
 
   const schedule = useQuery({
@@ -119,12 +129,18 @@ export const Schedule = () => {
           {getSunday(new Date()).toLocaleDateString()}
         </h2>
 
+        <p
+          className={`${styled.schedule__week__dates} ${styled.schedule__week__schedule__temp}`}
+        >
+          Пока что в разработке, вариант не финальный
+        </p>
+
         <div className={styled.schedule__week__schedule}>
-          {schedules.map((schedule) => (
-            <div
-              className={styled.schedule__week__schedule__day}
-              key={`${schedule[0].date} ${schedule[0].started_at}`}
-            >
+          {schedules.map((schedule, index) => (
+            <div className={styled.schedule__week__schedule__day} key={index}>
+              <p className={styled.schedule__week__schedule__day__title}>
+                {days[index]}
+              </p>
               {schedule.map((element) => (
                 <ScheduleDay
                   key={`${element.date} ${element.started_at}`}
