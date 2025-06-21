@@ -79,11 +79,11 @@ export const Schedule = () => {
   });
 
   if (schedule.isLoading) {
-    return <div>Loading...</div>;
+    return <div>Загрузка...</div>;
   }
 
   if (schedule.isError) {
-    return <div>Error</div>;
+    return <div>{schedule.error.message}</div>;
   }
 
   if (schedule.isSuccess) {
@@ -124,11 +124,38 @@ export const Schedule = () => {
   return (
     <div className={styled.schedule}>
       <div className={styled.schedule__week}>
-        <h2 className={styled.schedule__week__dates}>
-          {getMonday(new Date()).toLocaleDateString()} -{" "}
-          {getSunday(new Date()).toLocaleDateString()}
-        </h2>
-
+        <div className={styled.schedule__week__header}>
+          <button
+            onClick={() => {
+              getMonday(new Date()).setDate(
+                getMonday(new Date()).getDate() - 7,
+              );
+              getSunday(new Date()).setDate(
+                getSunday(new Date()).getDate() - 7,
+              );
+            }}
+            className={styled.schedule__week__header__button}
+          >
+            {"<"}
+          </button>
+          <h2 className={styled.schedule__week__dates}>
+            {getMonday(new Date()).toLocaleDateString()} -{" "}
+            {getSunday(new Date()).toLocaleDateString()}
+          </h2>
+          <button
+            onClick={() => {
+              getMonday(new Date()).setDate(
+                getMonday(new Date()).getDate() + 7,
+              );
+              getSunday(new Date()).setDate(
+                getSunday(new Date()).getDate() + 7,
+              );
+            }}
+            className={styled.schedule__week__header__button}
+          >
+            {">"}
+          </button>
+        </div>
         <p
           className={`${styled.schedule__week__dates} ${styled.schedule__week__schedule__temp}`}
         >
@@ -138,14 +165,23 @@ export const Schedule = () => {
         <div className={styled.schedule__week__schedule}>
           {schedules.map((schedule, index) => (
             <div className={styled.schedule__week__schedule__day} key={index}>
-              <p className={styled.schedule__week__schedule__day__title}>
-                {days[index]}
-              </p>
-              {schedule.map((element) => (
-                <ScheduleDay
-                  key={`${element.date} ${element.started_at}`}
-                  {...element}
-                />
+              <div className={styled.schedule__week__schedule__day__title}>
+                <p>{days[index]}</p>
+              </div>
+              {schedule.map((element, index) => (
+                <>
+                  {index === 0 && (
+                    <div
+                      className={styled.schedule__week__schedule__day__title}
+                    >
+                      {element.date}
+                    </div>
+                  )}
+                  <ScheduleDay
+                    key={`${element.date} ${element.started_at}`}
+                    {...element}
+                  />
+                </>
               ))}
             </div>
           ))}

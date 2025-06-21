@@ -7,9 +7,10 @@
   gap: 10px;
   width: 100%;
   &__week {
-    &__dates {
+    &__header {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 10px;
       margin: 0 20px;
       font-weight: 500;
@@ -18,6 +19,24 @@
       padding: 10px 20px;
       border-radius: 10px;
       box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+      &__button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #fff;
+        color: #000;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.2s linear;
+        &:hover {
+          background-color: vars.$accent-color;
+          color: #fff;
+        }
+      }
     }
     &__schedule {
       display: grid;

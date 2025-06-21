@@ -11,8 +11,6 @@ type HeaderProps = {
   setActiveTab: (activeTab: TActiveTab) => void;
 };
 
-interface IUserData {}
-
 export const Header = ({ activeTab, setActiveTab }: HeaderProps) => {
   const [cookies] = useCookies();
   const [userData, setUserData] = React.useState([]);
