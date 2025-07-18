@@ -23,11 +23,13 @@ function App() {
     },
     onSuccess: () => {
       setIsLoggedIn(true);
+
       queryClient.invalidateQueries({ queryKey: ["marks", "exams"] });
     },
     onError: () => {
       setIsLoggedIn(false);
     },
+
     retry: false,
   });
 
