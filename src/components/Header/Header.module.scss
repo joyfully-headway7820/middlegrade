@@ -27,12 +27,12 @@
   }
 
   &__avatar {
+    justify-content: flex-end;
+    cursor: pointer;
     // TEMPORARY
     @media (max-width: vars.$mobile-bp) {
       display: none;
     }
-    justify-content: flex-end;
-    cursor: pointer;
     &__img {
       width: 80px;
       height: 80px;
