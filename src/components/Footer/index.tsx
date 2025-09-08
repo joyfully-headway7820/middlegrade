@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className={styles.footer}>
       <a
         className={styles.footer__link}
-        href="https://github.com/ik1domari/middlegrade"
+        href="https://github.com/joyfully-headway7820/middlegrade"
         target="_blank"
       >
         <Github className={styles.footer__link__icon} size={20} />
