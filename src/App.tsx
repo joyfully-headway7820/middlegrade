@@ -2,8 +2,6 @@ import React from "react";
 import { useCookies } from "react-cookie";
 import { LoginForm } from "./components/LoginForm";
 import Footer from "./components/Footer";
-import authorModalStore from "./store/authorModal.ts";
-import AboutModal from "./components/AboutModal";
 import { Header } from "./components/Header";
 import { Stats } from "./components/Stats";
 import { Schedule } from "./components/Schedule";
@@ -38,7 +36,6 @@ function App() {
   );
 
   const [activeList, setActiveList] = React.useState<boolean>(false);
-  const { isOpen } = authorModalStore();
 
   React.useEffect(() => {
     if (cookies.access_token) {
@@ -50,7 +47,6 @@ function App() {
 
   return (
     <div className="app" onClick={() => setActiveList(false)}>
-      {isOpen && <AboutModal />}
       {isLoggedIn ? (
         <>
           <Header activeTab={activeTab} setActiveTab={setActiveTab} />

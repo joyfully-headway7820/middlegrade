@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import "./Schedule.module.scss";
 import { monthScheduleQuery } from "../../queries/monthScheduleQuery.ts";
@@ -38,6 +38,8 @@ const sortArray = (array: ScheduleElement[]) => {
 };
 
 export const Schedule = () => {
+  const [currentDate, setCurrentDate] = useState(new Date());
+
   const mondaySchedule: ScheduleElement[] = [];
   const tuesdaySchedule: ScheduleElement[] = [];
   const wednesdaySchedule: ScheduleElement[] = [];
@@ -69,14 +71,29 @@ export const Schedule = () => {
   const [cookies] = useCookies();
 
   const schedule = useQuery({
-    queryKey: ["schedule"],
-    queryFn: async () =>
-      await monthScheduleQuery(
+    queryKey: ["schedule", currentDate],
+    queryFn: async () => {
+      const monday = getMonday(currentDate);
+      const sunday = getSunday(currentDate);
+      return await monthScheduleQuery(
         cookies.access_token,
-        getMonday(new Date()).toISOString().split("T")[0],
-        getSunday(new Date()).toISOString().split("T")[0],
-      ),
+        monday.toISOString().split("T")[0],
+        sunday.toISOString().split("T")[0],
+      );
+    },
   });
+
+  const handlePreviousWeek = () => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(newDate.getDate() - 7);
+    setCurrentDate(newDate);
+  };
+
+  const handleNextWeek = () => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(newDate.getDate() + 7);
+    setCurrentDate(newDate);
+  };
 
   if (schedule.isLoading) {
     return <div>Загрузка...</div>;
@@ -121,46 +138,30 @@ export const Schedule = () => {
       }
     });
   }
+
+  const monday = getMonday(currentDate);
+  const sunday = getSunday(currentDate);
+
   return (
     <div className={styled.schedule}>
       <div className={styled.schedule__week}>
         <div className={styled.schedule__week__header}>
           <button
-            onClick={() => {
-              getMonday(new Date()).setDate(
-                getMonday(new Date()).getDate() - 7,
-              );
-              getSunday(new Date()).setDate(
-                getSunday(new Date()).getDate() - 7,
-              );
-            }}
+            onClick={handlePreviousWeek}
             className={styled.schedule__week__header__button}
           >
             {"<"}
           </button>
           <h2 className={styled.schedule__week__dates}>
-            {getMonday(new Date()).toLocaleDateString()} -{" "}
-            {getSunday(new Date()).toLocaleDateString()}
+            {monday.toLocaleDateString()} - {sunday.toLocaleDateString()}
           </h2>
           <button
-            onClick={() => {
-              getMonday(new Date()).setDate(
-                getMonday(new Date()).getDate() + 7,
-              );
-              getSunday(new Date()).setDate(
-                getSunday(new Date()).getDate() + 7,
-              );
-            }}
+            onClick={handleNextWeek}
             className={styled.schedule__week__header__button}
           >
             {">"}
           </button>
         </div>
-        <p
-          className={`${styled.schedule__week__dates} ${styled.schedule__week__schedule__temp}`}
-        >
-          Пока что в разработке, вариант не финальный
-        </p>
 
         <div className={styled.schedule__week__schedule}>
           {schedules.map((schedule, index) => (

@@ -17,8 +17,6 @@ export const ScheduleDay = ({
   const day = thisDate.getDate();
 
   const isDateBlue = new Date(date).getDate() === day;
-  console.log(new Date(date).getDate());
-  console.log(day);
 
   return (
     <div
