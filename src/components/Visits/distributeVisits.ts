@@ -1,4 +1,4 @@
-import { IDataElement } from "../../App.tsx";
+import { IDataElement } from "../Stats";
 
 export interface IVisits {
   studentWas: number;

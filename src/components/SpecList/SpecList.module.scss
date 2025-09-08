@@ -8,10 +8,8 @@
     flex-direction: column;
     align-items: center;
   }
+
   &__list {
-    @media (max-width: vars.$mobile-bp) {
-      width: 80vw;
-    }
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,6 +26,10 @@
     cursor: pointer;
     user-select: none;
     position: relative;
+    @media (max-width: vars.$mobile-bp) {
+      width: 80vw;
+    }
+
     &__text {
       -ms-text-overflow: ellipsis;
       text-overflow: ellipsis;
@@ -37,10 +39,8 @@
         font-size: 16px;
       }
     }
+
     &__active {
-      @media (max-width: vars.$mobile-bp) {
-        width: 80vw;
-      }
       width: 40vw;
       padding: 0;
       list-style: none;
@@ -54,12 +54,17 @@
       overflow-y: auto;
       user-select: none;
       border-radius: 20px;
+      @media (max-width: vars.$mobile-bp) {
+        width: 80vw;
+      }
+
       &__item {
         background-color: #555;
         cursor: pointer;
         padding: 8px;
         transition: all 0.2s linear;
         font-size: 18px;
+
         &:hover {
           background-color: #333;
           box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
@@ -67,10 +72,8 @@
       }
     }
   }
+
   &__button {
-    @media (max-width: vars.$mobile-bp) {
-      width: 80vw;
-    }
     display: flex;
     align-items: center;
     justify-content: center;
@@ -84,11 +87,15 @@
     user-select: none;
     position: relative;
     transition: all 0.2s linear;
+    @media (max-width: vars.$mobile-bp) {
+      width: 80vw;
+    }
     &:hover {
       background-color: vars.$accent-color;
       color: #fff;
     }
   }
+
   &__filter {
     color: white;
     display: flex;
@@ -96,6 +103,7 @@
     justify-content: center;
     gap: 10px;
     font-size: 16px;
+
     &__checkbox {
       overflow: hidden;
       border: 2px solid vars.$accent-color;
@@ -105,6 +113,7 @@
       background: transparent;
       cursor: pointer;
       transition: all 250ms cubic-bezier(0.4, 0, 0.23, 1);
+
       &__check {
         background-color: vars.$accent-color;
       }

@@ -46,11 +46,12 @@
   }
 
   &__status {
+    top: 20px;
+    left: 20px;
     @media (max-width: vars.$mobile-bp) {
       position: absolute;
     }
-    top: 20px;
-    left: 20px;
+
     &.green {
       color: vars.$green;
     }

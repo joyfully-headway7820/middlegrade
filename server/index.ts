@@ -92,13 +92,19 @@ app.get("/exams", cors(), async (req: Request, res: Response) => {
   }
 });
 
-app.get("/month_schedule", cors(), async (req: Request, res: Response) => {
+app.get("/schedule", cors(), async (req: Request, res: Response) => {
   try {
     const token = await checkToken(req.headers.authorization);
-    const day = req.query.day;
+    const monday = req.query.monday;
+    const sunday = req.query.sunday;
+
+    if (!monday || !sunday) {
+      res.status(400).send("Bad request");
+      return;
+    }
 
     const response = await axios.get(
-      `https://msapi.top-academy.ru/api/v2/schedule/operations/get-month?date_filter=${day}`,
+      `https://msapi.top-academy.ru/api/v2/schedule/operations/get-by-date-range?date_start=${monday}&date_end=${sunday}`,
       {
         headers: {
           "Content-Type": "application/json",

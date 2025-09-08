@@ -1,5 +1,5 @@
-import { IDataElement } from "../../App.tsx";
 import { toFive } from "../../utils/toFive.ts";
+import { IDataElement } from "../Stats";
 
 export interface IMarks {
   grades: number[];

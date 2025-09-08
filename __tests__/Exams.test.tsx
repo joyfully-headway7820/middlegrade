@@ -1,7 +1,6 @@
-import React from "react";
 import { render } from "@testing-library/react";
 import { describe, it } from "vitest";
-import Exams from "../src/components/Exams/Exams";
+import Exams from "../src/components/Exams";
 import { examsMockData } from "./mockData";
 
 describe("Exams component", () => {

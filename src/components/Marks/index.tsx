@@ -1,8 +1,8 @@
-import { IDataElement } from "../../App.tsx";
+import { IDataElement } from "../Stats";
 import styles from "./Marks.module.scss";
 import React from "react";
 import Mark from "./Mark.tsx";
-import UpButton from "../UpButton/UpButton.tsx";
+import UpButton from "../UpButton";
 import activeSpecStore from "../../store/activeSpec.ts";
 
 interface Props {
