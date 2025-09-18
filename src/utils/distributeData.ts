@@ -1,5 +1,5 @@
-import { toFive } from "../../utils/toFive.ts";
-import { IDataElement } from "../Stats";
+import { toFive } from "./toFive.ts";
+import { IMarkResponse } from "../@types";
 
 export interface IMarks {
   grades: number[];
@@ -7,15 +7,17 @@ export interface IMarks {
   controlWork: number[];
   homeWork: number[];
   labs: number[];
+  practicals: number[];
   gradeSum: number;
   classGradeSum: number;
   controlGradeSum: number;
   homeGradeSum: number;
   labGradeSum: number;
+  practicalsSum: number;
 }
 
 const distributeData = (
-  data: IDataElement[],
+  data: IMarkResponse[],
   FIVE_GRADE_SYSTEM_DATE: Date,
 ): IMarks => {
   return data.reduce<IMarks>(
@@ -59,6 +61,14 @@ const distributeData = (
         acc.labGradeSum += labMark;
       }
 
+      const practicalMark = checkFive(element.practical_work_mark);
+      if (practicalMark) {
+        acc.grades.push(practicalMark);
+        acc.practicals.push(practicalMark);
+        acc.gradeSum += practicalMark;
+        acc.practicalsSum += practicalMark;
+      }
+
       return acc;
     },
     {
@@ -67,11 +77,13 @@ const distributeData = (
       controlWork: [],
       homeWork: [],
       labs: [],
+      practicals: [],
       gradeSum: 0,
       classGradeSum: 0,
       controlGradeSum: 0,
       homeGradeSum: 0,
       labGradeSum: 0,
+      practicalsSum: 0,
     },
   );
 };

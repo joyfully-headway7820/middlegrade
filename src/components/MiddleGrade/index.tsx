@@ -1,44 +1,13 @@
-import { toFive } from "../../utils/toFive.ts";
 import "./Middlegrade.module.scss";
 import Card from "../Card";
 import styles from "./Middlegrade.module.scss";
-import distributeData from "./distributeData.ts";
+import distributeData from "../../utils/distributeData.ts";
 import { FIVE_GRADE_SYSTEM_DATE } from "../../constants/constants.ts";
-import { IDataElement, IExamsElement } from "../Stats";
+import { IMarkResponse } from "../../@types";
+import { countMiddle } from "../../utils/countMiddle.ts";
 
-export default function MiddleGrade({
-  data,
-  exams,
-}: {
-  data: IDataElement[];
-  exams: IExamsElement[];
-}) {
+export default function MiddleGrade({ data }: { data: IMarkResponse[] }) {
   const marks = distributeData(data, FIVE_GRADE_SYSTEM_DATE);
-
-  const { examGrades, examSum } = exams.reduce(
-    (acc, element) => {
-      if (!element.date || !element.mark) return acc;
-
-      const mark =
-        new Date(element.date) < FIVE_GRADE_SYSTEM_DATE
-          ? toFive(element.mark)
-          : element.mark;
-
-      if (mark) {
-        acc.examGrades.push(mark);
-        acc.examSum += mark;
-      }
-      return acc;
-    },
-    { examGrades: [] as number[], examSum: 0 },
-  );
-
-  function countMiddle(sum: number, arr: (number | null)[]): number {
-    if (arr.length) {
-      return +(sum / arr.length).toFixed(4);
-    }
-    return 0;
-  }
 
   return (
     <div className={styles.middlegrade}>
@@ -67,13 +36,11 @@ export default function MiddleGrade({
         sum={countMiddle(marks.labGradeSum, marks.labs)}
         color="card--purple"
       />
-      {exams.length > 0 && (
-        <Card
-          text="Средний балл за экзамены"
-          sum={countMiddle(examSum, examGrades)}
-          color="card--orange"
-        />
-      )}
+      <Card
+        text="Средний балл за практические"
+        sum={countMiddle(marks.practicalsSum, marks.practicals)}
+        color="card--deep-orange"
+      />
     </div>
   );
 }

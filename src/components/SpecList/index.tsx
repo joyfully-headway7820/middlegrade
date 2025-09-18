@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { IDataElement, IExamsElement } from "../Stats";
+import React, { useEffect, useState } from "react";
 import styles from "./SpecList.module.scss";
 import activeSpecStore from "../../store/activeSpec.ts";
 import { Check } from "lucide-react";
-import { useCookies } from "react-cookie";
-import { COOKIE_EXPIRY_DATE } from "../../constants/constants.ts";
+import { IMarkResponse, IExamsElement } from "../../@types";
 
 interface IProps {
-  initialMarks: IDataElement[];
+  initialMarks: IMarkResponse[];
   arrDate: string;
-  setData: (data: IDataElement[]) => void;
+  setData: (data: IMarkResponse[]) => void;
   activeList: boolean;
   setActiveList: (activeList: boolean) => void;
   exams: IExamsElement[];
@@ -23,37 +21,39 @@ export default function SpecList({
   setActiveList,
   exams,
 }: IProps) {
-  const skipSpecs = [
-    "Иностранный язык",
-    "Иностранный язык РПО",
-    "Физическая культура",
-    "Физическая культура РПО",
-    "История",
-    "История РПО",
-  ];
-  const [cookies, setCookies] = useCookies(["disableDone"]);
+  const skipSpecs = ["Иностранный язык", "Физическая культура", "История"];
+
+  const removeGroupPostfix = (name: string): string => {
+    return name.replace(/\s+(РПО|ГД)(?:\s*\d+)?$/i, "").trim();
+  };
+
+  const shouldSkipSpec = (specName: string): boolean => {
+    const cleanName = removeGroupPostfix(specName);
+    return skipSpecs.some((skipSpec) => cleanName === skipSpec);
+  };
+
+  const disableDone = Boolean(localStorage.getItem("disableDone") || true);
   const [considerPast, setConsiderPast] = useState<boolean>(false);
-  const [settingDisableDone, setSettingDisableDone] = useState<boolean>(
-    cookies.disableDone !== undefined ? cookies.disableDone : true,
-  );
+  const [settingDisableDone, setSettingDisableDone] =
+    useState<boolean>(disableDone);
   const { activeSpec, setActiveSpec } = activeSpecStore();
 
   const examsNames: string[] = exams
     .filter((element) => element.mark != 0)
-    .map((exam) => exam.spec.replace(" РПО", "").replace(" ГД", ""));
+    .map((exam) => removeGroupPostfix(exam.spec));
 
   const getSpecList = (): string[] => {
     let arr: string[] = initialMarks
       .filter((item, pos) =>
         considerPast ? true : new Date(item.date_visit) > new Date(arrDate),
       )
-      .map((i) => i.spec_name.replace(" РПО", "").replace(" ГД", ""));
+      .map((i) => removeGroupPostfix(i.spec_name));
 
     arr = arr.filter((item, pos) => arr.indexOf(item) === pos).sort();
 
     if (settingDisableDone) {
       arr = arr.filter(
-        (item) => !examsNames.includes(item) || skipSpecs.includes(item),
+        (item) => !examsNames.includes(item) || shouldSkipSpec(item),
       );
     }
 
@@ -70,12 +70,17 @@ export default function SpecList({
     if (spec === "Все предметы") {
       setData(initialMarks);
     } else {
+      const escapedSpec = spec.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+      const specPattern = new RegExp(
+        `^${escapedSpec}(\\s+(РПО|ГД)(\\s*\\d*)?)?$`,
+        "i",
+      );
+
       setData(
         initialMarks.filter(
           (element) =>
-            (element.spec_name === spec ||
-              element.spec_name === `${spec} РПО` ||
-              element.spec_name === `${spec} ГД`) &&
+            specPattern.test(element.spec_name) &&
             (considerPast || new Date(element.date_visit) > new Date(arrDate)),
         ),
       );
@@ -87,11 +92,7 @@ export default function SpecList({
   const onClickDisableDone = () => {
     const newValue = !settingDisableDone;
     setSettingDisableDone(newValue);
-    setCookies("disableDone", newValue, {
-      sameSite: "lax",
-      secure: true,
-      expires: COOKIE_EXPIRY_DATE,
-    });
+    localStorage.setItem("disableDone", String(newValue));
   };
 
   return (

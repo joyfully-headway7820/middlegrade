@@ -1,4 +1,4 @@
-import { IDataElement } from "../Stats";
+import { IMarkResponse } from "../@types";
 
 export interface IVisits {
   studentWas: number;
@@ -9,7 +9,7 @@ export interface IVisits {
   wasntPercent: number;
 }
 
-export const distributeVisits = (data: IDataElement[]): IVisits => {
+export const distributeVisits = (data: IMarkResponse[]): IVisits => {
   const studentWas: number[] = [];
   const studentLate: number[] = [];
   const studentWasnt: number[] = [];

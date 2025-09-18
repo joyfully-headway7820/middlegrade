@@ -1,5 +1,6 @@
 import styles from "./Marks.module.scss";
 import { CircleCheck, CircleX, Timer } from "lucide-react";
+
 interface Props {
   date: string;
   number: number;

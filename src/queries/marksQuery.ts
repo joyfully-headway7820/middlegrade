@@ -1,8 +1,8 @@
 import axios from "axios";
 import { serverAlias } from "../constants/constants.ts";
-import { IDataElement } from "../components/Stats";
+import { IMarkResponse } from "../@types";
 
-export async function marksQuery(token: string): Promise<IDataElement[]> {
+export async function marksQuery(token: string): Promise<IMarkResponse[]> {
   const { data } = await axios.get(`${serverAlias}/marks/`, {
     headers: {
       Authorization: token,

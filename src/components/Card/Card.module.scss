@@ -106,6 +106,16 @@ $color-difference: -15%;
     box-shadow: 3px 3px 10px rgba(vars.$orange, $shadow-opacity);
   }
 
+  &--deep-orange {
+    background: linear-gradient(
+      $gradient-degree,
+      vars.$deep-orange,
+      color.adjust(vars.$deep-orange, $lightness: $color-difference)
+    );
+    color: #221616;
+    box-shadow: 3px 3px 10px rgba(vars.$deep-orange, $shadow-opacity);
+  }
+
   &--yellow {
     background: linear-gradient(
       $gradient-degree,

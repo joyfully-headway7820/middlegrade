@@ -1,9 +1,9 @@
 import Card from "../Card";
 import styles from "./Visits.module.scss";
-import { distributeVisits } from "./distributeVisits.ts";
-import { IDataElement } from "../Stats";
+import { distributeVisits } from "../../utils/distributeVisits.ts";
+import { IMarkResponse } from "../../@types";
 
-export default function Visits({ data }: { data: IDataElement[] }) {
+export default function Visits({ data }: { data: IMarkResponse[] }) {
   const {
     studentWas,
     studentLate,

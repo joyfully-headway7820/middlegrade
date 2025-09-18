@@ -2,7 +2,6 @@ import styled from "./Header.module.scss";
 import Logout from "../Logout";
 import React from "react";
 import { useCookies } from "react-cookie";
-import axios from "axios";
 
 type TActiveTab = "stats" | "schedule";
 

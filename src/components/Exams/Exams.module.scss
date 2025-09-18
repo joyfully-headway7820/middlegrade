@@ -7,8 +7,10 @@
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
   text-align: left;
   display: flex;
+  align-items: center;
   gap: 30px;
   overflow-x: auto;
+
   &__element {
     min-width: 300px;
     display: flex;
@@ -22,6 +24,16 @@
     position: relative;
     background-color: #1d1d1d;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  &__middlegrade {
+    border: 2px solid #fff;
+    padding: 20px 40px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 1.5;
+    font-weight: 500;
+    background-color: #1d1d1d;
   }
 
   &__name {

@@ -1,12 +1,12 @@
-import { IDataElement } from "../Stats";
 import styles from "./Marks.module.scss";
 import React from "react";
 import Mark from "./Mark.tsx";
 import UpButton from "../UpButton";
 import activeSpecStore from "../../store/activeSpec.ts";
+import { IMarkResponse } from "../../@types";
 
 interface Props {
-  marks: IDataElement[];
+  marks: IMarkResponse[];
 }
 
 export default function Marks({ marks }: Props) {

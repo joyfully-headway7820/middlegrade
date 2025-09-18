@@ -12,36 +12,7 @@ import { marksQuery } from "../../queries/marksQuery.ts";
 import { examsQuery } from "../../queries/examsQuery.ts";
 import authStore from "../../store/authStore.ts";
 import { authQuery } from "../../queries/authQuery.ts";
-
-export interface IExamsElement {
-  teacher: string | null;
-  mark: number | null;
-  mark_type: number | null;
-  date: string | null;
-  ex_file_name: string | null;
-  id_file: number | null;
-  exam_id: number | null;
-  file_path: string | null;
-  comment_teach: string | null;
-  need_access: number;
-  need_access_stud: number | null;
-  comment_delete_file: string | null;
-  spec: string;
-}
-
-export interface IDataElement {
-  date_visit: string;
-  lesson_number: number;
-  status_was: number;
-  spec_id: number;
-  teacher_name: string;
-  spec_name: string;
-  lesson_theme: string;
-  control_work_mark: number | null;
-  home_work_mark: number | null;
-  lab_work_mark: number | null;
-  class_work_mark: number | null;
-}
+import { IExamsElement, IMarkResponse } from "../../@types";
 
 type Props = {
   activeList: boolean;
@@ -52,11 +23,11 @@ export const Stats = ({ activeList, setActiveList }: Props) => {
   const [cookies, setCookies, removeCookie] = useCookies();
   const [openExams, setOpenExams] = React.useState(false);
   const [openMarks, setOpenMarks] = React.useState(false);
-  const [data, setData] = React.useState<IDataElement[]>([]);
+  const [data, setData] = React.useState<IMarkResponse[]>([]);
   const { setIsLoggedIn } = authStore();
   const queryClient = useQueryClient();
 
-  const marks = useQuery<IDataElement[]>({
+  const marks = useQuery<IMarkResponse[]>({
     queryKey: ["marks"],
     queryFn: async () => await marksQuery(cookies.access_token),
   });
@@ -70,7 +41,7 @@ export const Stats = ({ activeList, setActiveList }: Props) => {
   const date = firstMarkDate ? new Date(firstMarkDate) : new Date();
   const month = date.getMonth();
   const year = date.getFullYear();
-  const arrDate = month >= 8 ? `${year}-09-01` : `${year - 1}-09-01`;
+  const arrDate = month >= 8 ? `${year}-08-31` : `${year - 1}-08-31`;
 
   React.useEffect(() => {
     const handleError = async () => {
@@ -117,7 +88,7 @@ export const Stats = ({ activeList, setActiveList }: Props) => {
             setActiveList={setActiveList}
           />
           <h2 className="app__subheading">Средний балл</h2>
-          <MiddleGrade data={data} exams={exams.data || []} />
+          <MiddleGrade data={data} />
           <h2 className="app__subheading">Посещаемость</h2>
           <Visits data={data} />
 
