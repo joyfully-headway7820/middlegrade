@@ -38,6 +38,7 @@ export default function Marks({ marks }: Props) {
             home_work_mark={mark.home_work_mark}
             lab_work_mark={mark.lab_work_mark}
             class_work_mark={mark.class_work_mark}
+            final_work_mark={mark.final_work_mark}
             teacher_name={mark.teacher_name}
             spec_name={mark.spec_name}
             lesson_theme={mark.lesson_theme}

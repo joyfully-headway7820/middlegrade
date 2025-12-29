@@ -1,5 +1,5 @@
 import styles from "./Marks.module.scss";
-import { CircleCheck, CircleX, Timer } from "lucide-react";
+import { BookCheck, CircleCheck, CircleX, Timer } from "lucide-react";
 
 interface Props {
   date: string;
@@ -8,6 +8,7 @@ interface Props {
   home_work_mark: number | null;
   lab_work_mark: number | null;
   class_work_mark: number | null;
+  final_work_mark: number | null;
   teacher_name: string;
   spec_name: string;
   lesson_theme: string;
@@ -21,6 +22,7 @@ export default function Mark({
   class_work_mark,
   lab_work_mark,
   control_work_mark,
+  final_work_mark,
   teacher_name,
   spec_name,
   lesson_theme,
@@ -45,6 +47,11 @@ export default function Mark({
       {status_was === 2 && (
         <div className={`${styles.mark__status} ${styles.yellow}`}>
           <Timer size={25} />
+        </div>
+      )}
+      {status_was === null && (
+        <div className={`${styles.mark__status} ${styles.grey}`}>
+          <BookCheck size={25} />
         </div>
       )}
       <div className={styles.mark__left}>
@@ -77,6 +84,13 @@ export default function Mark({
         {class_work_mark ? (
           <div className={`${styles.mark__marks__item} ${styles.blue}`}>
             {class_work_mark}
+          </div>
+        ) : (
+          ""
+        )}
+        {final_work_mark ? (
+          <div className={`${styles.mark__marks__item} ${styles.grey}`}>
+            {final_work_mark}
           </div>
         ) : (
           ""

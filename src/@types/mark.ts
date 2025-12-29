@@ -11,4 +11,5 @@ export interface IMarkResponse {
   lab_work_mark: number | null;
   class_work_mark: number | null;
   practical_work_mark: number | null;
+  final_work_mark: number | null;
 }

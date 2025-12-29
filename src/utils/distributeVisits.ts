@@ -18,14 +18,13 @@ export const distributeVisits = (data: IMarkResponse[]): IVisits => {
       case 0:
         studentWasnt.push(i);
         break;
-      case 1:
-        studentWas.push(i);
-        break;
       case 2:
         studentWas.push(i);
         studentLate.push(i);
         break;
       default:
+        studentWas.push(i);
+        break;
     }
   });
 
@@ -39,6 +38,7 @@ export const distributeVisits = (data: IMarkResponse[]): IVisits => {
   const wasPercent = countPercent(studentWas);
   const latePercent = countPercent(studentLate);
   const wasntPercent = countPercent(studentWasnt);
+
   return {
     studentWas: studentWas.length,
     studentLate: studentLate.length,
