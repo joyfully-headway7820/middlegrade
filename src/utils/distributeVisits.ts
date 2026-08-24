@@ -1,4 +1,5 @@
-import { IMarkResponse } from "../@types";
+import type { StudentVisit } from "@/types";
+import { ratioPercent } from "./ratioPercent";
 
 export interface IVisits {
   studentWas: number;
@@ -9,10 +10,11 @@ export interface IVisits {
   wasntPercent: number;
 }
 
-export const distributeVisits = (data: IMarkResponse[]): IVisits => {
+export const distributeVisits = (data: StudentVisit[]): IVisits => {
   const studentWas: number[] = [];
   const studentLate: number[] = [];
   const studentWasnt: number[] = [];
+
   data.forEach((element, i) => {
     switch (element.status_was) {
       case 0:
@@ -28,23 +30,12 @@ export const distributeVisits = (data: IMarkResponse[]): IVisits => {
     }
   });
 
-  function countPercent(arr: number[]): number {
-    if (arr.length) {
-      return +(arr.length / (data.length / 100)).toFixed(2);
-    }
-    return 0;
-  }
-
-  const wasPercent = countPercent(studentWas);
-  const latePercent = countPercent(studentLate);
-  const wasntPercent = countPercent(studentWasnt);
-
   return {
     studentWas: studentWas.length,
     studentLate: studentLate.length,
     studentWasnt: studentWasnt.length,
-    wasPercent,
-    latePercent,
-    wasntPercent,
+    wasPercent: ratioPercent(studentWas.length, data.length),
+    latePercent: ratioPercent(studentLate.length, data.length),
+    wasntPercent: ratioPercent(studentWasnt.length, data.length),
   };
 };

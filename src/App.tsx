@@ -1,68 +1,75 @@
-import React from "react";
-import { useCookies } from "react-cookie";
-import { LoginForm } from "./components/LoginForm";
-import Footer from "./components/Footer";
-import { Header } from "./components/Header";
-import { Stats } from "./components/Stats";
-import { Schedule } from "./components/Schedule";
-import { QueryClient, useMutation } from "@tanstack/react-query";
-import { authQuery } from "./queries/authQuery.ts";
-import authStore from "./store/authStore.ts";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { Navigate, Route, Routes } from "react-router";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { OfflineBanner } from "@/components/layout/OfflineBanner";
+import { Spinner } from "@/components/ui/States";
+import { useOnline } from "@/hooks/useOnline";
+import { persistQueryCache } from "@/lib/persistQueryCache";
+import { meQuery } from "@/lib/queries";
+import { DashboardPage } from "@/pages/Dashboard";
+import { GradesPage } from "@/pages/Grades";
+import { HomeworkPage } from "@/pages/Homework";
+import { LoginPage } from "@/pages/Login";
+import { MarketPage } from "@/pages/Market";
+import { MorePage } from "@/pages/More";
+import { PaymentPage } from "@/pages/Payment";
+import { ReviewsPage } from "@/pages/Reviews";
+import { SchedulePage } from "@/pages/Schedule";
+import { useAuthStore } from "@/store/auth";
+import { isExpiredSession } from "@/utils/isExpiredSession";
+import { resolveSession } from "@/utils/resolveSession";
 
 function App() {
-  const [cookies] = useCookies();
-  const queryClient = new QueryClient();
+  const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((state) => state.setUser);
+  const queryClient = useQueryClient();
+  const online = useOnline();
 
-  const { isLoggedIn, setIsLoggedIn } = authStore();
+  const me = useQuery(meQuery());
+  const session = resolveSession(user, me, online);
 
-  const authMutation = useMutation({
-    mutationFn: async () => {
-      await authQuery(cookies.username, cookies.password);
-    },
-    onSuccess: () => {
-      setIsLoggedIn(true);
-
-      queryClient.invalidateQueries({ queryKey: ["marks", "exams"] });
-    },
-    onError: () => {
-      setIsLoggedIn(false);
-    },
-
-    retry: false,
-  });
-
-  const [activeTab, setActiveTab] = React.useState<"stats" | "schedule">(
-    "stats",
-  );
-
-  const [activeList, setActiveList] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    if (cookies.access_token) {
-      setIsLoggedIn(true);
-    } else {
-      authMutation.mutate();
+  useEffect(() => {
+    if (me.data) {
+      setUser(me.data);
     }
-  }, []);
+  }, [me.data, setUser]);
+
+  useEffect(() => {
+    if (!isExpiredSession(me.error, online)) {
+      return;
+    }
+
+    setUser(null);
+    queryClient.clear();
+    void persistQueryCache(queryClient);
+  }, [me.error, online, queryClient, setUser]);
 
   return (
-    <div className="app" onClick={() => setActiveList(false)}>
-      {isLoggedIn ? (
-        <>
-          <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-          {activeTab === "stats" ? (
-            <Stats activeList={activeList} setActiveList={setActiveList} />
-          ) : (
-            <Schedule />
-          )}
-        </>
-      ) : (
-        <div className="app__login">
-          <LoginForm />
+    <>
+      <OfflineBanner />
+      {me.isPending && !session ? (
+        <div className="grid min-h-full place-items-center">
+          <Spinner label="Загрузка" />
         </div>
+      ) : !session ? (
+        <LoginPage />
+      ) : (
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="grades" element={<GradesPage />} />
+            <Route path="schedule" element={<SchedulePage />} />
+            <Route path="homework" element={<HomeworkPage />} />
+            <Route path="reviews" element={<ReviewsPage />} />
+            <Route path="market" element={<MarketPage />} />
+            <Route path="payment" element={<PaymentPage />} />
+            <Route path="more" element={<MorePage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
       )}
-      <Footer />
-    </div>
+    </>
   );
 }
 

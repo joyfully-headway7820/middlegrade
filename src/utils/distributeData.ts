@@ -1,5 +1,5 @@
-import { toFive } from "./toFive.ts";
-import { IMarkResponse } from "../@types";
+import { toFive } from "./toFive";
+import type { StudentVisit } from "@/types";
 
 export interface IMarks {
   grades: number[];
@@ -17,7 +17,7 @@ export interface IMarks {
 }
 
 const distributeData = (
-  data: IMarkResponse[],
+  data: StudentVisit[],
   FIVE_GRADE_SYSTEM_DATE: Date,
 ): IMarks => {
   return data.reduce<IMarks>(

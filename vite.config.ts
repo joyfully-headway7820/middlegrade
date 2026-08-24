@@ -1,18 +1,27 @@
-/// <reference types="vitest" />
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import { fileURLToPath } from "node:url";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  test: {
-    environment: "jsdom",
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
   },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        api: "modern",
+  server: {
+    proxy: {
+      "/api": {
+        target: process.env.API_TARGET ?? "http://localhost:3000",
+        changeOrigin: false,
+        rewrite: (url) => url.replace(/^\/api/, ""),
       },
     },
+  },
+  test: {
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.ts"],
+    globals: true,
   },
 });
