@@ -169,14 +169,14 @@
     --metric-accent: var(--heading);
     position: relative;
     display: flex;
-    min-height: 11rem;
+    min-height: 8rem;
     flex-direction: column;
     justify-content: center;
     gap: 0.5rem;
     overflow: hidden;
     border-radius: 1rem;
     border: 1px solid color-mix(in srgb, var(--metric-accent) 32%, var(--line));
-    padding: 1.25rem;
+    padding: 1rem;
     color: var(--heading);
     background: linear-gradient(
       145deg,
@@ -184,6 +184,13 @@
       color-mix(in srgb, var(--metric-accent) 10%, var(--surface))
     );
     box-shadow: 0 10px 24px color-mix(in srgb, var(--metric-accent) 26%, transparent);
+  }
+
+  @media (min-width: 640px) {
+    .metric-card {
+      min-height: 11rem;
+      padding: 1.25rem;
+    }
   }
 
   html[data-theme="light"] .metric-card {

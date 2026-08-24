@@ -18,6 +18,7 @@ import {
 } from "@/lib/format";
 import { scheduleMonthQuery, scheduleRangeQuery } from "@/lib/queries";
 import { groupLessonsByDate } from "@/utils/groupLessonsByDate";
+import { isEmptyError } from "@/utils/isEmptyError";
 
 const VIEW_OPTIONS = [
   { value: "month" as const, label: "Месяц" },
@@ -84,7 +85,7 @@ export const SchedulePage = () => {
         <CardHeader
           title={<span className="normal-case">{title}</span>}
           action={
-            <div className="flex items-center gap-1">
+            <div className="flex items-center justify-end gap-1">
               <button
                 type="button"
                 onClick={() => shift(-1)}
@@ -116,7 +117,7 @@ export const SchedulePage = () => {
           <CardBody>
             <Skeleton className="h-96" />
           </CardBody>
-        ) : active.isError ? (
+        ) : isEmptyError(active) ? (
           <ErrorState
             message="Не удалось загрузить расписание"
             onRetry={() => void active.refetch()}

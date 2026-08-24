@@ -2,11 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Lock, Sparkles } from "lucide-react";
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { ThemePicker } from "@/components/layout/ThemePicker";
 import { Button, TextField } from "@/components/ui/Controls";
 import { ApiError, request } from "@/lib/api";
-import type { UserInfo } from "@/types";
+import { persistQueryCache } from "@/lib/persistQueryCache";
 import { useAuthStore } from "@/store/auth";
+import type { UserInfo } from "@/types";
 
 export const LoginPage = () => {
   const setUser = useAuthStore((state) => state.setUser);
@@ -25,6 +26,8 @@ export const LoginPage = () => {
     onSuccess: ({ user }) => {
       setUser(user);
       queryClient.clear();
+      queryClient.setQueryData(["me"], user);
+      void persistQueryCache(queryClient);
     },
   });
 
@@ -55,7 +58,7 @@ export const LoginPage = () => {
   return (
     <div className="relative grid min-h-full place-items-center px-4 py-10">
       <div className="absolute right-4 top-4">
-        <ThemeToggle />
+        <ThemePicker className="w-40" />
       </div>
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center gap-3 text-center">

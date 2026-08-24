@@ -8,7 +8,7 @@ type CardProps = {
 
 export const Card = ({ children, className }: CardProps) => (
   <section
-    className={cn("rounded-2xl border border-line bg-surface", className)}
+    className={cn("min-w-0 rounded-2xl border border-line bg-surface", className)}
   >
     {children}
   </section>
@@ -29,7 +29,7 @@ export const CardHeader = ({
 }: CardHeaderProps) => (
   <header
     className={cn(
-      "flex flex-wrap items-start justify-between gap-3 border-b border-line px-5 py-4",
+      "flex flex-col gap-3 border-b border-line px-5 py-4",
       className,
     )}
   >
@@ -41,10 +41,10 @@ export const CardHeader = ({
         <p className="mt-1 text-sm text-ink-400">{description}</p>
       ) : null}
     </div>
-    {action}
+    {action ? <div className="w-full min-w-0">{action}</div> : null}
   </header>
 );
 
 export const CardBody = ({ children, className }: CardProps) => (
-  <div className={cn("p-5", className)}>{children}</div>
+  <div className={cn("min-w-0 p-5", className)}>{children}</div>
 );

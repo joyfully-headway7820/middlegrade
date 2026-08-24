@@ -1,6 +1,7 @@
 import { memo, useId, useMemo, useState } from "react";
 import { formatChartCaption } from "@/lib/format";
 import { finiteSegments } from "@/utils/finiteSegments";
+import { visibleLabelIndexes } from "@/utils/visibleLabelIndexes";
 
 export type ChartDatum = {
   label: string;
@@ -17,7 +18,7 @@ type AreaChartProps = {
 
 const WIDTH = 640;
 const HEIGHT = 220;
-const PADDING = { top: 16, right: 12, bottom: 28, left: 36 };
+const PADDING = { top: 16, right: 28, bottom: 28, left: 36 };
 
 const isGrade = (value: number | null): value is number =>
   typeof value === "number" && Number.isFinite(value);
@@ -41,6 +42,11 @@ export const AreaChart = memo(
     const plotWidth = WIDTH - PADDING.left - PADDING.right;
     const plotHeight = HEIGHT - PADDING.top - PADDING.bottom;
     const baseline = PADDING.top + plotHeight;
+
+    const labelIndexes = useMemo(
+      () => visibleLabelIndexes(data.length),
+      [data.length],
+    );
 
     const { points, ticks, upper, segments } = useMemo(() => {
       const finiteValues = data.map((item) => item.value).filter(isGrade);
@@ -72,12 +78,13 @@ export const AreaChart = memo(
     const active = hovered !== null ? points[hovered] : null;
 
     return (
-      <figure className="m-0">
+      <figure className="m-0 min-w-0 overflow-hidden">
         <svg
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
           role="img"
           aria-label={ariaLabel}
-          className="h-56 w-full"
+          className="h-52 w-full max-w-full"
+          overflow="hidden"
           onMouseLeave={() => setHovered(null)}
         >
           <defs>
@@ -143,14 +150,16 @@ export const AreaChart = memo(
 
           {points.map((point, index) => (
             <g key={point.label + index}>
-              <text
-                x={point.x}
-                y={HEIGHT - 8}
-                textAnchor="middle"
-                className="fill-ink-500 text-[11px]"
-              >
-                {point.label}
-              </text>
+              {labelIndexes.has(index) ? (
+                <text
+                  x={point.x}
+                  y={HEIGHT - 8}
+                  textAnchor="middle"
+                  className="fill-ink-500 text-[11px]"
+                >
+                  {point.label}
+                </text>
+              ) : null}
               <rect
                 x={point.x - 16}
                 y={PADDING.top}

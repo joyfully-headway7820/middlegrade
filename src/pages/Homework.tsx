@@ -14,6 +14,7 @@ import { useHomeworkCounts } from "@/hooks/useHomeworkCounts";
 import { homeworkFeedQuery, homeworkGroupsQuery } from "@/lib/queries";
 import { useAuthStore } from "@/store/auth";
 import { flattenHomeworkPages } from "@/utils/flattenHomeworkPages";
+import { isEmptyError } from "@/utils/isEmptyError";
 
 export const HomeworkPage = () => {
   const user = useAuthStore((state) => state.user);
@@ -49,7 +50,7 @@ export const HomeworkPage = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col gap-3">
         <h1 className="text-2xl font-semibold tracking-tight text-heading">Задания</h1>
         <Segmented
           options={typeOptions}
@@ -69,7 +70,7 @@ export const HomeworkPage = () => {
                 value={groupId}
                 onChange={setGroupId}
                 ariaLabel="Группа"
-                className="w-56"
+                className="w-full min-w-0 sm:w-56"
               />
             ) : null
           }
@@ -90,7 +91,7 @@ export const HomeworkPage = () => {
             <Skeleton key={i} className="h-44" />
           ))}
         </div>
-      ) : homework.isError ? (
+      ) : isEmptyError(homework) ? (
         <ErrorState
           message="Не удалось загрузить задания"
           onRetry={() => void homework.refetch()}

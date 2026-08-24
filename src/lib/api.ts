@@ -41,13 +41,28 @@ export async function request<T>(
     }
   }
 
-  const response = await fetch(url, {
-    method,
-    credentials: "include",
-    signal,
-    headers: body ? { "Content-Type": "application/json" } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  if (typeof navigator !== "undefined" && !navigator.onLine) {
+    throw new ApiError(0, "Нет сети");
+  }
+
+  let response: Response;
+
+  try {
+    response = await fetch(url, {
+      method,
+      credentials: "include",
+      signal,
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch {
+    throw new ApiError(
+      0,
+      typeof navigator !== "undefined" && !navigator.onLine
+        ? "Нет сети"
+        : "Не удалось связаться с сервером",
+    );
+  }
 
   if (response.status === 204) {
     return undefined as T;

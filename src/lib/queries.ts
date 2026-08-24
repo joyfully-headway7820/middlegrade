@@ -24,6 +24,7 @@ import type {
   UserInfo,
 } from "@/types";
 import { nextHomeworkPage } from "@/utils/nextHomeworkPage";
+import { toFutureExams } from "@/utils/toFutureExams";
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 
@@ -60,6 +61,13 @@ export const attendanceQuery = () =>
   queryOptions({
     queryKey: ["dashboard", "attendance"],
     queryFn: () => request<AttendanceStatistic>("/dashboard/attendance"),
+    staleTime: FIVE_MINUTES,
+  });
+
+export const futureExamsQuery = () =>
+  queryOptions({
+    queryKey: ["dashboard", "exams"],
+    queryFn: () => request<unknown>("/dashboard/exams").then(toFutureExams),
     staleTime: FIVE_MINUTES,
   });
 

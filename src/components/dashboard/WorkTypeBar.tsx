@@ -6,15 +6,17 @@ type WorkTypeBarProps = {
 };
 
 export const WorkTypeBar = ({ label, value, share, color }: WorkTypeBarProps) => (
-  <div>
-    <div className="mb-1.5 flex items-center justify-between text-sm">
-      <span className="text-ink-300">{label}</span>
-      <span className="font-medium text-ink-100 tabular-nums">{value}</span>
+  <div className="min-w-0">
+    <div className="mb-1.5 flex min-w-0 items-center justify-between gap-3 text-sm">
+      <span className="min-w-0 truncate text-ink-300">{label}</span>
+      <span className="shrink-0 font-medium text-ink-100 tabular-nums">
+        {value}
+      </span>
     </div>
     <div className="h-2 overflow-hidden rounded-full bg-overlay">
       <div
-        className="h-full rounded-full"
-        style={{ width: `${share}%`, backgroundColor: color }}
+        className="h-full max-w-full rounded-full"
+        style={{ width: `${Math.min(share, 100)}%`, backgroundColor: color }}
       />
     </div>
   </div>

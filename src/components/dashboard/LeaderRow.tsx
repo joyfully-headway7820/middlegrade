@@ -14,23 +14,23 @@ export const LeaderRow = memo(
   ({ position, name, photo, amount, isMe }: LeaderRowProps) => (
     <li
       className={cn(
-        "flex items-center gap-3 border-b border-line px-5 py-2.5 last:border-0",
+        "flex items-center gap-3 border-b border-line pr-3 sm:px-5 py-2.5 last:border-0",
         isMe && "bg-brand-600/10",
       )}
     >
-      <span className="w-6 text-right text-sm text-ink-500 tabular-nums">
+      <span className="w-6 text-right text-xs sm:text-sm text-ink-500 tabular-nums">
         {position}
       </span>
       <Avatar name={name} src={photo} className="size-8" />
       <span
         className={cn(
-          "min-w-0 flex-1 truncate text-sm",
+          "min-w-0 flex-1 truncate text-xs sm:text-sm",
           isMe ? "font-medium text-heading" : "text-ink-200",
         )}
       >
         {name}
       </span>
-      <span className="text-sm font-medium text-ink-300 tabular-nums">
+      <span className="text-xs font-medium text-ink-300 tabular-nums sm:text-sm">
         {amount}
       </span>
     </li>

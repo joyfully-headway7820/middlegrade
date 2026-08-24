@@ -69,6 +69,13 @@ export type StudentExam = {
   spec: string;
 };
 
+export type FutureExam = {
+  spec: string;
+  teacher: string | null;
+  date: string | null;
+  exam: string | null;
+};
+
 export type ScheduleLesson = {
   date: string;
   lesson: number;

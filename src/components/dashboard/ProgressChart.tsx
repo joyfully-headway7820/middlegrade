@@ -5,6 +5,7 @@ import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
 import { formatShortMonth } from "@/lib/format";
 import { chartQuery } from "@/lib/queries";
+import { isEmptyError } from "@/utils/isEmptyError";
 
 export type ProgressChartKind = "average-progress" | "attendance";
 
@@ -53,7 +54,7 @@ export const ProgressChart = memo(({ kind }: ProgressChartProps) => {
       <CardBody>
         {chart.isPending ? (
           <Skeleton className="h-56" />
-        ) : chart.isError ? (
+        ) : isEmptyError(chart) ? (
           <ErrorState
             message="График недоступен"
             onRetry={() => void chart.refetch()}

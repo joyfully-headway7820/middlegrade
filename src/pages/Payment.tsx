@@ -4,11 +4,8 @@ import { Badge } from "@/components/ui/Controls";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
 import { Stat } from "@/components/ui/Stat";
 import { formatFullDate, formatMoney } from "@/lib/format";
-import {
-  paymentHistoryQuery,
-  paymentQuery,
-  paymentScheduleQuery,
-} from "@/lib/queries";
+import { paymentHistoryQuery, paymentQuery, paymentScheduleQuery } from "@/lib/queries";
+import { isEmptyError } from "@/utils/isEmptyError";
 
 export const PaymentPage = () => {
   const payment = useQuery(paymentQuery());
@@ -16,6 +13,8 @@ export const PaymentPage = () => {
   const schedule = useQuery(paymentScheduleQuery());
 
   const info = payment.data?.payment ?? null;
+  const scheduleRows = schedule.data ?? [];
+  const historyRows = history.data ?? [];
 
   return (
     <div className="flex flex-col gap-6">
@@ -27,7 +26,7 @@ export const PaymentPage = () => {
             <Skeleton key={i} className="h-32" />
           ))}
         </div>
-      ) : payment.isError ? (
+      ) : isEmptyError(payment) ? (
         <ErrorState
           message="Не удалось загрузить данные об оплате"
           onRetry={() => void payment.refetch()}
@@ -60,16 +59,16 @@ export const PaymentPage = () => {
           <CardBody>
             <Skeleton className="h-32" />
           </CardBody>
-        ) : schedule.isError ? (
+        ) : isEmptyError(schedule) ? (
           <ErrorState
             message="График недоступен"
             onRetry={() => void schedule.refetch()}
           />
-        ) : schedule.data.length === 0 ? (
+        ) : scheduleRows.length === 0 ? (
           <EmptyState title="Платежей не запланировано" />
         ) : (
           <ul className="flex flex-col">
-            {schedule.data.map((entry) => (
+            {scheduleRows.map((entry) => (
               <li
                 key={entry.id}
                 className="flex items-center justify-between gap-3 border-b border-line px-5 py-3 last:border-0"
@@ -95,16 +94,16 @@ export const PaymentPage = () => {
           <CardBody>
             <Skeleton className="h-56" />
           </CardBody>
-        ) : history.isError ? (
+        ) : isEmptyError(history) ? (
           <ErrorState
             message="История недоступна"
             onRetry={() => void history.refetch()}
           />
-        ) : history.data.length === 0 ? (
+        ) : historyRows.length === 0 ? (
           <EmptyState title="Операций пока нет" />
         ) : (
           <ul className="flex flex-col">
-            {history.data.map((entry, index) => (
+            {historyRows.map((entry, index) => (
               <li
                 key={`${entry.date}-${index}`}
                 className="flex items-center justify-between gap-3 border-b border-line px-5 py-3 last:border-0"

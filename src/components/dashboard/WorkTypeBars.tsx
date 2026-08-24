@@ -5,6 +5,7 @@ import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { ErrorState, Skeleton } from "@/components/ui/States";
 import { MARK_KINDS } from "@/constants/constants";
 import { performanceQuery } from "@/lib/queries";
+import { isEmptyError } from "@/utils/isEmptyError";
 
 export const WorkTypeBars = () => {
   const performance = useQuery(performanceQuery());
@@ -44,7 +45,7 @@ export const WorkTypeBars = () => {
         <CardBody>
           <Skeleton className="h-56" />
         </CardBody>
-      ) : performance.isError ? (
+      ) : isEmptyError(performance) ? (
         <ErrorState
           message="Не удалось загрузить статистику"
           onRetry={() => void performance.refetch()}

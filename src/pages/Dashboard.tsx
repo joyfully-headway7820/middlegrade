@@ -1,4 +1,5 @@
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
+import { FutureExams } from "@/components/dashboard/FutureExams";
 import { Leaderboard } from "@/components/dashboard/Leaderboard";
 import { ProgressChart } from "@/components/dashboard/ProgressChart";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
@@ -23,13 +24,15 @@ export const DashboardPage = () => {
 
       <DashboardStats />
 
+      <FutureExams />
+
       <div className="grid gap-6 lg:grid-cols-2">
         <ProgressChart kind="average-progress" />
         <ProgressChart kind="attendance" />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="row-start-1 row-end-2 flex flex-col gap-6">
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-stretch">
+        <div className="flex flex-col gap-6">
           <WorkTypeBars />
           <Leaderboard />
         </div>

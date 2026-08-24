@@ -1,6 +1,10 @@
 import { Check, ChevronDown, Eye, EyeOff } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
+import type {
+  ButtonHTMLAttributes,
+  InputHTMLAttributes,
+  ReactNode,
+} from "react";
 import { cn } from "@/lib/cn";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -114,7 +118,7 @@ export function Segmented<T extends string | number>({
     <div
       role="tablist"
       aria-label={ariaLabel}
-      className="inline-flex gap-1 rounded-xl border border-line bg-canvas p-1"
+      className="flex w-full flex-wrap gap-1 rounded-xl border border-line bg-canvas p-1 sm:flex-nowrap"
     >
       {options.map((option) => {
         const active = option.value === value;
@@ -127,13 +131,13 @@ export function Segmented<T extends string | number>({
             aria-selected={active}
             onClick={() => onChange(option.value)}
             className={cn(
-              "inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+              "inline-flex flex-1 basis-[calc(50%-0.125rem)] items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors sm:basis-0",
               active
                 ? "bg-brand-600 text-white"
                 : "text-ink-400 hover:bg-overlay hover:text-ink-100",
             )}
           >
-            {option.label}
+            <span>{option.label}</span>
             {option.badge ? <Counter value={option.badge} /> : null}
           </button>
         );
@@ -142,7 +146,13 @@ export function Segmented<T extends string | number>({
   );
 }
 
-export const Counter = ({ value, label }: { value: number; label?: string }) => (
+export const Counter = ({
+  value,
+  label,
+}: {
+  value: number;
+  label?: string;
+}) => (
   <span
     aria-label={label}
     className="inline-flex min-w-5 items-center justify-center rounded-full bg-bad px-1.5 py-0.5 text-[11px] leading-none font-semibold text-white tabular-nums"
@@ -165,7 +175,7 @@ export const Checkbox = ({ label, checked, onChange, hint }: CheckboxProps) => (
     aria-checked={checked}
     title={hint}
     onClick={() => onChange(!checked)}
-    className="inline-flex items-center gap-2.5 rounded-xl border border-line bg-canvas px-3.5 py-2.5 text-sm text-ink-200 transition-colors hover:border-line"
+    className="inline-flex max-w-full items-center gap-2.5 rounded-xl border border-line bg-canvas px-3.5 py-2.5 text-left text-sm text-ink-200 transition-colors hover:border-line"
   >
     <span
       aria-hidden
@@ -233,7 +243,10 @@ export function Select<T extends string | number>({
       >
         <span className="truncate">{selected?.label ?? "—"}</span>
         <ChevronDown
-          className={cn("size-4 shrink-0 text-ink-400 transition-transform", open && "rotate-180")}
+          className={cn(
+            "size-4 shrink-0 text-ink-400 transition-transform",
+            open && "rotate-180",
+          )}
           aria-hidden
         />
       </button>
@@ -258,11 +271,15 @@ export function Select<T extends string | number>({
                   }}
                   className={cn(
                     "flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors",
-                    active ? "bg-brand-600/20 text-heading" : "text-ink-300 hover:bg-overlay",
+                    active
+                      ? "bg-brand-600/20 text-heading"
+                      : "text-ink-300 hover:bg-overlay",
                   )}
                 >
                   <span className="truncate">{option.label}</span>
-                  {active ? <Check className="size-4 shrink-0" aria-hidden /> : null}
+                  {active ? (
+                    <Check className="size-4 shrink-0" aria-hidden />
+                  ) : null}
                 </button>
               </li>
             );

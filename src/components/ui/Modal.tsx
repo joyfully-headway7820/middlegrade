@@ -35,7 +35,7 @@ export const Modal = ({ title, description, onClose, children }: ModalProps) => 
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button
         type="button"
         aria-label="Закрыть"
@@ -47,7 +47,7 @@ export const Modal = ({ title, description, onClose, children }: ModalProps) => 
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative flex max-h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-t-2xl border border-line bg-surface shadow-2xl shadow-black/60 sm:rounded-2xl"
+        className="relative flex max-h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl shadow-black/60"
       >
         <header className="flex items-start justify-between gap-3 border-b border-line px-5 py-4">
           <div className="min-w-0">

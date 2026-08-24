@@ -6,6 +6,7 @@ import { Segmented } from "@/components/ui/Controls";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
 import { leadersQuery } from "@/lib/queries";
 import { useAuthStore } from "@/store/auth";
+import { isEmptyError } from "@/utils/isEmptyError";
 
 const SCOPE_OPTIONS = [
   { value: "group" as const, label: "Группа" },
@@ -55,7 +56,7 @@ export const Leaderboard = () => {
         <CardBody>
           <Skeleton className="h-64" />
         </CardBody>
-      ) : leaders.isError ? (
+      ) : isEmptyError(leaders) ? (
         <ErrorState
           message="Рейтинг недоступен"
           onRetry={() => void leaders.refetch()}
@@ -63,7 +64,7 @@ export const Leaderboard = () => {
       ) : entries.length === 0 ? (
         <EmptyState title="Рейтинг пуст" />
       ) : (
-        <ul className="flex flex-col">
+        <ul className="flex flex-col overflow-x-scroll">
           {entries.map((entry) => (
             <LeaderRow
               key={entry.id}

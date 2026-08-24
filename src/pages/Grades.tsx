@@ -2,42 +2,26 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import Marks from "@/components/Marks";
 import { AttendanceStats } from "@/components/grades/AttendanceStats";
+import { ExamRecords } from "@/components/grades/ExamRecords";
 import { GradeAverages } from "@/components/grades/GradeAverages";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
-import { Badge, Checkbox, Segmented, Select } from "@/components/ui/Controls";
+import { Checkbox, Segmented, Select } from "@/components/ui/Controls";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
 import { ALL_SPECS, FIVE_GRADE_SYSTEM_DATE } from "@/constants/constants";
 import { useStoredState } from "@/hooks/useStoredState";
-import { formatFullDate } from "@/lib/format";
 import { examsQuery, marksQuery } from "@/lib/queries";
 import { buildSpecList } from "@/utils/buildSpecList";
 import { currentCourseStart } from "@/utils/currentCourseStart";
 import distributeData from "@/utils/distributeData";
 import { distributeVisits } from "@/utils/distributeVisits";
 import { filterVisits } from "@/utils/filterVisits";
+import { isEmptyError } from "@/utils/isEmptyError";
 import { removeGroupPostfix } from "@/utils/removeGroupPostfix";
-import { toFive } from "@/utils/toFive";
-import type { StudentExam } from "@/types";
 
 const PERIOD_OPTIONS = [
   { value: "course" as const, label: "Текущий курс" },
   { value: "all" as const, label: "Всё время" },
 ];
-
-const gradeTone = (value: number) => {
-  if (value >= 4.5) return "good" as const;
-  if (value >= 3.5) return "warn" as const;
-  return "bad" as const;
-};
-
-const examMark = (exam: StudentExam) => {
-  if (exam.mark === null) return null;
-  if (!exam.date) return exam.mark;
-
-  return new Date(exam.date) < FIVE_GRADE_SYSTEM_DATE
-    ? toFive(exam.mark)
-    : exam.mark;
-};
 
 export const GradesPage = () => {
   const marks = useQuery(marksQuery());
@@ -107,7 +91,7 @@ export const GradesPage = () => {
     );
   }
 
-  if (marks.isError) {
+  if (isEmptyError(marks)) {
     return (
       <ErrorState
         message="Не удалось загрузить оценки"
@@ -175,7 +159,7 @@ export const GradesPage = () => {
           <CardBody>
             <Skeleton className="h-40" />
           </CardBody>
-        ) : exams.isError ? (
+        ) : isEmptyError(exams) ? (
           <ErrorState
             message="Не удалось загрузить зачётку"
             onRetry={() => void exams.refetch()}
@@ -183,53 +167,7 @@ export const GradesPage = () => {
         ) : filteredExams.length === 0 ? (
           <EmptyState title="Записей нет" />
         ) : (
-          <div className="scrollbar-slim overflow-x-auto">
-            <table className="w-full min-w-3xl text-left text-sm">
-              <thead className="text-xs tracking-wide text-ink-500 uppercase">
-                <tr className="border-b border-line">
-                  <th scope="col" className="px-5 py-3 font-medium">
-                    Предмет
-                  </th>
-                  <th scope="col" className="px-5 py-3 font-medium">
-                    Преподаватель
-                  </th>
-                  <th scope="col" className="px-5 py-3 font-medium">
-                    Дата
-                  </th>
-                  <th scope="col" className="px-5 py-3 text-right font-medium">
-                    Оценка
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredExams.map((exam, index) => {
-                  const mark = examMark(exam);
-
-                  return (
-                    <tr
-                      key={`${exam.exam_id ?? "exam"}-${index}`}
-                      className="border-b border-line last:border-0"
-                    >
-                      <td className="px-5 py-3 text-ink-100">{exam.spec}</td>
-                      <td className="px-5 py-3 text-ink-400">
-                        {exam.teacher ?? "—"}
-                      </td>
-                      <td className="px-4 py-3 text-ink-400 text-nowrap">
-                        {exam.date ? formatFullDate(exam.date) : "—"}
-                      </td>
-                      <td className="px-5 py-3 text-right">
-                        {mark ? (
-                          <Badge tone={gradeTone(mark)}>{mark}</Badge>
-                        ) : (
-                          <span className="text-ink-600">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <ExamRecords exams={filteredExams} />
         )}
       </Card>
     </div>

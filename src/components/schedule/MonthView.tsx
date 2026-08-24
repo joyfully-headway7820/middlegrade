@@ -29,19 +29,19 @@ export const MonthView = ({
   const cells = useMemo(() => buildCells(anchor), [anchor]);
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
+    <div className="flex min-w-0 flex-col gap-2">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {WEEKDAYS_SHORT.map((day) => (
           <div
             key={day}
-            className="text-center text-xs font-medium tracking-wide text-ink-500 uppercase"
+            className="text-center text-[10px] font-medium tracking-wide text-ink-500 uppercase sm:text-xs"
           >
             {day}
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {cells.map((day) => {
           const iso = toIsoDate(day);
           const lessons = lessonsByDate.get(iso) ?? [];
@@ -56,7 +56,7 @@ export const MonthView = ({
               onClick={() => onSelectDay(day)}
               aria-label={`${iso}, ${lessons.length} ${pluralRu(lessons.length, ["пара", "пары", "пар"])}`}
               className={cn(
-                "flex min-h-20 flex-col items-start gap-1 rounded-xl border p-2 text-left transition-colors sm:min-h-24 sm:p-2.5",
+                "flex aspect-square min-w-0 flex-col items-center justify-center gap-1 rounded-lg border p-0.5 text-center transition-colors sm:aspect-auto sm:min-h-24 sm:items-start sm:rounded-xl sm:p-2.5 sm:text-left",
                 outside ? "border-line opacity-50" : "border-line",
                 lessons.length
                   ? "bg-surface hover:border-brand-500/60 hover:bg-brand-600/10"
@@ -66,7 +66,7 @@ export const MonthView = ({
             >
               <span
                 className={cn(
-                  "text-sm font-medium tabular-nums",
+                  "text-xs font-medium tabular-nums sm:text-sm",
                   outside ? "text-ink-600" : "text-ink-300",
                   current && "text-brand-200",
                 )}
@@ -75,15 +75,22 @@ export const MonthView = ({
               </span>
 
               {lessons.length ? (
-                <span className="mt-auto flex flex-col gap-0.5">
-                  <span className="text-xs font-medium text-brand-200">
-                    {lessons.length} {pluralRu(lessons.length, ["пара", "пары", "пар"])}
+                <>
+                  <span
+                    aria-hidden
+                    className="size-1.5 rounded-full bg-brand-400 sm:hidden"
+                  />
+                  <span className="mt-auto hidden flex-col gap-0.5 sm:flex">
+                    <span className="text-xs font-medium text-brand-200">
+                      {lessons.length}{" "}
+                      {pluralRu(lessons.length, ["пара", "пары", "пар"])}
+                    </span>
+                    <span className="text-[11px] text-ink-500 tabular-nums">
+                      {formatTime(lessons[0].started_at)}–
+                      {formatTime(lessons[lessons.length - 1].finished_at)}
+                    </span>
                   </span>
-                  <span className="hidden text-[11px] text-ink-500 tabular-nums sm:inline">
-                    {formatTime(lessons[0].started_at)}–
-                    {formatTime(lessons[lessons.length - 1].finished_at)}
-                  </span>
-                </span>
+                </>
               ) : null}
             </button>
           );

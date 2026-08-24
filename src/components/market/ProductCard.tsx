@@ -65,7 +65,7 @@ export const ProductCard = ({
         {item.stock !== null ? (
           <p className="text-xs text-ink-500">Доступно: {item.stock}</p>
         ) : null}
-        <div className="mt-auto flex items-center justify-between gap-3">
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-3">
           <Price coins={item.coins} gems={item.gems} />
           <Button
             type="button"

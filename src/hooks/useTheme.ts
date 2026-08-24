@@ -1,30 +1,34 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   applyTheme,
-  preferredTheme,
-  readStoredTheme,
-  THEME_STORAGE_KEY,
-  type Theme,
+  resolveTheme,
 } from "@/lib/theme";
+import { useThemeStore } from "@/store/theme";
+
+const prefersLightScheme = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-color-scheme: light)").matches;
 
 export const useTheme = () => {
-  const [theme, setThemeState] = useState<Theme>(
-    () => readStoredTheme() ?? preferredTheme(),
-  );
+  const preference = useThemeStore((state) => state.preference);
+  const setPreference = useThemeStore((state) => state.setPreference);
+  const [prefersLight, setPrefersLight] = useState(prefersLightScheme);
+
+  const theme = resolveTheme(preference, prefersLight);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-color-scheme: light)");
+    const onChange = () => setPrefersLight(media.matches);
+
+    onChange();
+    media.addEventListener("change", onChange);
+
+    return () => media.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
 
-  const setTheme = useCallback((next: Theme) => {
-    setThemeState(next);
-    localStorage.setItem(THEME_STORAGE_KEY, next);
-    applyTheme(next);
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  }, [setTheme, theme]);
-
-  return { theme, setTheme, toggleTheme };
+  return { theme, preference, setPreference };
 };

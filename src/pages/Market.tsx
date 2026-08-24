@@ -4,18 +4,12 @@ import { ProductCard } from "@/components/market/ProductCard";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
 import { Stat } from "@/components/ui/Stat";
-import { GamingPointTypes } from "@/constants/constants";
 import { ApiError, request } from "@/lib/api";
 import { formatFullDate } from "@/lib/format";
 import { marketQuery } from "@/lib/queries";
 import { useAuthStore } from "@/store/auth";
-
-const pointsByType = (
-  points: { new_gaming_point_types__id: number; points: number }[] | undefined,
-  typeId: number,
-) =>
-  points?.find((entry) => entry.new_gaming_point_types__id === typeId)?.points ??
-  0;
+import { isEmptyError } from "@/utils/isEmptyError";
+import { studentBalances } from "@/utils/studentBalances";
 
 export const MarketPage = () => {
   const user = useAuthStore((state) => state.user);
@@ -23,10 +17,10 @@ export const MarketPage = () => {
   const catalog = useQuery(marketQuery());
   const [error, setError] = useState<string | null>(null);
 
-  const coins = pointsByType(user?.gaming_points, GamingPointTypes.Gems);
-  const gems = pointsByType(user?.gaming_points, GamingPointTypes.Coins);
-  const spentCoins = pointsByType(user?.spent_gaming_points, GamingPointTypes.Gems);
-  const spentGems = pointsByType(user?.spent_gaming_points, GamingPointTypes.Coins);
+  const { coins, gems } = studentBalances(user?.gaming_points);
+  const { coins: spentCoins, gems: spentGems } = studentBalances(
+    user?.spent_gaming_points,
+  );
 
   const buy = useMutation({
     mutationFn: (productId: number) =>
@@ -88,7 +82,7 @@ export const MarketPage = () => {
             <Skeleton key={index} className="h-72" />
           ))}
         </div>
-      ) : catalog.isError ? (
+      ) : isEmptyError(catalog) ? (
         <ErrorState
           message="Не удалось загрузить каталог"
           onRetry={() => void catalog.refetch()}

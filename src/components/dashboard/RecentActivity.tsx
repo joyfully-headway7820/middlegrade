@@ -3,19 +3,20 @@ import { ActivityRow } from "./ActivityRow";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
 import { activityQuery } from "@/lib/queries";
+import { isEmptyError } from "@/utils/isEmptyError";
 
 export const RecentActivity = () => {
   const activity = useQuery(activityQuery(30));
   const entries = activity.data ?? [];
 
   return (
-    <Card className="flex h-full max-h-[min(36rem,70vh)] min-h-0 flex-col overflow-hidden lg:h-0 lg:max-h-none lg:min-h-full">
+    <Card className="flex max-h-[min(36rem,70vh)] min-h-0 flex-col overflow-hidden lg:h-0 lg:max-h-none lg:min-h-full">
       <CardHeader title="Последние начисления" />
       {activity.isPending ? (
         <CardBody className="min-h-0 flex-1">
           <Skeleton className="h-full min-h-56" />
         </CardBody>
-      ) : activity.isError ? (
+      ) : isEmptyError(activity) ? (
         <ErrorState
           message="Не удалось загрузить активность"
           onRetry={() => void activity.refetch()}

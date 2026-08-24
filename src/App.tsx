@@ -1,24 +1,33 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { OfflineBanner } from "@/components/layout/OfflineBanner";
 import { Spinner } from "@/components/ui/States";
+import { useOnline } from "@/hooks/useOnline";
+import { persistQueryCache } from "@/lib/persistQueryCache";
 import { meQuery } from "@/lib/queries";
 import { DashboardPage } from "@/pages/Dashboard";
 import { GradesPage } from "@/pages/Grades";
 import { HomeworkPage } from "@/pages/Homework";
 import { LoginPage } from "@/pages/Login";
 import { MarketPage } from "@/pages/Market";
+import { MorePage } from "@/pages/More";
 import { PaymentPage } from "@/pages/Payment";
 import { ReviewsPage } from "@/pages/Reviews";
 import { SchedulePage } from "@/pages/Schedule";
 import { useAuthStore } from "@/store/auth";
+import { isExpiredSession } from "@/utils/isExpiredSession";
+import { resolveSession } from "@/utils/resolveSession";
 
 function App() {
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
+  const queryClient = useQueryClient();
+  const online = useOnline();
 
   const me = useQuery(meQuery());
+  const session = resolveSession(user, me, online);
 
   useEffect(() => {
     if (me.data) {
@@ -26,29 +35,41 @@ function App() {
     }
   }, [me.data, setUser]);
 
-  if (me.isPending) {
-    return (
-      <div className="grid min-h-full place-items-center">
-        <Spinner label="Загрузка" />
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!isExpiredSession(me.error, online)) {
+      return;
+    }
 
-  if (!user) return <LoginPage />;
+    setUser(null);
+    queryClient.clear();
+    void persistQueryCache(queryClient);
+  }, [me.error, online, queryClient, setUser]);
 
   return (
-    <Routes>
-      <Route element={<AppLayout />}>
-        <Route index element={<DashboardPage />} />
-        <Route path="grades" element={<GradesPage />} />
-        <Route path="schedule" element={<SchedulePage />} />
-        <Route path="homework" element={<HomeworkPage />} />
-        <Route path="reviews" element={<ReviewsPage />} />
-        <Route path="market" element={<MarketPage />} />
-        <Route path="payment" element={<PaymentPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
+    <>
+      <OfflineBanner />
+      {me.isPending && !session ? (
+        <div className="grid min-h-full place-items-center">
+          <Spinner label="Загрузка" />
+        </div>
+      ) : !session ? (
+        <LoginPage />
+      ) : (
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="grades" element={<GradesPage />} />
+            <Route path="schedule" element={<SchedulePage />} />
+            <Route path="homework" element={<HomeworkPage />} />
+            <Route path="reviews" element={<ReviewsPage />} />
+            <Route path="market" element={<MarketPage />} />
+            <Route path="payment" element={<PaymentPage />} />
+            <Route path="more" element={<MorePage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      )}
+    </>
   );
 }
 

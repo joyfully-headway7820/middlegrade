@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
 import { formatFullDate } from "@/lib/format";
 import { reviewsQuery } from "@/lib/queries";
+import { isEmptyError } from "@/utils/isEmptyError";
 import { sortReviews } from "@/utils/sortReviews";
 
 export const ReviewsPage = () => {
@@ -25,7 +26,7 @@ export const ReviewsPage = () => {
             <Skeleton key={index} className="h-28" />
           ))}
         </div>
-      ) : reviews.isError ? (
+      ) : isEmptyError(reviews) ? (
         <ErrorState
           message="Не удалось загрузить отзывы"
           onRetry={() => void reviews.refetch()}
