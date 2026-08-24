@@ -48,15 +48,24 @@ describe("Marks", () => {
     expect(rows()[0].textContent).toBe("Пара 80");
   });
 
-  it("expands the full list on demand", async () => {
+  it("loads fifty more lessons from the current page", async () => {
     const user = userEvent.setup();
     render(<Marks marks={visits(120)} />);
 
-    await user.click(screen.getByRole("button", { name: "Показать все (120)" }));
+    await user.click(screen.getByRole("button", { name: "+50" }));
 
-    expect(rows()).toHaveLength(120);
+    expect(rows()).toHaveLength(LESSONS_PER_PAGE + 50);
     expect(rows()[0].textContent).toBe("Пара 120");
-    expect(screen.queryByRole("navigation", { name: "Страницы" })).toBeNull();
+  });
+
+  it("offers the remaining count when fewer than fifty are left", async () => {
+    const user = userEvent.setup();
+    render(<Marks marks={visits(45)} />);
+
+    await user.click(screen.getByRole("button", { name: "+25" }));
+
+    expect(rows()).toHaveLength(45);
+    expect(screen.queryByRole("button", { name: /^\+\d+$/ })).toBeNull();
   });
 
   it("keeps pagination hidden for short lists", () => {

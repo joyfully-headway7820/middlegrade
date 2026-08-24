@@ -83,3 +83,4 @@ export const GamingPointTypes = {
 
 /** Сколько занятий показываем на одной странице списка оценок. */
 export const LESSONS_PER_PAGE = 20;
+export const LESSONS_LOAD_MORE = 50;

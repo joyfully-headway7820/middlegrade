@@ -164,6 +164,83 @@
     content-visibility: auto;
     contain-intrinsic-size: 1px 320px;
   }
+
+  .metric-card {
+    --metric-accent: var(--heading);
+    position: relative;
+    display: flex;
+    min-height: 11rem;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--metric-accent) 32%, var(--line));
+    padding: 1.25rem;
+    color: var(--heading);
+    background: linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--metric-accent) 36%, var(--surface)),
+      color-mix(in srgb, var(--metric-accent) 10%, var(--surface))
+    );
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--metric-accent) 26%, transparent);
+  }
+
+  html[data-theme="light"] .metric-card {
+    box-shadow: 0 8px 22px rgb(20 22 31 / 0.12);
+  }
+
+  .metric-card--neutral {
+    background: var(--surface);
+    border-color: var(--line);
+    box-shadow: 0 10px 24px rgb(255 255 255 / 0.08);
+  }
+
+  html[data-theme="light"] .metric-card--neutral {
+    box-shadow: 0 8px 22px rgb(20 22 31 / 0.14);
+  }
+
+  .metric-card--classwork {
+    --metric-accent: var(--color-mark-classwork);
+  }
+
+  .metric-card--control,
+  .metric-card--present {
+    --metric-accent: var(--color-mark-control);
+  }
+
+  .metric-card--homework {
+    --metric-accent: var(--color-mark-homework);
+  }
+
+  .metric-card--lab {
+    --metric-accent: var(--color-mark-lab);
+  }
+
+  .metric-card--practical {
+    --metric-accent: var(--color-mark-practical);
+  }
+
+  .metric-card--late {
+    --metric-accent: var(--color-warn);
+  }
+
+  .metric-card--absent {
+    --metric-accent: var(--color-bad);
+  }
+
+  .metric-card__badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 0.75rem;
+    background: var(--heading);
+    color: var(--canvas);
+    padding: 0.375rem 0.625rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

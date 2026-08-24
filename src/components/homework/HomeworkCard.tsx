@@ -1,8 +1,14 @@
+import { useState } from "react";
 import { CalendarClock, FileCheck2, Paperclip, User } from "lucide-react";
 import { Badge } from "@/components/ui/Controls";
+import { Modal } from "@/components/ui/Modal";
 import { formatFullDate } from "@/lib/format";
 import { isRecent } from "@/utils/isRecent";
+import { studentWork } from "@/utils/studentWork";
 import type { HomeworkItem } from "@/types";
+
+const ACTION_CLASS =
+  "inline-flex items-center gap-1.5 text-brand-300 hover:text-brand-200";
 
 const markTone = (mark: number) => {
   if (mark >= 4) return "good" as const;
@@ -12,8 +18,9 @@ const markTone = (mark: number) => {
 };
 
 export const HomeworkCard = ({ item }: { item: HomeworkItem }) => {
+  const [commentOpen, setCommentOpen] = useState(false);
   const mark = item.homework_stud?.mark ?? null;
-  const answer = item.homework_stud?.file_path;
+  const work = studentWork(item);
 
   return (
     <li className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-4 transition-colors hover:border-line">
@@ -50,24 +57,46 @@ export const HomeworkCard = ({ item }: { item: HomeworkItem }) => {
             href={item.file_path}
             target="_blank"
             rel="noreferrer noopener"
-            className="inline-flex items-center gap-1.5 text-brand-300 hover:text-brand-200"
+            className={ACTION_CLASS}
           >
             <Paperclip className="size-3.5" aria-hidden />
             Задание
           </a>
         ) : null}
-        {answer ? (
+        {work.kind === "file" ? (
           <a
-            href={answer}
+            href={work.url}
             target="_blank"
             rel="noreferrer noopener"
-            className="inline-flex items-center gap-1.5 text-brand-300 hover:text-brand-200"
+            className={ACTION_CLASS}
           >
             <FileCheck2 className="size-3.5" aria-hidden />
             Моя работа
           </a>
         ) : null}
+        {work.kind === "comment" ? (
+          <button
+            type="button"
+            onClick={() => setCommentOpen(true)}
+            className={`${ACTION_CLASS} cursor-pointer bg-transparent p-0`}
+          >
+            <FileCheck2 className="size-3.5" aria-hidden />
+            Моя работа
+          </button>
+        ) : null}
       </div>
+
+      {commentOpen && work.kind === "comment" ? (
+        <Modal
+          title="Моя работа"
+          description={item.theme || undefined}
+          onClose={() => setCommentOpen(false)}
+        >
+          <p className="whitespace-pre-wrap break-words text-sm text-ink-200">
+            {work.text}
+          </p>
+        </Modal>
+      ) : null}
     </li>
   );
 };

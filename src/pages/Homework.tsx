@@ -1,9 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { HomeworkCard } from "@/components/homework/HomeworkCard";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { HomeworkFeed } from "@/components/homework/HomeworkFeed";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { Segmented, Select } from "@/components/ui/Controls";
-import { Pagination } from "@/components/ui/Pagination";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
 import {
   HOMEWORK_STATUS,
@@ -12,8 +11,9 @@ import {
   HOMEWORK_TYPES,
 } from "@/constants/constants";
 import { useHomeworkCounts } from "@/hooks/useHomeworkCounts";
-import { homeworkGroupsQuery, homeworkQuery } from "@/lib/queries";
+import { homeworkFeedQuery, homeworkGroupsQuery } from "@/lib/queries";
 import { useAuthStore } from "@/store/auth";
+import { flattenHomeworkPages } from "@/utils/flattenHomeworkPages";
 
 export const HomeworkPage = () => {
   const user = useAuthStore((state) => state.user);
@@ -22,7 +22,6 @@ export const HomeworkPage = () => {
   const [groupId, setGroupId] = useState<number | undefined>(user?.current_group_id);
   const [type, setType] = useState<number>(HOMEWORK_TYPE.HOMEWORK);
   const [status, setStatus] = useState<number>(HOMEWORK_STATUS.ACTIVE);
-  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (groupId === undefined && user?.current_group_id) {
@@ -30,23 +29,15 @@ export const HomeworkPage = () => {
     }
   }, [groupId, user?.current_group_id]);
 
-  const homework = useQuery(homeworkQuery(groupId, type, status, page));
+  const homework = useInfiniteQuery(homeworkFeedQuery(groupId, type, status));
   const counts = useHomeworkCounts(groupId);
-
-  const changeType = (value: number) => {
-    setType(value);
-    setPage(1);
-  };
-
-  const changeStatus = (value: number) => {
-    setStatus(value);
-    setPage(1);
-  };
-
-  const changeGroup = (value: number) => {
-    setGroupId(value);
-    setPage(1);
-  };
+  const items = useMemo(
+    () => flattenHomeworkPages(homework.data?.pages ?? []),
+    [homework.data?.pages],
+  );
+  const loadMore = useCallback(() => {
+    void homework.fetchNextPage();
+  }, [homework.fetchNextPage]);
 
   const groupOptions =
     groups.data?.map((group) => ({ value: group.id, label: group.name })) ?? [];
@@ -63,7 +54,7 @@ export const HomeworkPage = () => {
         <Segmented
           options={typeOptions}
           value={type}
-          onChange={changeType}
+          onChange={setType}
           ariaLabel="Тип задания"
         />
       </div>
@@ -76,7 +67,7 @@ export const HomeworkPage = () => {
               <Select
                 options={groupOptions}
                 value={groupId}
-                onChange={changeGroup}
+                onChange={setGroupId}
                 ariaLabel="Группа"
                 className="w-56"
               />
@@ -87,7 +78,7 @@ export const HomeworkPage = () => {
           <Segmented
             options={HOMEWORK_STATUSES}
             value={status}
-            onChange={changeStatus}
+            onChange={setStatus}
             ariaLabel="Статус задания"
           />
         </CardBody>
@@ -104,7 +95,7 @@ export const HomeworkPage = () => {
           message="Не удалось загрузить задания"
           onRetry={() => void homework.refetch()}
         />
-      ) : homework.data.items.length === 0 ? (
+      ) : items.length === 0 ? (
         <Card>
           <EmptyState
             title="Заданий нет"
@@ -112,18 +103,14 @@ export const HomeworkPage = () => {
           />
         </Card>
       ) : (
-        <>
-          <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {homework.data.items.map((item) => (
-              <HomeworkCard key={item.id} item={item} />
-            ))}
-          </ul>
-          <Pagination
-            page={homework.data.page}
-            pageCount={homework.data.totalPages}
-            onChange={setPage}
-          />
-        </>
+        <HomeworkFeed
+          items={items}
+          hasMore={Boolean(homework.hasNextPage)}
+          isLoadingMore={homework.isFetchingNextPage}
+          loadError={homework.isFetchNextPageError}
+          onLoadMore={loadMore}
+          onRetry={loadMore}
+        />
       )}
     </div>
   );

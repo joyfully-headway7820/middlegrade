@@ -1,4 +1,8 @@
-import { keepPreviousData, queryOptions } from "@tanstack/react-query";
+import {
+  infiniteQueryOptions,
+  keepPreviousData,
+  queryOptions,
+} from "@tanstack/react-query";
 import { request } from "./api";
 import type {
   AcademicPerformance,
@@ -19,6 +23,7 @@ import type {
   UserGroup,
   UserInfo,
 } from "@/types";
+import { nextHomeworkPage } from "@/utils/nextHomeworkPage";
 
 const FIVE_MINUTES = 1000 * 60 * 5;
 
@@ -117,6 +122,23 @@ export const homeworkQuery = (
       }),
     enabled: Boolean(groupId),
     placeholderData: keepPreviousData,
+    staleTime: FIVE_MINUTES,
+  });
+
+export const homeworkFeedQuery = (
+  groupId: number | undefined,
+  type: number,
+  status: number,
+) =>
+  infiniteQueryOptions({
+    queryKey: ["homework", "feed", groupId, type, status],
+    queryFn: ({ pageParam }) =>
+      request<HomeworkList>("/homework", {
+        params: { groupId, type, status, page: pageParam },
+      }),
+    initialPageParam: 1,
+    getNextPageParam: nextHomeworkPage,
+    enabled: Boolean(groupId),
     staleTime: FIVE_MINUTES,
   });
 

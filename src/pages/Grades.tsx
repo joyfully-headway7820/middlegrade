@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import Marks from "@/components/Marks";
+import { AttendanceStats } from "@/components/grades/AttendanceStats";
+import { GradeAverages } from "@/components/grades/GradeAverages";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { Badge, Checkbox, Segmented, Select } from "@/components/ui/Controls";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
-import { Stat } from "@/components/ui/Stat";
 import { ALL_SPECS, FIVE_GRADE_SYSTEM_DATE } from "@/constants/constants";
 import { useStoredState } from "@/hooks/useStoredState";
-import { formatDate, formatGrade, formatPercent } from "@/lib/format";
+import { formatFullDate } from "@/lib/format";
 import { examsQuery, marksQuery } from "@/lib/queries";
 import { buildSpecList } from "@/utils/buildSpecList";
-import { countMiddle } from "@/utils/countMiddle";
 import { currentCourseStart } from "@/utils/currentCourseStart";
 import distributeData from "@/utils/distributeData";
 import { distributeVisits } from "@/utils/distributeVisits";
@@ -34,7 +34,9 @@ const examMark = (exam: StudentExam) => {
   if (exam.mark === null) return null;
   if (!exam.date) return exam.mark;
 
-  return new Date(exam.date) < FIVE_GRADE_SYSTEM_DATE ? toFive(exam.mark) : exam.mark;
+  return new Date(exam.date) < FIVE_GRADE_SYSTEM_DATE
+    ? toFive(exam.mark)
+    : exam.mark;
 };
 
 export const GradesPage = () => {
@@ -43,7 +45,10 @@ export const GradesPage = () => {
 
   const [spec, setSpec] = useState<string>(ALL_SPECS);
   const [period, setPeriod] = useState<"course" | "all">("course");
-  const [hideCompleted, setHideCompleted] = useStoredState("grades:hideCompleted", true);
+  const [hideCompleted, setHideCompleted] = useStoredState(
+    "grades:hideCompleted",
+    true,
+  );
 
   const specList = useMemo(
     () =>
@@ -60,7 +65,8 @@ export const GradesPage = () => {
   }
 
   const since = useMemo(
-    () => (spec === ALL_SPECS || period === "all" ? null : currentCourseStart()),
+    () =>
+      spec === ALL_SPECS || period === "all" ? null : currentCourseStart(),
     [spec, period],
   );
 
@@ -76,8 +82,6 @@ export const GradesPage = () => {
 
   const visits = useMemo(() => distributeVisits(filtered), [filtered]);
 
-  const average = countMiddle(distributed.gradeSum, distributed.grades);
-
   const filteredExams = useMemo(() => {
     if (!exams.data) return [];
 
@@ -88,10 +92,17 @@ export const GradesPage = () => {
 
   if (marks.isPending) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {Array.from({ length: 4 }, (_, i) => (
-          <Skeleton key={i} className="h-32" />
-        ))}
+      <div className="flex flex-col gap-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          {Array.from({ length: 6 }, (_, i) => (
+            <Skeleton key={i} className="h-44" />
+          ))}
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {Array.from({ length: 4 }, (_, i) => (
+            <Skeleton key={i} className="h-44" />
+          ))}
+        </div>
       </div>
     );
   }
@@ -110,18 +121,12 @@ export const GradesPage = () => {
     ...specList.map((name) => ({ value: name, label: name })),
   ];
 
-  const breakdown = [
-    { label: "Классная работа", sum: distributed.classGradeSum, list: distributed.classWork },
-    { label: "Домашняя работа", sum: distributed.homeGradeSum, list: distributed.homeWork },
-    { label: "Лабораторные", sum: distributed.labGradeSum, list: distributed.labs },
-    { label: "Контрольные", sum: distributed.controlGradeSum, list: distributed.controlWork },
-    { label: "Практические", sum: distributed.practicalsSum, list: distributed.practicals },
-  ];
-
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight text-heading">Оценки</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-heading">
+          Оценки
+        </h1>
 
         <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
           {spec === ALL_SPECS ? null : (
@@ -148,67 +153,24 @@ export const GradesPage = () => {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat
-          label="Средний балл"
-          value={average ? formatGrade(average) : "—"}
-          hint={`${distributed.grades.length} оценок`}
-        />
-        <Stat
-          label="Посещаемость"
-          value={filtered.length ? formatPercent(visits.wasPercent) : "—"}
-          hint={`${visits.studentWas} из ${filtered.length} пар`}
-        />
-        <Stat
-          label="Опоздания"
-          value={visits.studentLate}
-          hint={filtered.length ? formatPercent(visits.latePercent) : undefined}
-        />
-        <Stat
-          label="Пропуски"
-          value={visits.studentWasnt}
-          hint={filtered.length ? formatPercent(visits.wasntPercent) : undefined}
-        />
-      </div>
+      <GradeAverages marks={distributed} />
+      <AttendanceStats visits={visits} total={filtered.length} />
 
       <Card>
         <CardHeader
-          title="Средний балл по типам работ"
-          description="Оценки до 31 августа 2024 пересчитаны из 12-балльной шкалы в 5-балльную"
+          title="Занятия"
+          description={`${filtered.length} занятий`}
         />
-        <CardBody className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {breakdown.map((item) => {
-            const value = countMiddle(item.sum, item.list);
-
-            return (
-              <div
-                key={item.label}
-                className="flex items-center justify-between gap-3 rounded-xl border border-line px-4 py-3"
-              >
-                <div className="min-w-0">
-                  <p className="truncate text-sm text-ink-300">{item.label}</p>
-                  <p className="text-xs text-ink-500">{item.list.length} оценок</p>
-                </div>
-                {item.list.length ? (
-                  <Badge tone={gradeTone(value)}>{formatGrade(value)}</Badge>
-                ) : (
-                  <Badge>—</Badge>
-                )}
-              </div>
-            );
-          })}
-        </CardBody>
-      </Card>
-
-      <Card>
-        <CardHeader title="Занятия" description={`${filtered.length} занятий`} />
         <CardBody>
           <Marks marks={filtered} />
         </CardBody>
       </Card>
 
       <Card>
-        <CardHeader title="Зачётка" description={`${filteredExams.length} записей`} />
+        <CardHeader
+          title="Зачётка"
+          description={`${filteredExams.length} записей`}
+        />
         {exams.isPending ? (
           <CardBody>
             <Skeleton className="h-40" />
@@ -225,10 +187,18 @@ export const GradesPage = () => {
             <table className="w-full min-w-3xl text-left text-sm">
               <thead className="text-xs tracking-wide text-ink-500 uppercase">
                 <tr className="border-b border-line">
-                  <th scope="col" className="px-5 py-3 font-medium">Предмет</th>
-                  <th scope="col" className="px-5 py-3 font-medium">Преподаватель</th>
-                  <th scope="col" className="px-5 py-3 font-medium">Дата</th>
-                  <th scope="col" className="px-5 py-3 text-right font-medium">Оценка</th>
+                  <th scope="col" className="px-5 py-3 font-medium">
+                    Предмет
+                  </th>
+                  <th scope="col" className="px-5 py-3 font-medium">
+                    Преподаватель
+                  </th>
+                  <th scope="col" className="px-5 py-3 font-medium">
+                    Дата
+                  </th>
+                  <th scope="col" className="px-5 py-3 text-right font-medium">
+                    Оценка
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -241,9 +211,11 @@ export const GradesPage = () => {
                       className="border-b border-line last:border-0"
                     >
                       <td className="px-5 py-3 text-ink-100">{exam.spec}</td>
-                      <td className="px-5 py-3 text-ink-400">{exam.teacher ?? "—"}</td>
                       <td className="px-5 py-3 text-ink-400">
-                        {exam.date ? formatDate(exam.date) : "—"}
+                        {exam.teacher ?? "—"}
+                      </td>
+                      <td className="px-4 py-3 text-ink-400 text-nowrap">
+                        {exam.date ? formatFullDate(exam.date) : "—"}
                       </td>
                       <td className="px-5 py-3 text-right">
                         {mark ? (
