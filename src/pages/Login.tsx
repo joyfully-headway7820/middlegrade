@@ -56,8 +56,8 @@ export const LoginPage = () => {
         : null;
 
   return (
-    <div className="relative grid min-h-full place-items-center px-4 py-10">
-      <div className="absolute right-4 top-4">
+    <div className="relative grid min-h-full place-items-center px-4 pb-10 pt-[max(2.5rem,calc(1.5rem+env(safe-area-inset-top)))]">
+      <div className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top))]">
         <ThemePicker className="w-40" />
       </div>
       <div className="w-full max-w-sm">

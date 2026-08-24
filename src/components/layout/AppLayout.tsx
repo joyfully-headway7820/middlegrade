@@ -92,8 +92,8 @@ export const AppLayout = () => {
         <NavList badges={badges} />
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 items-center gap-3 border-b border-line bg-canvas px-4 py-3 sm:px-6 max-lg:hidden lg:flex">
+      <div className="flex min-w-0 flex-1 flex-col pt-[env(safe-area-inset-top)]">
+        <header className="sticky top-[env(safe-area-inset-top)] z-20 items-center gap-3 border-b border-line bg-canvas px-4 py-3 sm:px-6 max-lg:hidden lg:flex">
           <div className="ml-auto flex items-center gap-3">
             {coins > 0 || gems > 0 ? (
               <span className="inline-flex items-center gap-3 rounded-full border border-line px-3 py-1.5 text-sm text-ink-200 tabular-nums">
