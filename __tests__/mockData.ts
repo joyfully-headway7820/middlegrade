@@ -1,6 +1,6 @@
-import { IExamsElement, IMarkResponse } from "../src/@types";
+import type { StudentExam, StudentVisit } from "@/types";
 
-export const examsMockData: IExamsElement[] = [
+export const examsMockData: StudentExam[] = [
   {
     teacher: "Эллиот Алдерсон",
     mark: 5,
@@ -63,7 +63,7 @@ export const examsMockData: IExamsElement[] = [
   },
 ];
 
-export const marksMockData: IMarkResponse[] = [
+export const marksMockData: StudentVisit[] = [
   {
     date_visit: "2025-01-17",
     lesson_number: 4,
@@ -77,6 +77,7 @@ export const marksMockData: IMarkResponse[] = [
     lab_work_mark: 1,
     class_work_mark: 5,
     practical_work_mark: 5,
+    final_work_mark: null,
   },
   {
     date_visit: "2025-01-17",
@@ -91,6 +92,7 @@ export const marksMockData: IMarkResponse[] = [
     lab_work_mark: null,
     class_work_mark: 3,
     practical_work_mark: 4,
+    final_work_mark: null,
   },
   {
     date_visit: "2025-01-16",
@@ -105,6 +107,7 @@ export const marksMockData: IMarkResponse[] = [
     lab_work_mark: 2,
     class_work_mark: null,
     practical_work_mark: null,
+    final_work_mark: null,
   },
   {
     date_visit: "2023-01-16",
@@ -119,6 +122,7 @@ export const marksMockData: IMarkResponse[] = [
     lab_work_mark: 7,
     class_work_mark: null,
     practical_work_mark: null,
+    final_work_mark: null,
   },
   {
     date_visit: "2023-01-16",
@@ -133,11 +137,12 @@ export const marksMockData: IMarkResponse[] = [
     lab_work_mark: 12,
     class_work_mark: null,
     practical_work_mark: null,
+    final_work_mark: null,
   },
 ];
 
 function generateMarks(count: number) {
-  const marks: IMarkResponse[] = [];
+  const marks: StudentVisit[] = [];
 
   for (let i = 0; i < count; i++) {
     marks.push({
@@ -153,6 +158,7 @@ function generateMarks(count: number) {
       lab_work_mark: 12,
       class_work_mark: null,
       practical_work_mark: 11,
+      final_work_mark: null,
     });
   }
 

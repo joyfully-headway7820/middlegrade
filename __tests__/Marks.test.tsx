@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, it } from "vitest";
-import Marks from "../src/components/Marks";
+import Marks from "@/components/Marks";
 import { marks_1000, marks_10000, marks_2000 } from "./mockData";
 
 describe("MiddleGrade component", () => {

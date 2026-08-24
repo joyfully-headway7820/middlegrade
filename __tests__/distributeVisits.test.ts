@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { marksMockData } from "./mockData";
-import { distributeVisits, IVisits } from "../src/utils/distributeVisits";
+import { distributeVisits, IVisits } from "@/utils/distributeVisits";
 
 describe("Distribute Visits", () => {
   it("should distributeVisits with data and return IVisits object", () => {

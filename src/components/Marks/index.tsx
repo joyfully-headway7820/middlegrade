@@ -1,60 +1,76 @@
-import styles from "./Marks.module.scss";
-import React from "react";
-import Mark from "./Mark.tsx";
-import UpButton from "../UpButton";
-import activeSpecStore from "../../store/activeSpec.ts";
-import { IMarkResponse } from "../../@types";
+import { useMemo, useState } from "react";
+import { Lesson } from "./Lesson";
+import { Button } from "@/components/ui/Controls";
+import { Pagination } from "@/components/ui/Pagination";
+import { LESSONS_PER_PAGE, MARK_KINDS } from "@/constants/constants";
+import type { StudentVisit } from "@/types";
+import { toLessonRows } from "@/utils/toLessonRows";
 
-interface Props {
-  marks: IMarkResponse[];
-}
+type MarksProps = {
+  marks: StudentVisit[];
+};
 
-export default function Marks({ marks }: Props) {
-  const [showAll, setShowAll] = React.useState<boolean>(false);
-  let reversedMarks = React.useMemo(
-    () => [...marks].reverse(),
-    [marks, showAll],
-  ).map((mark, index) => ({
-    ...mark,
-    index,
-  }));
+const Marks = ({ marks }: MarksProps) => {
+  const [page, setPage] = useState(1);
+  const [showAll, setShowAll] = useState(false);
+  const [renderedMarks, setRenderedMarks] = useState(marks);
 
-  const { activeSpec } = activeSpecStore();
-  const isAll = activeSpec === "Все предметы";
+  if (renderedMarks !== marks) {
+    setRenderedMarks(marks);
+    setPage(1);
+    setShowAll(false);
+  }
 
-  if (isAll && !showAll) {
-    reversedMarks = reversedMarks.slice(marks.length - 50, marks.length);
+  const lessons = useMemo(() => toLessonRows(marks), [marks]);
+
+  const pageCount = Math.max(1, Math.ceil(lessons.length / LESSONS_PER_PAGE));
+  const currentPage = Math.min(page, pageCount);
+
+  const visible = showAll
+    ? lessons
+    : lessons.slice((currentPage - 1) * LESSONS_PER_PAGE, currentPage * LESSONS_PER_PAGE);
+
+  if (lessons.length === 0) {
+    return <p className="px-5 py-8 text-center text-sm text-ink-500">Занятий пока нет</p>;
   }
 
   return (
-    <div className={styles.marks}>
-      {reversedMarks
-        .map((mark) => (
-          <Mark
-            key={`${mark.date_visit}_${mark.lesson_number}_${mark.spec_name}`}
-            date={mark.date_visit}
-            number={mark.index}
-            control_work_mark={mark.control_work_mark}
-            home_work_mark={mark.home_work_mark}
-            lab_work_mark={mark.lab_work_mark}
-            class_work_mark={mark.class_work_mark}
-            final_work_mark={mark.final_work_mark}
-            teacher_name={mark.teacher_name}
-            spec_name={mark.spec_name}
-            lesson_theme={mark.lesson_theme}
-            status_was={mark.status_was}
+    <div className="flex flex-col gap-4">
+      <ul className="-mx-5 flex flex-col">
+        {visible.map(({ visit, number }) => (
+          <Lesson
+            key={`${visit.date_visit}-${visit.lesson_number}-${visit.spec_id}-${number}`}
+            visit={visit}
+            number={number}
           />
-        ))
-        .reverse()}
-      {isAll && (
-        <button
-          className={styles.marks__button}
-          onClick={() => setShowAll((prev) => !prev)}
-        >
-          {showAll ? "Скрыть" : "Показать все"}
-        </button>
-      )}
-      <UpButton />
+        ))}
+      </ul>
+
+      {lessons.length > LESSONS_PER_PAGE ? (
+        <div className="flex flex-col items-center gap-3">
+          {showAll ? null : (
+            <Pagination page={currentPage} pageCount={pageCount} onChange={setPage} />
+          )}
+          <Button variant="outline" onClick={() => setShowAll((prev) => !prev)}>
+            {showAll ? "Постранично" : `Показать все (${lessons.length})`}
+          </Button>
+        </div>
+      ) : null}
+
+      <ul className="flex flex-wrap gap-x-4 gap-y-2 border-t border-line pt-4">
+        {MARK_KINDS.map((kind) => (
+          <li key={kind.key} className="flex items-center gap-2 text-xs text-ink-400">
+            <span
+              aria-hidden
+              className="size-2.5 rounded-full"
+              style={{ backgroundColor: kind.color }}
+            />
+            {kind.label}
+          </li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
+
+export default Marks;

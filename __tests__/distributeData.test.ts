@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import distributeData, { IMarks } from "../src/utils/distributeData";
+import distributeData, { IMarks } from "@/utils/distributeData";
 import { marksMockData } from "./mockData";
-import { FIVE_GRADE_SYSTEM_DATE } from "../src/constants/constants";
+import { FIVE_GRADE_SYSTEM_DATE } from "@/constants/constants";
 
 describe("Distribute data", () => {
   it("should distributeData with data and return IMarks object", () => {

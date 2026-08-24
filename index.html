@@ -3,52 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080a12" />
     <meta
       name="description"
-      content="MiddleGrade - приложение для подсчёта успеваемости для студентов IT Top College."
+      content="MiddleGrade — средний балл, зачётка, расписание и задания из Journal для студентов IT Top College."
     />
-    <meta
-      name="keywords"
-      content="MiddleGrade IT Top College Статистика приложение для подсчёта успеваемости студентов айти топ колледж middle grade"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Статистика успеваемости</title>
+    <title>MiddleGrade — успеваемость</title>
+    <script>
+      (function () {
+        var key = "mg-theme";
+        var stored;
+        try {
+          stored = localStorage.getItem(key);
+        } catch (error) {
+          stored = null;
+        }
+        var theme =
+          stored === "light" || stored === "dark"
+            ? stored
+            : window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+        document.documentElement.setAttribute("data-theme", theme);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) {
+          meta.setAttribute("content", theme === "light" ? "#e8eaf0" : "#080a12");
+        }
+      })();
+    </script>
   </head>
   <body>
     <noscript>
-      <style>
-        body {
-          font-family:
-            system-ui,
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            Roboto,
-            Oxygen,
-            Ubuntu,
-            Cantarell,
-            "Open Sans",
-            "Helvetica Neue",
-            sans-serif;
-          background-color: #333;
-          color: #eee;
-          text-align: center;
-          font-weight: 700;
-        }
-
-        .text_block {
-          background-color: #555;
-          width: 60vw;
+      <div
+        style="
           margin: 8vh auto 0;
-          padding: 2.6rem;
-          font-size: clamp(14px, 4.2vw, 20px);
-          border-radius: 30px;
-          box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
-        }
-      </style>
-      <div class="text_block">
-        Middle Grade - это React-приложение, поэтому у вас должен быть включён
-        JavaScript в настройках браузера.
+          width: min(60vw, 40rem);
+          padding: 2.5rem;
+          border-radius: 1.5rem;
+          background: #1a1e30;
+          color: #eceef6;
+          font-family: system-ui, sans-serif;
+          font-weight: 600;
+          text-align: center;
+        "
+      >
+        MiddleGrade — приложение на React, поэтому в браузере должен быть включён
+        JavaScript.
       </div>
     </noscript>
     <div id="root"></div>

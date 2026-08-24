@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", sans-serif;
+
+  --color-ink-50: var(--ink-50);
+  --color-ink-100: var(--ink-100);
+  --color-ink-200: var(--ink-200);
+  --color-ink-300: var(--ink-300);
+  --color-ink-400: var(--ink-400);
+  --color-ink-500: var(--ink-500);
+  --color-ink-600: var(--ink-600);
+  --color-ink-700: var(--ink-700);
+  --color-ink-800: var(--ink-800);
+  --color-ink-900: var(--ink-900);
+  --color-ink-950: var(--ink-950);
+
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-heading: var(--heading);
+  --color-line: var(--line);
+  --color-overlay: var(--overlay);
+  --color-scrim: var(--scrim);
+
+  --color-brand-50: #f4f1ff;
+  --color-brand-100: #ebe5ff;
+  --color-brand-200: #d9cfff;
+  --color-brand-300: #bda9ff;
+  --color-brand-400: #9d78ff;
+  --color-brand-500: #7f45ff;
+  --color-brand-600: #7024f7;
+  --color-brand-700: #5f16dc;
+  --color-brand-800: #4f14b4;
+  --color-brand-900: #421494;
+
+  --color-mark-classwork: #38bdf8;
+  --color-mark-homework: #f472b6;
+  --color-mark-lab: #a78bfa;
+  --color-mark-control: #34d399;
+  --color-mark-practical: #fb923c;
+  --color-mark-final: #94a3b8;
+
+  --color-good: #16a34a;
+  --color-warn: #d97706;
+  --color-bad: #dc2626;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --canvas: #080a12;
+    --surface: #12141f;
+    --heading: #f3f5fb;
+    --line: rgb(255 255 255 / 0.1);
+    --overlay: rgb(255 255 255 / 0.06);
+    --scrim: rgb(0 0 0 / 0.55);
+    --ink-50: #f6f7fb;
+    --ink-100: #eceef6;
+    --ink-200: #d7dbea;
+    --ink-300: #b3bad3;
+    --ink-400: #8189a8;
+    --ink-500: #5b6280;
+    --ink-600: #3f4560;
+    --ink-700: #2b3049;
+    --ink-800: #1a1e30;
+    --ink-900: #10131f;
+    --ink-950: #080a12;
+  }
+
+  html[data-theme="light"] {
+    color-scheme: light;
+    --canvas: #e8eaf0;
+    --surface: #f7f8fb;
+    --heading: #14161f;
+    --line: rgb(20 22 31 / 0.1);
+    --overlay: rgb(20 22 31 / 0.05);
+    --scrim: rgb(15 17 26 / 0.4);
+    --ink-50: #14161f;
+    --ink-100: #1c2030;
+    --ink-200: #2a3148;
+    --ink-300: #4a5270;
+    --ink-400: #5c6685;
+    --ink-500: #6d7693;
+    --ink-600: #8b93ab;
+    --ink-700: #c5cad8;
+    --ink-800: #dde1ea;
+    --ink-900: #eef0f5;
+    --ink-950: #f7f8fb;
+    --color-mark-classwork: #0284c7;
+    --color-mark-homework: #db2777;
+    --color-mark-lab: #7c3aed;
+    --color-mark-control: #059669;
+    --color-mark-practical: #ea580c;
+    --color-mark-final: #64748b;
+  }
+
+  html {
+    min-height: 100%;
+    background-color: var(--canvas);
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    @apply text-ink-100 font-sans antialiased;
+    min-height: 100vh;
+    background-color: var(--canvas);
+    background-repeat: no-repeat;
+    background-image:
+      radial-gradient(48rem 32rem at 8% -8%, rgb(112 36 247 / 0.14), transparent 58%),
+      radial-gradient(40rem 28rem at 100% 0%, rgb(56 189 248 / 0.08), transparent 52%);
+  }
+
+  html[data-theme="light"] body {
+    background-repeat: no-repeat;
+    background-image:
+      radial-gradient(42rem 28rem at 6% -12%, rgb(112 36 247 / 0.08), transparent 60%),
+      radial-gradient(36rem 24rem at 100% 0%, rgb(14 116 144 / 0.06), transparent 55%);
+  }
+
+  ::selection {
+    @apply bg-brand-500/40;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  [role="tab"],
+  [role="option"],
+  [role="checkbox"],
+  [role="menuitem"],
+  a[href] {
+    cursor: pointer;
+  }
+
+  :disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
+@layer utilities {
+  .scrollbar-slim {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ink-600) transparent;
+  }
+
+  .scrollbar-slim::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-slim::-webkit-scrollbar-thumb {
+    background-color: var(--ink-600);
+    border-radius: 999px;
+  }
+
+  .contain-paint {
+    contain: layout paint;
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 320px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
