@@ -1,5 +1,12 @@
-const CACHE = "mg-shell-v1";
-const PRECACHE = ["/", "/favicon.png", "/manifest.webmanifest"];
+const CACHE = "mg-shell-v2";
+const PRECACHE = [
+  "/",
+  "/favicon.png",
+  "/apple-touch-icon.png",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/manifest.webmanifest",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
