@@ -304,7 +304,7 @@ export const Badge = ({
       tone === "good" && "bg-good/15 text-good",
       tone === "warn" && "bg-warn/15 text-warn",
       tone === "bad" && "bg-bad/15 text-bad",
-      tone === "brand" && "bg-brand-500/20 text-brand-200",
+      tone === "brand" && "bg-brand-500/15 text-brand-600",
     )}
   >
     {children}

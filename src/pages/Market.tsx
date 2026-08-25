@@ -43,23 +43,8 @@ export const MarketPage = () => {
     },
   });
 
-  const cancel = useMutation({
-    mutationFn: (orderId: number) =>
-      request<unknown>("/market/cancel", { method: "POST", body: { orderId } }),
-    onSuccess: () => void refreshWallet(),
-    onError: (cause: unknown) => {
-      setError(
-        cause instanceof ApiError
-          ? cause.message
-          : "Не удалось отменить заказ",
-      );
-    },
-  });
-
   const purchases = catalog.data?.purchases ?? [];
-  const busy = buy.isPending || cancel.isPending;
   const buyingId = buy.isPending ? buy.variables : null;
-  const cancellingId = cancel.isPending ? cancel.variables : null;
 
   const sorted = useMemo(
     () =>
@@ -71,19 +56,13 @@ export const MarketPage = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight text-heading">Маркет</h1>
+      <h1 className="text-2xl font-semibold tracking-tight text-heading">
+        Маркет
+      </h1>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Stat
-          label="Топкоины"
-          value={coins}
-          hint={spentCoins ? `потрачено ${spentCoins}` : "доступно"}
-        />
-        <Stat
-          label="Гемы"
-          value={gems}
-          hint={spentGems ? `потрачено ${spentGems}` : "доступно"}
-        />
+        <Stat label="Топкоины" value={coins - spentCoins} />
+        <Stat label="Гемы" value={gems - spentGems} />
       </div>
 
       {error ? (
@@ -114,7 +93,7 @@ export const MarketPage = () => {
               key={item.id}
               item={item}
               pending={buyingId === item.id}
-              disabled={busy}
+              disabled={buy.isPending}
               onBuy={(id) => buy.mutate(id)}
             />
           ))}
@@ -132,9 +111,6 @@ export const MarketPage = () => {
               <PurchaseRow
                 key={`${entry.id}-${entry.date ?? ""}`}
                 purchase={entry}
-                pending={cancellingId === entry.id}
-                disabled={busy}
-                onCancel={(id) => cancel.mutate(id)}
               />
             ))}
           </ul>

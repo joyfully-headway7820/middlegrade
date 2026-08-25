@@ -94,7 +94,6 @@ describe("toPurchase", () => {
       date: "2026-02-01",
       photo: null,
       status: "unknown",
-      cancellable: false,
       items: [],
     });
   });
@@ -113,7 +112,6 @@ describe("toPurchase", () => {
       date: "2025-03-17 12:00:00",
       photo: null,
       status: "new",
-      cancellable: true,
       items: [],
     });
   });
@@ -133,7 +131,6 @@ describe("toPurchase", () => {
       date: "2026-08-25 13:51:58",
       photo: null,
       status: "new",
-      cancellable: true,
       items: [],
     });
   });
@@ -171,7 +168,6 @@ describe("toPurchase", () => {
       date: "2026-08-25 13:51:58",
       photo,
       status: "new",
-      cancellable: true,
       items: [
         {
           id: 22,
@@ -185,8 +181,8 @@ describe("toPurchase", () => {
     });
   });
 
-  it("marks closed and rejected orders as not cancellable", () => {
-    expect(toPurchase({ id: 449, status: 3 })?.cancellable).toBe(false);
+  it("maps closed and rejected order statuses", () => {
+    expect(toPurchase({ id: 449, status: 3 })?.status).toBe("closed");
     expect(toPurchase({ id: 307, status: 2 })?.status).toBe("rejected");
   });
 });

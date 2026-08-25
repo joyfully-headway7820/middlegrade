@@ -1,6 +1,5 @@
-import { render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import { PurchaseRow } from "@/components/market/PurchaseRow";
 import type { MarketPurchase } from "@/types";
 
@@ -13,7 +12,6 @@ const purchase = (overrides: Partial<MarketPurchase> = {}): MarketPurchase => ({
   date: "2026-08-25 13:51:58",
   photo,
   status: "new",
-  cancellable: true,
   items: [
     {
       id: 22,
@@ -29,76 +27,22 @@ const purchase = (overrides: Partial<MarketPurchase> = {}): MarketPurchase => ({
 
 describe("PurchaseRow", () => {
   it("shows the order contents, number, and status", () => {
-    render(
-      <PurchaseRow
-        purchase={purchase()}
-        onCancel={vi.fn()}
-        pending={false}
-        disabled={false}
-      />,
-    );
+    render(<PurchaseRow purchase={purchase()} />);
 
     expect(screen.getByText("Обложка для студенческого")).toBeTruthy();
     expect(screen.getByText(/№513/)).toBeTruthy();
     expect(screen.getByText("Новый")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Отменить" })).toBeTruthy();
   });
 
-  it("does not cancel until the confirmation is accepted", async () => {
-    const user = userEvent.setup();
-    const onCancel = vi.fn();
-
-    render(
-      <PurchaseRow
-        purchase={purchase()}
-        onCancel={onCancel}
-        pending={false}
-        disabled={false}
-      />,
-    );
-
-    await user.click(screen.getByRole("button", { name: "Отменить" }));
-
-    expect(onCancel).not.toHaveBeenCalled();
-    const dialog = screen.getByRole("dialog", { name: "Отменить заказ" });
-    expect(dialog).toHaveTextContent("Отменить заказ №513?");
-
-    await user.click(within(dialog).getByRole("button", { name: "Назад" }));
-    expect(onCancel).not.toHaveBeenCalled();
-  });
-
-  it("cancels after the confirmation is accepted", async () => {
-    const user = userEvent.setup();
-    const onCancel = vi.fn();
-
-    render(
-      <PurchaseRow
-        purchase={purchase()}
-        onCancel={onCancel}
-        pending={false}
-        disabled={false}
-      />,
-    );
-
-    await user.click(screen.getByRole("button", { name: "Отменить" }));
-    await user.click(screen.getByRole("button", { name: "Отменить заказ" }));
-
-    expect(onCancel).toHaveBeenCalledWith(513);
-  });
-
-  it("hides cancel when the order is already closed", () => {
+  it("shows a closed order without a cancel control", () => {
     render(
       <PurchaseRow
         purchase={purchase({
           id: 449,
           status: "closed",
-          cancellable: false,
           name: "Заказ №449",
           items: [],
         })}
-        onCancel={vi.fn()}
-        pending={false}
-        disabled={false}
       />,
     );
 
@@ -130,9 +74,6 @@ describe("PurchaseRow", () => {
             },
           ],
         })}
-        onCancel={vi.fn()}
-        pending={false}
-        disabled={false}
       />,
     );
 
