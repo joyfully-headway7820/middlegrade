@@ -74,4 +74,51 @@ describe("ProductCard", () => {
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).toBeNull();
   });
+
+  it("does not buy until the confirmation is accepted", async () => {
+    const user = userEvent.setup();
+    const onBuy = vi.fn();
+
+    render(
+      <ProductCard
+        item={product()}
+        onBuy={onBuy}
+        pending={false}
+        disabled={false}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Купить" }));
+
+    expect(onBuy).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole("dialog", { name: "Подтвердить покупку" }),
+    ).toHaveTextContent("Стикерпак");
+
+    await user.click(screen.getByRole("button", { name: "Отмена" }));
+
+    expect(onBuy).not.toHaveBeenCalled();
+    expect(
+      screen.queryByRole("dialog", { name: "Подтвердить покупку" }),
+    ).toBeNull();
+  });
+
+  it("buys after the confirmation is accepted", async () => {
+    const user = userEvent.setup();
+    const onBuy = vi.fn();
+
+    render(
+      <ProductCard
+        item={product({ id: 22, name: "Обложка для студенческого" })}
+        onBuy={onBuy}
+        pending={false}
+        disabled={false}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Купить" }));
+    await user.click(screen.getByRole("button", { name: "Подтвердить" }));
+
+    expect(onBuy).toHaveBeenCalledWith(22);
+  });
 });

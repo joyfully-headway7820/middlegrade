@@ -1,6 +1,16 @@
-import type { MarketProduct, MarketPurchase } from "@/utils/normalizeMarket";
+import type {
+  MarketOrderStatus,
+  MarketProduct,
+  MarketPurchase,
+  MarketPurchaseItem,
+} from "@/utils/normalizeMarket";
 
-export type { MarketProduct, MarketPurchase };
+export type {
+  MarketOrderStatus,
+  MarketProduct,
+  MarketPurchase,
+  MarketPurchaseItem,
+};
 
 export type UserGroup = {
   group_status: number;

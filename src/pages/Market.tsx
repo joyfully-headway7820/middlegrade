@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { ProductCard } from "@/components/market/ProductCard";
+import { PurchaseRow } from "@/components/market/PurchaseRow";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
 import { Stat } from "@/components/ui/Stat";
 import { ApiError, request } from "@/lib/api";
-import { formatFullDate } from "@/lib/format";
 import { marketQuery } from "@/lib/queries";
 import { useAuthStore } from "@/store/auth";
 import { isEmptyError } from "@/utils/isEmptyError";
@@ -22,16 +22,18 @@ export const MarketPage = () => {
     user?.spent_gaming_points,
   );
 
+  const refreshWallet = async () => {
+    setError(null);
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["market"] }),
+      queryClient.invalidateQueries({ queryKey: ["me"] }),
+    ]);
+  };
+
   const buy = useMutation({
     mutationFn: (productId: number) =>
       request<unknown>("/market/buy", { method: "POST", body: { productId } }),
-    onSuccess: async () => {
-      setError(null);
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["market"] }),
-        queryClient.invalidateQueries({ queryKey: ["me"] }),
-      ]);
-    },
+    onSuccess: () => void refreshWallet(),
     onError: (cause: unknown) => {
       setError(
         cause instanceof ApiError
@@ -42,7 +44,6 @@ export const MarketPage = () => {
   });
 
   const purchases = catalog.data?.purchases ?? [];
-
   const buyingId = buy.isPending ? buy.variables : null;
 
   const sorted = useMemo(
@@ -55,19 +56,13 @@ export const MarketPage = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight text-heading">Маркет</h1>
+      <h1 className="text-2xl font-semibold tracking-tight text-heading">
+        Маркет
+      </h1>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Stat
-          label="Топкоины"
-          value={coins}
-          hint={spentCoins ? `потрачено ${spentCoins}` : "доступно"}
-        />
-        <Stat
-          label="Гемы"
-          value={gems}
-          hint={spentGems ? `потрачено ${spentGems}` : "доступно"}
-        />
+        <Stat label="Топкоины" value={coins - spentCoins} />
+        <Stat label="Гемы" value={gems - spentGems} />
       </div>
 
       {error ? (
@@ -107,18 +102,16 @@ export const MarketPage = () => {
 
       {purchases.length ? (
         <Card>
-          <CardHeader title="Мои покупки" description={`${purchases.length} записей`} />
+          <CardHeader
+            title="Мои заказы"
+            description={`${purchases.length} записей`}
+          />
           <ul className="flex flex-col">
             {purchases.map((entry) => (
-              <li
+              <PurchaseRow
                 key={`${entry.id}-${entry.date ?? ""}`}
-                className="flex items-center justify-between gap-3 border-b border-line px-5 py-3 last:border-0"
-              >
-                <p className="text-sm break-words text-ink-100">{entry.name}</p>
-                <p className="shrink-0 text-xs text-ink-500">
-                  {entry.date ? formatFullDate(entry.date) : "—"}
-                </p>
-              </li>
+                purchase={entry}
+              />
             ))}
           </ul>
         </Card>

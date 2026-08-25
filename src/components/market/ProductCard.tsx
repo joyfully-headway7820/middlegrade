@@ -36,6 +36,7 @@ export const ProductCard = ({
   disabled,
 }: ProductCardProps) => {
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
     <li className="flex flex-col overflow-hidden rounded-2xl border border-line bg-surface">
@@ -70,7 +71,7 @@ export const ProductCard = ({
           <Button
             type="button"
             disabled={disabled || pending || item.stock === 0}
-            onClick={() => onBuy(item.id)}
+            onClick={() => setConfirmOpen(true)}
           >
             {pending ? "Покупаем…" : "Купить"}
           </Button>
@@ -83,6 +84,41 @@ export const ProductCard = ({
             alt={item.name}
             className="mx-auto max-h-[70vh] w-full object-contain"
           />
+        </Modal>
+      ) : null}
+      {confirmOpen ? (
+        <Modal
+          title="Подтвердить покупку"
+          description={item.name}
+          onClose={() => setConfirmOpen(false)}
+        >
+          <div className="flex flex-col gap-4">
+            {item.description ? (
+              <p className="text-sm break-words text-ink-300">
+                {item.description}
+              </p>
+            ) : null}
+            <Price coins={item.coins} gems={item.gems} />
+            <div className="flex flex-wrap justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setConfirmOpen(false)}
+              >
+                Отмена
+              </Button>
+              <Button
+                type="button"
+                disabled={pending || item.stock === 0}
+                onClick={() => {
+                  setConfirmOpen(false);
+                  onBuy(item.id);
+                }}
+              >
+                Подтвердить
+              </Button>
+            </div>
+          </div>
         </Modal>
       ) : null}
     </li>
