@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { ProductCard } from "@/components/market/ProductCard";
+import { PurchaseRow } from "@/components/market/PurchaseRow";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
 import { Stat } from "@/components/ui/Stat";
 import { ApiError, request } from "@/lib/api";
-import { formatFullDate } from "@/lib/format";
 import { marketQuery } from "@/lib/queries";
 import { useAuthStore } from "@/store/auth";
 import { isEmptyError } from "@/utils/isEmptyError";
@@ -22,16 +22,18 @@ export const MarketPage = () => {
     user?.spent_gaming_points,
   );
 
+  const refreshWallet = async () => {
+    setError(null);
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["market"] }),
+      queryClient.invalidateQueries({ queryKey: ["me"] }),
+    ]);
+  };
+
   const buy = useMutation({
     mutationFn: (productId: number) =>
       request<unknown>("/market/buy", { method: "POST", body: { productId } }),
-    onSuccess: async () => {
-      setError(null);
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["market"] }),
-        queryClient.invalidateQueries({ queryKey: ["me"] }),
-      ]);
-    },
+    onSuccess: () => void refreshWallet(),
     onError: (cause: unknown) => {
       setError(
         cause instanceof ApiError
@@ -41,9 +43,23 @@ export const MarketPage = () => {
     },
   });
 
-  const purchases = catalog.data?.purchases ?? [];
+  const cancel = useMutation({
+    mutationFn: (orderId: number) =>
+      request<unknown>("/market/cancel", { method: "POST", body: { orderId } }),
+    onSuccess: () => void refreshWallet(),
+    onError: (cause: unknown) => {
+      setError(
+        cause instanceof ApiError
+          ? cause.message
+          : "Не удалось отменить заказ",
+      );
+    },
+  });
 
+  const purchases = catalog.data?.purchases ?? [];
+  const busy = buy.isPending || cancel.isPending;
   const buyingId = buy.isPending ? buy.variables : null;
+  const cancellingId = cancel.isPending ? cancel.variables : null;
 
   const sorted = useMemo(
     () =>
@@ -98,7 +114,7 @@ export const MarketPage = () => {
               key={item.id}
               item={item}
               pending={buyingId === item.id}
-              disabled={buy.isPending}
+              disabled={busy}
               onBuy={(id) => buy.mutate(id)}
             />
           ))}
@@ -107,18 +123,19 @@ export const MarketPage = () => {
 
       {purchases.length ? (
         <Card>
-          <CardHeader title="Мои покупки" description={`${purchases.length} записей`} />
+          <CardHeader
+            title="Мои заказы"
+            description={`${purchases.length} записей`}
+          />
           <ul className="flex flex-col">
             {purchases.map((entry) => (
-              <li
+              <PurchaseRow
                 key={`${entry.id}-${entry.date ?? ""}`}
-                className="flex items-center justify-between gap-3 border-b border-line px-5 py-3 last:border-0"
-              >
-                <p className="text-sm break-words text-ink-100">{entry.name}</p>
-                <p className="shrink-0 text-xs text-ink-500">
-                  {entry.date ? formatFullDate(entry.date) : "—"}
-                </p>
-              </li>
+                purchase={entry}
+                pending={cancellingId === entry.id}
+                disabled={busy}
+                onCancel={(id) => cancel.mutate(id)}
+              />
             ))}
           </ul>
         </Card>
