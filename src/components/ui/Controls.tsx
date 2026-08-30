@@ -106,6 +106,7 @@ type SegmentedProps<T extends string | number> = {
   value: T;
   onChange: (value: T) => void;
   ariaLabel: string;
+  className?: string;
 };
 
 export function Segmented<T extends string | number>({
@@ -113,12 +114,16 @@ export function Segmented<T extends string | number>({
   value,
   onChange,
   ariaLabel,
+  className,
 }: SegmentedProps<T>) {
   return (
     <div
       role="tablist"
       aria-label={ariaLabel}
-      className="flex w-full flex-wrap gap-1 rounded-xl border border-line bg-canvas p-1 sm:flex-nowrap"
+      className={cn(
+        "flex w-full flex-wrap gap-1 rounded-xl border border-line bg-canvas p-1 sm:flex-nowrap",
+        className,
+      )}
     >
       {options.map((option) => {
         const active = option.value === value;
