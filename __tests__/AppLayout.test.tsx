@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { AppLayout } from "@/components/layout/AppLayout";
 
 const renderLayout = () => {
@@ -27,11 +27,33 @@ const renderLayout = () => {
 };
 
 describe("AppLayout", () => {
+  afterEach(() => {
+    localStorage.removeItem("mg-sidebar-collapsed");
+  });
+
   it("keeps page content below the iPhone status bar", () => {
     renderLayout();
 
     expect(screen.getByRole("main").parentElement?.className).toContain(
       "safe-area-inset-top",
     );
+  });
+
+  it("collapses the desktop sidebar to icons", () => {
+    renderLayout();
+
+    fireEvent.click(screen.getByRole("button", { name: "Свернуть меню" }));
+
+    expect(screen.getByRole("button", { name: "Развернуть меню" })).toBeTruthy();
+  });
+
+  it("puts feedback in the mobile header", () => {
+    renderLayout();
+
+    const links = screen.getAllByRole("link", { name: "Оставить обратную связь" });
+    expect(links.length).toBeGreaterThanOrEqual(1);
+    expect(
+      links.some((link) => link.closest("header")?.className.includes("lg:hidden")),
+    ).toBe(true);
   });
 });
