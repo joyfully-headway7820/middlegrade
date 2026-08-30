@@ -27,6 +27,24 @@ const toDate = (value: string | Date): Date =>
 
 export const formatDate = (value: string | Date) => dateFormatter.format(toDate(value));
 
+export const formatDateTime = (value: string | Date) => {
+  if (typeof value === "string") {
+    const match = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/.exec(value);
+    if (match) {
+      const date = formatDate(
+        new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])),
+      );
+      return match[4] ? `${date}, ${match[4]}:${match[5]}` : date;
+    }
+  }
+
+  const date = toDate(value);
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${formatDate(date)}, ${hours}:${minutes}`;
+};
+
 export const formatFullDate = (value: string | Date) =>
   dateWithYearFormatter.format(toDate(value));
 
