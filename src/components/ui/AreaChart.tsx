@@ -1,6 +1,10 @@
-import { memo, useId, useMemo, useState } from "react";
+import { memo, useId, useMemo, useState, type MouseEvent } from "react";
+import { ChartTooltip } from "@/components/ui/ChartTooltip";
 import { formatChartCaption } from "@/lib/format";
 import { finiteSegments } from "@/utils/finiteSegments";
+import { isFiniteChartValue } from "@/utils/isFiniteChartValue";
+import { lastChartDatum } from "@/utils/lastChartDatum";
+import { trimChartSeries } from "@/utils/trimChartSeries";
 import { visibleLabelIndexes } from "@/utils/visibleLabelIndexes";
 
 export type ChartDatum = {
@@ -16,12 +20,14 @@ type AreaChartProps = {
   ariaLabel: string;
 };
 
-const WIDTH = 640;
-const HEIGHT = 220;
-const PADDING = { top: 16, right: 28, bottom: 28, left: 36 };
+type ChartCursor = {
+  x: number;
+  y: number;
+};
 
-const isGrade = (value: number | null): value is number =>
-  typeof value === "number" && Number.isFinite(value);
+const WIDTH = 640;
+const HEIGHT = 228;
+const PADDING = { top: 16, right: 36, bottom: 36, left: 44 };
 
 const niceCeil = (value: number) => {
   if (value <= 0) return 1;
@@ -34,58 +40,91 @@ const niceCeil = (value: number) => {
   return step * magnitude;
 };
 
+const cursorFromEvent = (
+  event: MouseEvent<Element>,
+  svg: SVGSVGElement,
+): ChartCursor => {
+  const rect = svg.getBoundingClientRect();
+
+  return {
+    x: event.clientX - rect.left,
+    y: event.clientY - rect.top,
+  };
+};
+
 export const AreaChart = memo(
   ({ data, color, unit, max, ariaLabel }: AreaChartProps) => {
     const gradientId = useId();
     const [hovered, setHovered] = useState<number | null>(null);
+    const [cursor, setCursor] = useState<ChartCursor | null>(null);
 
     const plotWidth = WIDTH - PADDING.left - PADDING.right;
     const plotHeight = HEIGHT - PADDING.top - PADDING.bottom;
     const baseline = PADDING.top + plotHeight;
 
+    const series = useMemo(() => trimChartSeries(data), [data]);
+
     const labelIndexes = useMemo(
-      () => visibleLabelIndexes(data.length),
-      [data.length],
+      () => visibleLabelIndexes(series.length),
+      [series.length],
     );
 
-    const { points, ticks, upper, segments } = useMemo(() => {
-      const finiteValues = data.map((item) => item.value).filter(isGrade);
+    const last = useMemo(() => lastChartDatum(series), [series]);
+
+    const { points, ticks, segments, step } = useMemo(() => {
+      const finiteValues = series.map((item) => item.value).filter(isFiniteChartValue);
       const rawMax = max ?? Math.max(...finiteValues, 0);
       const bound = niceCeil(rawMax);
-      const step = data.length > 1 ? plotWidth / (data.length - 1) : 0;
+      const gap = series.length > 1 ? plotWidth / (series.length - 1) : 0;
 
-      const coords = data.map((item, index) => ({
+      const coords = series.map((item, index) => ({
         ...item,
-        x: PADDING.left + step * index,
-        y: isGrade(item.value)
+        x: PADDING.left + gap * index,
+        y: isFiniteChartValue(item.value)
           ? PADDING.top + plotHeight - (item.value / bound) * plotHeight
           : baseline,
       }));
 
       return {
         points: coords,
-        upper: bound,
         segments: finiteSegments(coords),
+        step: gap,
         ticks: [0, 0.25, 0.5, 0.75, 1].map((ratio) => ({
           value: Math.round(bound * ratio),
           y: PADDING.top + plotHeight - ratio * plotHeight,
         })),
       };
-    }, [baseline, data, max, plotHeight, plotWidth]);
+    }, [baseline, max, plotHeight, plotWidth, series]);
 
     if (points.length === 0) return null;
 
     const active = hovered !== null ? points[hovered] : null;
+    const hitWidth = step > 0 ? step : 32;
+
+    const setCursorFromSvg = (event: MouseEvent<Element>) => {
+      const svg =
+        event.currentTarget instanceof SVGSVGElement
+          ? event.currentTarget
+          : event.currentTarget.closest("svg");
+
+      if (svg instanceof SVGSVGElement) {
+        setCursor(cursorFromEvent(event, svg));
+      }
+    };
 
     return (
-      <figure className="m-0 min-w-0 overflow-hidden">
+      <figure className="relative m-0 min-w-0">
         <svg
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
           role="img"
           aria-label={ariaLabel}
-          className="h-52 w-full max-w-full"
-          overflow="hidden"
-          onMouseLeave={() => setHovered(null)}
+          className="h-56 w-full max-w-full"
+          overflow="visible"
+          onMouseMove={setCursorFromSvg}
+          onMouseLeave={() => {
+            setHovered(null);
+            setCursor(null);
+          }}
         >
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
@@ -105,10 +144,10 @@ export const AreaChart = memo(
                 strokeWidth={1}
               />
               <text
-                x={PADDING.left - 8}
+                x={PADDING.left - 10}
                 y={tick.y + 4}
                 textAnchor="end"
-                className="fill-ink-500 text-[11px]"
+                className="fill-ink-500 text-[13px]"
               >
                 {tick.value}
               </text>
@@ -117,9 +156,9 @@ export const AreaChart = memo(
 
           {segments.map((segment) => {
             const first = segment[0];
-            const last = segment[segment.length - 1];
+            const lastPoint = segment[segment.length - 1];
 
-            if (!first || !last) {
+            if (!first || !lastPoint) {
               return null;
             }
 
@@ -131,9 +170,9 @@ export const AreaChart = memo(
               .join(" ");
 
             return (
-              <g key={`${first.x}-${last.x}`}>
+              <g key={`${first.x}-${lastPoint.x}`}>
                 <path
-                  d={`${linePath} L ${last.x} ${baseline} L ${first.x} ${baseline} Z`}
+                  d={`${linePath} L ${lastPoint.x} ${baseline} L ${first.x} ${baseline} Z`}
                   fill={`url(#${gradientId})`}
                 />
                 <path
@@ -153,20 +192,23 @@ export const AreaChart = memo(
               {labelIndexes.has(index) ? (
                 <text
                   x={point.x}
-                  y={HEIGHT - 8}
+                  y={HEIGHT - 6}
                   textAnchor="middle"
-                  className="fill-ink-500 text-[11px]"
+                  className="fill-ink-500 text-[13px]"
                 >
                   {point.label}
                 </text>
               ) : null}
               <rect
-                x={point.x - 16}
+                x={point.x - hitWidth / 2}
                 y={PADDING.top}
-                width={32}
+                width={hitWidth}
                 height={plotHeight}
                 fill="transparent"
-                onMouseEnter={() => setHovered(index)}
+                onMouseEnter={(event) => {
+                  setHovered(index);
+                  setCursorFromSvg(event);
+                }}
               />
             </g>
           ))}
@@ -181,17 +223,23 @@ export const AreaChart = memo(
                 stroke="var(--heading)"
                 strokeWidth={1}
               />
-              {isGrade(active.value) ? (
+              {isFiniteChartValue(active.value) ? (
                 <circle cx={active.x} cy={active.y} r={4} fill={color} />
               ) : null}
             </>
           ) : null}
         </svg>
 
-        <figcaption className="mt-1 h-5 text-center text-xs text-ink-400">
-          {active
-            ? formatChartCaption(active.label, active.value, unit)
-            : `Максимум — ${upper}`}
+        {active && cursor ? (
+          <ChartTooltip
+            x={cursor.x}
+            y={cursor.y}
+            text={formatChartCaption(active.label, active.value, unit)}
+          />
+        ) : null}
+
+        <figcaption className="mt-1 h-6 text-center text-sm text-ink-400">
+          {last ? formatChartCaption(last.label, last.value, unit) : null}
         </figcaption>
       </figure>
     );
