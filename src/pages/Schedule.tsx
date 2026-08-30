@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { DayDialog } from "@/components/schedule/DayDialog";
 import { MonthView } from "@/components/schedule/MonthView";
-import { WeekView } from "@/components/schedule/WeekView";
+import { SchedulePreview } from "@/components/schedule/SchedulePreview";
+import { ScheduleTable } from "@/components/schedule/ScheduleTable";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
-import { Segmented } from "@/components/ui/Controls";
+import { Button, Segmented } from "@/components/ui/Controls";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/States";
 import {
   addDays,
@@ -17,6 +18,7 @@ import {
   toIsoDate,
 } from "@/lib/format";
 import { scheduleMonthQuery, scheduleRangeQuery } from "@/lib/queries";
+import { useAuthStore } from "@/store/auth";
 import { groupLessonsByDate } from "@/utils/groupLessonsByDate";
 import { isEmptyError } from "@/utils/isEmptyError";
 
@@ -29,7 +31,9 @@ export const SchedulePage = () => {
   const [view, setView] = useState<"month" | "week">("month");
   const [cursor, setCursor] = useState(() => new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const today = new Date();
+  const groupName = useAuthStore((state) => state.user?.group_name);
 
   const monthAnchor = startOfMonth(cursor);
   const weekStart = startOfWeek(cursor);
@@ -42,7 +46,7 @@ export const SchedulePage = () => {
 
   const weekResult = useQuery({
     ...scheduleRangeQuery(toIsoDate(weekStart), toIsoDate(weekEnd)),
-    enabled: view === "week",
+    enabled: view === "week" || previewOpen,
   });
 
   const active = view === "month" ? monthResult : weekResult;
@@ -64,21 +68,29 @@ export const SchedulePage = () => {
     setView(next);
   };
 
-  const title =
-    view === "month"
-      ? formatMonth(monthAnchor)
-      : `${formatDate(weekStart)} — ${formatDate(weekEnd)}`;
+  const weekLabel = `${formatDate(weekStart)} — ${formatDate(weekEnd)}`;
+  const title = view === "month" ? formatMonth(monthAnchor) : weekLabel;
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold tracking-tight text-heading">Расписание</h1>
-        <Segmented
-          options={VIEW_OPTIONS}
-          value={view}
-          onChange={switchView}
-          ariaLabel="Вид расписания"
-        />
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setPreviewOpen(true)}
+          >
+            <Share2 className="size-4" aria-hidden />
+            Превью
+          </Button>
+          <Segmented
+            options={VIEW_OPTIONS}
+            value={view}
+            onChange={switchView}
+            ariaLabel="Вид расписания"
+          />
+        </div>
       </div>
 
       <Card>
@@ -134,11 +146,13 @@ export const SchedulePage = () => {
                 onSelectDay={setSelectedDay}
               />
             ) : (
-              <WeekView
-                weekStart={weekStart}
-                lessonsByDate={lessonsByDate}
-                today={today}
-              />
+              <div className="-mx-5">
+                <ScheduleTable
+                  weekStart={weekStart}
+                  lessons={active.data ?? []}
+                  today={today}
+                />
+              </div>
             )}
           </CardBody>
         )}
@@ -149,6 +163,18 @@ export const SchedulePage = () => {
           date={selectedDay}
           lessons={lessonsByDate.get(toIsoDate(selectedDay)) ?? []}
           onClose={() => setSelectedDay(null)}
+        />
+      ) : null}
+
+      {previewOpen ? (
+        <SchedulePreview
+          groupName={groupName}
+          rangeLabel={weekLabel}
+          weekStart={weekStart}
+          lessons={weekResult.data ?? []}
+          today={today}
+          pending={weekResult.isPending}
+          onClose={() => setPreviewOpen(false)}
         />
       ) : null}
     </div>
