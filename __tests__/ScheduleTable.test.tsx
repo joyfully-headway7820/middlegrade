@@ -9,9 +9,9 @@ const lesson = (overrides: Partial<ScheduleLesson>): ScheduleLesson => ({
   lesson: 1,
   started_at: "08:00:00",
   finished_at: "09:20:00",
-  teacher_name: "Хамитов Илья Раильевич",
+  teacher_name: "Андреев Андрей Андреевич",
   subject_name: "ASP.NET",
-  room_name: "Дистант 7",
+  room_name: "Онлайн 1",
   ...overrides,
 });
 
@@ -27,7 +27,7 @@ describe("ScheduleTable", () => {
           lesson({
             date: "2026-09-02",
             subject_name: "WPF",
-            room_name: "207 Фабричка",
+            room_name: "Кабинет 101",
           }),
         ]}
         today={new Date(2026, 8, 2)}
@@ -39,9 +39,9 @@ describe("ScheduleTable", () => {
     expect(screen.getByRole("rowheader", { name: "1" })).toBeTruthy();
     expect(screen.getByText("ASP.NET")).toBeTruthy();
     expect(screen.getByText("WPF")).toBeTruthy();
-    expect(screen.getByText("Дистант 7")).toBeTruthy();
-    expect(screen.getByText("207 Фабричка")).toBeTruthy();
-    expect(screen.getAllByText("Хамитов Илья Раильевич")).toHaveLength(2);
+    expect(screen.getByText("Онлайн 1")).toBeTruthy();
+    expect(screen.getByText("Кабинет 101")).toBeTruthy();
+    expect(screen.getAllByText("Андреев Андрей Андреевич")).toHaveLength(2);
   });
 
   it("shows an empty week message when there are no lessons", () => {
@@ -50,5 +50,42 @@ describe("ScheduleTable", () => {
     );
 
     expect(screen.getByText("На этой неделе пар нет")).toBeTruthy();
+  });
+
+  it("renders one weekday column for a day table", () => {
+    render(
+      <ScheduleTable
+        weekStart={new Date(2026, 8, 1)}
+        lessons={[
+          lesson({
+            date: "2026-09-01",
+            started_at: "08:00",
+            finished_at: "09:20",
+            subject_name:
+              "Разработка веб-приложений с использованием технологий ASP.NET и AJAX",
+          }),
+        ]}
+        today={new Date(2026, 8, 1)}
+        dayCount={1}
+      />,
+    );
+
+    expect(screen.getByRole("columnheader", { name: /вторник/i })).toBeTruthy();
+    expect(screen.queryByRole("columnheader", { name: /понедельник/i })).toBeNull();
+    expect(screen.getByText("08:00–09:20")).toBeTruthy();
+    expect(screen.queryByText("Сделано в MiddleGrade")).toBeNull();
+  });
+
+  it("shows an empty day message when that day has no lessons", () => {
+    render(
+      <ScheduleTable
+        weekStart={new Date(2026, 8, 1)}
+        lessons={[]}
+        today={new Date(2026, 8, 1)}
+        dayCount={1}
+      />,
+    );
+
+    expect(screen.getByText("В этот день пар нет")).toBeTruthy();
   });
 });

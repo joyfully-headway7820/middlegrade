@@ -120,8 +120,8 @@ describe("toPurchase", () => {
     expect(
       toPurchase({
         id: 513,
-        student_name: "Уразаев Тимур Альбертович",
-        group_name: "9/1-РПО-23/2-72",
+        student_name: "Петров Пётр Петрович",
+        group_name: "1/1-РПО-00/1-01",
         created_at: "2026-08-25 13:51:58",
         status: 1,
       }),
@@ -137,7 +137,7 @@ describe("toPurchase", () => {
 
   it("reads Journal order info with the purchased products", () => {
     const photo =
-      "https://fs.top-academy.ru/api/v1/files/V-6f5FsAo-meC1IkA142JpNRyCLCNCXh";
+      "https://cdn.example/product.png";
 
     expect(
       toPurchase({
@@ -157,8 +157,8 @@ describe("toPurchase", () => {
           },
         ],
         id: 513,
-        student_name: "Уразаев Тимур Альбертович",
-        group_name: "9/1-РПО-23/2-72",
+        student_name: "Петров Пётр Петрович",
+        group_name: "1/1-РПО-00/1-01",
         created_at: "2026-08-25 13:51:58",
         status: 1,
       }),

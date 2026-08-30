@@ -4,7 +4,7 @@ import { PurchaseRow } from "@/components/market/PurchaseRow";
 import type { MarketPurchase } from "@/types";
 
 const photo =
-  "https://fs.top-academy.ru/api/v1/files/V-6f5FsAo-meC1IkA142JpNRyCLCNCXh";
+  "https://cdn.example/product.png";
 
 const purchase = (overrides: Partial<MarketPurchase> = {}): MarketPurchase => ({
   id: 513,

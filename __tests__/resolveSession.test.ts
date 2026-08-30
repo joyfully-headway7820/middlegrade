@@ -12,7 +12,7 @@ const student = (): UserInfo => ({
   achieves_count: 0,
   stream_id: 1,
   stream_name: "РПО",
-  group_name: "9/1-РПО-23/2-72",
+  group_name: "1/1-РПО-00/1-01",
   level: 1,
   photo: "",
   gaming_points: [],
