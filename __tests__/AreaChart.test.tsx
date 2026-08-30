@@ -18,7 +18,6 @@ describe("AreaChart", () => {
       <AreaChart
         data={data}
         color="#a78bfa"
-        unit="балл"
         ariaLabel="Средний балл по месяцам"
       />,
     );
@@ -26,7 +25,7 @@ describe("AreaChart", () => {
     expect(screen.getByText("май")).toBeTruthy();
     expect(screen.queryByText("февр")).toBeNull();
     expect(screen.queryByText("авг")).toBeNull();
-    expect(screen.getByText("июнь: 5 балл")).toBeTruthy();
+    expect(screen.getByText("июнь: 5")).toBeTruthy();
     expect(screen.queryByText("Максимум — 5")).toBeNull();
   });
 
@@ -35,7 +34,6 @@ describe("AreaChart", () => {
       <AreaChart
         data={data}
         color="#a78bfa"
-        unit="балл"
         ariaLabel="Средний балл по месяцам"
       />,
     );
@@ -48,7 +46,7 @@ describe("AreaChart", () => {
       clientY: 40,
     });
 
-    expect(screen.getByRole("tooltip").textContent).toBe("апр: 5 балл");
-    expect(screen.getByText("июнь: 5 балл")).toBeTruthy();
+    expect(screen.getByRole("tooltip").textContent).toBe("апр: 5");
+    expect(screen.getByText("июнь: 5")).toBeTruthy();
   });
 });
