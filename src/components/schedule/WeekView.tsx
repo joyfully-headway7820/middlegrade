@@ -31,12 +31,12 @@ export const WeekView = ({ weekStart, lessonsByDate, today }: WeekViewProps) => 
               <span
                 className={cn(
                   "text-sm font-semibold uppercase",
-                  current ? "text-brand-200" : "text-ink-200",
+                  current ? "text-brand-600" : "text-ink-200",
                 )}
               >
                 {WEEKDAYS_SHORT[index]}
               </span>
-              <span className="text-xs text-ink-500 tabular-nums">
+              <span className="text-xs text-ink-300 tabular-nums">
                 {day.getDate()}.{String(day.getMonth() + 1).padStart(2, "0")}
               </span>
             </header>

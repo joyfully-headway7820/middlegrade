@@ -35,7 +35,6 @@ export const Avatar = ({ name, src, className }: AvatarProps) => {
         <img
           src={src ?? undefined}
           alt=""
-          loading="lazy"
           onError={() => setFailed(true)}
           className="size-full object-cover"
         />
