@@ -45,5 +45,6 @@ describe("ActivityRow", () => {
 
     expect(screen.getByText("+1")).toBeTruthy();
     expect(screen.getByText("+1")).toHaveClass("text-good");
+    expect(screen.getByText("25 августа, 13:51")).toBeTruthy();
   });
 });
