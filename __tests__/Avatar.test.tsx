@@ -10,8 +10,8 @@ describe("Avatar", () => {
   });
 
   it("renders initials from a full name", () => {
-    render(<Avatar name="Уразаев Тимур" />);
+    render(<Avatar name="Петров Пётр" />);
 
-    expect(screen.getByText("УТ")).toBeTruthy();
+    expect(screen.getByText("ПП")).toBeTruthy();
   });
 });

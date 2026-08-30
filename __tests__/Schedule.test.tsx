@@ -1,18 +1,39 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SchedulePage } from "@/pages/Schedule";
 import { useAuthStore } from "@/store/auth";
 import type { ScheduleLesson, UserInfo } from "@/types";
+import { drawScheduleImage } from "@/utils/drawScheduleImage";
+import { saveScheduleImage } from "@/utils/saveScheduleImage";
+
+vi.mock("@/utils/drawScheduleImage", () => ({
+  drawScheduleImage: vi
+    .fn()
+    .mockResolvedValue(new Blob(["png"], { type: "image/png" })),
+  readScheduleImageColors: () => ({
+    canvas: "#080a12",
+    surface: "#12141f",
+    heading: "#f3f5fb",
+    muted: "#8189a8",
+    brand: "#7024f7",
+    brandDeep: "#5f16dc",
+    white: "#ffffff",
+  }),
+}));
+
+vi.mock("@/utils/saveScheduleImage", () => ({
+  saveScheduleImage: vi.fn().mockResolvedValue("downloaded"),
+}));
 
 const lesson = (): ScheduleLesson => ({
   date: "2026-09-01",
   lesson: 1,
-  started_at: "08:00:00",
-  finished_at: "09:20:00",
-  teacher_name: "Хамитов Илья Раильевич",
+  started_at: "08:00",
+  finished_at: "09:20",
+  teacher_name: "Андреев Андрей Андреевич",
   subject_name: "ASP.NET",
-  room_name: "Дистант 7",
+  room_name: "Онлайн 1",
 });
 
 const user = (): UserInfo => ({
@@ -24,7 +45,7 @@ const user = (): UserInfo => ({
   achieves_count: 0,
   stream_id: 1,
   stream_name: "РПО",
-  group_name: "9/1-РПО-23/2-72",
+  group_name: "1/1-РПО-00/1-01",
   level: 1,
   photo: "",
   gaming_points: [],
@@ -38,11 +59,36 @@ const user = (): UserInfo => ({
   study_form_short_name: "очная",
 });
 
-describe("SchedulePage preview", () => {
+const renderPage = (client: QueryClient) =>
+  render(
+    <QueryClientProvider client={client}>
+      <SchedulePage />
+    </QueryClientProvider>,
+  );
+
+const seedWeek = (client: QueryClient, lessons: ScheduleLesson[]) => {
+  client.setQueryData(["schedule", "month", "2026-09-01"], lessons);
+  client.setQueryData(
+    ["schedule", "range", "2026-08-31", "2026-09-06"],
+    lessons,
+  );
+  client.setQueryData(
+    ["schedule", "range", "2026-09-01", "2026-09-01"],
+    lessons,
+  );
+  client.setQueryData(
+    ["schedule", "range", "2026-09-02", "2026-09-02"],
+    lessons,
+  );
+};
+
+describe("SchedulePage", () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date(2026, 8, 2, 12));
     useAuthStore.setState({ user: user() });
+    vi.mocked(drawScheduleImage).mockClear();
+    vi.mocked(saveScheduleImage).mockClear();
   });
 
   afterEach(() => {
@@ -50,29 +96,29 @@ describe("SchedulePage preview", () => {
     useAuthStore.setState({ user: null });
   });
 
-  it("opens a screenshot card for the current week", () => {
+  it("saves an image instead of opening a preview dialog", async () => {
     const client = new QueryClient({
       defaultOptions: {
         queries: { retry: false, staleTime: Infinity, gcTime: Infinity },
       },
     });
-    const lessons = [lesson()];
-    client.setQueryData(["schedule", "month", "2026-09-01"], lessons);
-    client.setQueryData(["schedule", "range", "2026-08-31", "2026-09-06"], lessons);
+    seedWeek(client, [lesson()]);
+    renderPage(client);
 
-    render(
-      <QueryClientProvider client={client}>
-        <SchedulePage />
-      </QueryClientProvider>,
-    );
+    expect(screen.queryByRole("dialog")).toBeNull();
 
-    expect(screen.queryByRole("dialog", { name: "Превью расписания" })).toBeNull();
+    const camera = screen.getByRole("button", { name: "Сохранить расписание" });
+    await waitFor(() => {
+      expect(camera).not.toBeDisabled();
+    });
 
-    fireEvent.click(screen.getByRole("button", { name: "Превью" }));
+    fireEvent.click(camera);
 
-    expect(screen.getByRole("dialog", { name: "Превью расписания" })).toBeTruthy();
-    expect(screen.getByText("ASP.NET")).toBeTruthy();
-    expect(screen.getByText("9/1-РПО-23/2-72")).toBeTruthy();
+    await waitFor(() => {
+      expect(saveScheduleImage).toHaveBeenCalledOnce();
+    });
+    expect(drawScheduleImage).toHaveBeenCalledOnce();
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 
   it("shows the week table in the regular week view", () => {
@@ -81,20 +127,40 @@ describe("SchedulePage preview", () => {
         queries: { retry: false, staleTime: Infinity, gcTime: Infinity },
       },
     });
-    const lessons = [lesson()];
-    client.setQueryData(["schedule", "month", "2026-09-01"], lessons);
-    client.setQueryData(["schedule", "range", "2026-08-31", "2026-09-06"], lessons);
-
-    render(
-      <QueryClientProvider client={client}>
-        <SchedulePage />
-      </QueryClientProvider>,
-    );
+    seedWeek(client, [lesson()]);
+    renderPage(client);
 
     fireEvent.click(screen.getByRole("tab", { name: "Неделя" }));
 
-    expect(screen.getByRole("columnheader", { name: /понедельник/i })).toBeTruthy();
+    expect(
+      screen.getByRole("columnheader", { name: /понедельник/i }),
+    ).toBeTruthy();
     expect(screen.getByText("ASP.NET")).toBeTruthy();
-    expect(screen.getByText("Хамитов Илья Раильевич")).toBeTruthy();
+    expect(screen.getByText("Андреев Андрей Андреевич")).toBeTruthy();
+    expect(screen.queryByText("Сделано в MiddleGrade")).toBeNull();
+  });
+
+  it("shows a single-day table in the day view", () => {
+    const client = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false, staleTime: Infinity, gcTime: Infinity },
+      },
+    });
+    const todayLesson = { ...lesson(), date: "2026-09-02" };
+    seedWeek(client, [lesson()]);
+    client.setQueryData(
+      ["schedule", "range", "2026-09-02", "2026-09-02"],
+      [todayLesson],
+    );
+    renderPage(client);
+
+    fireEvent.click(screen.getByRole("tab", { name: "День" }));
+
+    expect(screen.getByRole("columnheader", { name: /среда/i })).toBeTruthy();
+    expect(
+      screen.queryByRole("columnheader", { name: /понедельник/i }),
+    ).toBeNull();
+    expect(screen.getByText("ASP.NET")).toBeTruthy();
+    expect(screen.getByText("08:00–09:20")).toBeTruthy();
   });
 });

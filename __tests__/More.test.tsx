@@ -15,7 +15,7 @@ const user = (): UserInfo => ({
   achieves_count: 0,
   stream_id: 1,
   stream_name: "РПО",
-  group_name: "9/1-РПО-23/2-72",
+  group_name: "1/1-РПО-00/1-01",
   level: 1,
   photo: "",
   gaming_points: [
@@ -53,7 +53,7 @@ describe("MorePage", () => {
     renderMore();
 
     expect(screen.getByText("Петров Пётр Петрович")).toBeTruthy();
-    expect(screen.getByText("9/1-РПО-23/2-72")).toBeTruthy();
+    expect(screen.getByText("1/1-РПО-00/1-01")).toBeTruthy();
     expect(screen.getByText("12")).toBeTruthy();
     expect(screen.getByText("4")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Отзывы" })).toHaveAttribute(

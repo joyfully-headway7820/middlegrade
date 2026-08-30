@@ -28,8 +28,9 @@ const lessonSlots = (lessons: ScheduleLesson[]) => {
 export const buildScheduleWeekTable = (
   weekStart: Date,
   lessons: ScheduleLesson[],
+  dayCount = 7,
 ): ScheduleWeekTable => {
-  const days: ScheduleWeekDay[] = Array.from({ length: 7 }, (_, index) => {
+  const days: ScheduleWeekDay[] = Array.from({ length: dayCount }, (_, index) => {
     const date = addDays(weekStart, index);
     return { date, iso: toIsoDate(date) };
   });

@@ -9,7 +9,7 @@ const homework = (
   id_spec: 10,
   id_teach: 20,
   id_group: 30,
-  fio_teach: "Борисихин Владислав Юрьевич",
+  fio_teach: "Андреев Андрей Андреевич",
   theme: "JS JQuery",
   completion_time: "2026-05-02 23:59:59",
   creation_time: "2026-01-10 12:00:00",
