@@ -1,4 +1,11 @@
+import {
+  IMAGE_CACHE_NAME,
+  IMAGE_META_CACHE_NAME,
+  handleImageRequest,
+} from "./image-cache.js";
+
 const CACHE = "mg-shell-v2";
+const KEEP = new Set([CACHE, IMAGE_CACHE_NAME, IMAGE_META_CACHE_NAME]);
 const PRECACHE = [
   "/",
   "/favicon.png",
@@ -26,7 +33,7 @@ self.addEventListener("activate", (event) => {
       const keys = await caches.keys();
       await Promise.all(
         keys
-          .filter((key) => key !== CACHE)
+          .filter((key) => !KEEP.has(key))
           .map((key) => caches.delete(key)),
       );
       await self.clients.claim();
@@ -42,6 +49,23 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   if (url.protocol !== "http:" && url.protocol !== "https:") {
+    return;
+  }
+
+  if (request.destination === "image") {
+    event.respondWith(
+      handleImageRequest(request, (task) => {
+        event.waitUntil(task);
+      }),
+    );
+    return;
+  }
+
+  const loopback =
+    self.location.hostname === "localhost" ||
+    self.location.hostname === "127.0.0.1";
+
+  if (loopback) {
     return;
   }
 

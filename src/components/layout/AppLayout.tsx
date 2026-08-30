@@ -13,6 +13,7 @@ import { cn } from "@/lib/cn";
 import { homeworkCountsQuery } from "@/lib/queries";
 import { useAuthStore } from "@/store/auth";
 import { studentBalances } from "@/utils/studentBalances";
+import { FeedBackButton } from "../ui/FeedBackButton";
 
 const Brand = () => (
   <div className="flex items-center gap-2.5 px-2">
@@ -149,6 +150,7 @@ export const AppLayout = () => {
         <main className="mx-auto w-full max-w-7xl min-w-0 flex-1 px-4 py-5 pb-[calc(5.25rem+env(safe-area-inset-bottom))] sm:px-6 sm:py-8 lg:pb-8">
           <Outlet />
         </main>
+        <FeedBackButton />
       </div>
 
       <TabBar badges={badges} />

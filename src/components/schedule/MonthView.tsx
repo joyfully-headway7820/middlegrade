@@ -68,7 +68,7 @@ export const MonthView = ({
                 className={cn(
                   "text-xs font-medium tabular-nums sm:text-sm",
                   outside ? "text-ink-600" : "text-ink-300",
-                  current && "text-brand-200",
+                  current && "text-brand-600",
                 )}
               >
                 {day.getDate()}
@@ -81,11 +81,11 @@ export const MonthView = ({
                     className="size-1.5 rounded-full bg-brand-400 sm:hidden"
                   />
                   <span className="mt-auto hidden flex-col gap-0.5 sm:flex">
-                    <span className="text-xs font-medium text-brand-200">
+                    <span className="text-xs font-medium text-brand-600">
                       {lessons.length}{" "}
                       {pluralRu(lessons.length, ["пара", "пары", "пар"])}
                     </span>
-                    <span className="text-[11px] text-ink-500 tabular-nums">
+                    <span className="text-[11px] text-ink-300 tabular-nums">
                       {formatTime(lessons[0].started_at)}–
                       {formatTime(lessons[lessons.length - 1].finished_at)}
                     </span>
