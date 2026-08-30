@@ -15,11 +15,10 @@ type ProgressChartProps = {
 
 const META: Record<
   ProgressChartKind,
-  { title: string; unit: string; ariaLabel: string; color: string; max?: number }
+  { title: string; unit?: string; ariaLabel: string; color: string; max?: number }
 > = {
   "average-progress": {
     title: "Средний балл",
-    unit: "балл",
     ariaLabel: "Средний балл по месяцам",
     color: "var(--color-brand-400)",
   },

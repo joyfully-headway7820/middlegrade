@@ -1,4 +1,4 @@
-export const visibleLabelIndexes = (count: number, maxLabels = 6): Set<number> => {
+export const visibleLabelIndexes = (count: number, maxLabels = 12): Set<number> => {
   if (count <= maxLabels) {
     return new Set(Array.from({ length: count }, (_, index) => index));
   }
