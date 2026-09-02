@@ -19,6 +19,7 @@ import type {
   ScheduleLesson,
   StudentExam,
   StudentReview,
+  EvaluateLessonQueueItem,
   StudentVisit,
   UserGroup,
   UserInfo,
@@ -163,6 +164,14 @@ export const reviewsQuery = () =>
     queryKey: ["reviews"],
     queryFn: () => request<StudentReview[]>("/reviews"),
     staleTime: FIVE_MINUTES,
+  });
+
+export const evaluateLessonQueueQuery = () =>
+  queryOptions({
+    queryKey: ["evaluate-lesson", "queue"],
+    queryFn: () => request<EvaluateLessonQueueItem[]>("/feedback/list"),
+    staleTime: FIVE_MINUTES,
+    retry: false,
   });
 
 export const marketQuery = () =>
