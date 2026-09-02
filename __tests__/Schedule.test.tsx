@@ -1,5 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SchedulePage } from "@/pages/Schedule";
 import { useAuthStore } from "@/store/auth";
@@ -118,6 +124,41 @@ describe("SchedulePage", () => {
       expect(saveScheduleImage).toHaveBeenCalledOnce();
     });
     expect(drawScheduleImage).toHaveBeenCalledOnce();
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("opens a day dialog from the month grid", () => {
+    const client = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false, staleTime: Infinity, gcTime: Infinity },
+      },
+    });
+    seedWeek(client, [lesson()]);
+    renderPage(client);
+
+    fireEvent.click(screen.getByRole("button", { name: "2026-09-01, 1 пара" }));
+
+    const dialog = screen.getByRole("dialog");
+    expect(within(dialog).getByText("ASP.NET")).toBeTruthy();
+    expect(within(dialog).getByText("08:00–09:20")).toBeTruthy();
+    expect(within(dialog).getByText("Онлайн 1")).toBeTruthy();
+    expect(screen.getByText("1 сентября 2026 г.")).toBeTruthy();
+  });
+
+  it("closes the day dialog when the view changes", () => {
+    const client = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false, staleTime: Infinity, gcTime: Infinity },
+      },
+    });
+    seedWeek(client, [lesson()]);
+    renderPage(client);
+
+    fireEvent.click(screen.getByRole("button", { name: "2026-09-01, 1 пара" }));
+    expect(screen.getByRole("dialog")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("tab", { name: "День" }));
+
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
