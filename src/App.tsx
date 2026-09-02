@@ -1,9 +1,11 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router";
+import { EvaluateLessonGate } from "@/components/evaluate-lesson/EvaluateLessonGate";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { OfflineBanner } from "@/components/layout/OfflineBanner";
 import { Spinner } from "@/components/ui/States";
+import { useEvaluateLessonGate } from "@/hooks/useEvaluateLessonGate";
 import { useOnline } from "@/hooks/useOnline";
 import { persistQueryCache } from "@/lib/persistQueryCache";
 import { meQuery } from "@/lib/queries";
@@ -28,6 +30,7 @@ function App() {
 
   const me = useQuery(meQuery());
   const session = resolveSession(user, me, online);
+  const evaluateGate = useEvaluateLessonGate(Boolean(session));
 
   useEffect(() => {
     if (me.data) {
@@ -54,6 +57,12 @@ function App() {
         </div>
       ) : !session ? (
         <LoginPage />
+      ) : evaluateGate.isLoading ? (
+        <div className="grid min-h-full place-items-center">
+          <Spinner label="Загрузка" />
+        </div>
+      ) : evaluateGate.shouldShow ? (
+        <EvaluateLessonGate gate={evaluateGate} />
       ) : (
         <Routes>
           <Route element={<AppLayout />}>
