@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import Marks from "@/components/Marks";
-import { LESSONS_PER_PAGE } from "@/constants/constants";
+import { LESSONS_LOAD_MORE, LESSONS_PER_PAGE } from "@/constants/constants";
 import type { StudentVisit } from "@/types";
 
 const visits = (count: number): StudentVisit[] =>
@@ -52,20 +52,20 @@ describe("Marks", () => {
     const user = userEvent.setup();
     render(<Marks marks={visits(120)} />);
 
-    await user.click(screen.getByRole("button", { name: "+50" }));
+    await user.click(screen.getByRole("button", { name: "Показать ещё" }));
 
-    expect(rows()).toHaveLength(LESSONS_PER_PAGE + 50);
+    expect(rows()).toHaveLength(LESSONS_PER_PAGE + LESSONS_LOAD_MORE);
     expect(rows()[0].textContent).toBe("Пара 120");
   });
 
-  it("offers the remaining count when fewer than fifty are left", async () => {
+  it("hides the load more button once the tail is shown", async () => {
     const user = userEvent.setup();
     render(<Marks marks={visits(45)} />);
 
-    await user.click(screen.getByRole("button", { name: "+25" }));
+    await user.click(screen.getByRole("button", { name: "Показать ещё" }));
 
     expect(rows()).toHaveLength(45);
-    expect(screen.queryByRole("button", { name: /^\+\d+$/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Показать ещё" })).toBeNull();
   });
 
   it("keeps pagination hidden for short lists", () => {

@@ -47,6 +47,7 @@ export const ScheduleTable = ({
               {table.days.map((day) => (
                 <th
                   key={day.iso}
+                  scope="col"
                   className={cn(
                     "border border-brand-700 bg-brand-600 px-2 py-2 text-center text-xs font-semibold text-white",
                     isSameDay(day.date, today) && "bg-brand-500",
@@ -63,7 +64,10 @@ export const ScheduleTable = ({
           <tbody>
             {table.slots.map((slot) => (
               <tr key={slot}>
-                <th className="border border-brand-700 bg-brand-600 px-2 py-3 text-center text-sm font-semibold text-white tabular-nums">
+                <th
+                  scope="row"
+                  className="border border-brand-700 bg-brand-600 px-2 py-3 text-center text-sm font-semibold text-white tabular-nums"
+                >
                   {slot}
                 </th>
                 {table.days.map((day) => {
