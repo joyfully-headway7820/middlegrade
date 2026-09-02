@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Camera, ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
+import { DayDialog } from "@/components/schedule/DayDialog";
 import { MonthView } from "@/components/schedule/MonthView";
 import { ScheduleTable } from "@/components/schedule/ScheduleTable";
 import { Card, CardBody } from "@/components/ui/Card";
@@ -47,6 +48,7 @@ const shiftLabel = (view: ScheduleView, direction: -1 | 1) => {
 export const SchedulePage = () => {
   const [view, setView] = useState<ScheduleView>("month");
   const [cursor, setCursor] = useState(() => new Date());
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [saving, setSaving] = useState(false);
   const today = new Date();
   const groupName = useAuthStore((state) => state.user?.group_name);
@@ -80,6 +82,7 @@ export const SchedulePage = () => {
   );
 
   const shift = (direction: -1 | 1) => {
+    setSelectedDay(null);
     setCursor((prev) => {
       if (view === "month") {
         return addMonths(prev, direction);
@@ -87,6 +90,11 @@ export const SchedulePage = () => {
 
       return addDays(prev, view === "week" ? direction * 7 : direction);
     });
+  };
+
+  const switchView = (next: ScheduleView) => {
+    setSelectedDay(null);
+    setView(next);
   };
 
   const weekLabel = `${formatDate(weekStart)} — ${formatDate(weekEnd)}`;
@@ -140,7 +148,7 @@ export const SchedulePage = () => {
         <Segmented
           options={VIEW_OPTIONS}
           value={view}
-          onChange={setView}
+          onChange={switchView}
           ariaLabel="Вид расписания"
           className="w-auto max-w-full shrink-0 flex-nowrap [&_[role=tab]]:basis-0"
         />
@@ -214,10 +222,7 @@ export const SchedulePage = () => {
                 anchor={monthAnchor}
                 lessonsByDate={lessonsByDate}
                 today={today}
-                onSelectDay={(date) => {
-                  setCursor(date);
-                  setView("day");
-                }}
+                onSelectDay={setSelectedDay}
               />
             ) : (
               <div className="-mx-5">
@@ -232,6 +237,14 @@ export const SchedulePage = () => {
           </CardBody>
         )}
       </Card>
+
+      {selectedDay ? (
+        <DayDialog
+          date={selectedDay}
+          lessons={lessonsByDate.get(toIsoDate(selectedDay)) ?? []}
+          onClose={() => setSelectedDay(null)}
+        />
+      ) : null}
     </div>
   );
 };
