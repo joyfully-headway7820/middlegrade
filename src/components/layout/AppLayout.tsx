@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { Coins, Gem, LogOut, PanelLeftClose, PanelLeftOpen, Sparkles } from "lucide-react";
 import { useMemo } from "react";
 import { NavLink, Outlet } from "react-router";
@@ -7,13 +6,12 @@ import { TabBar } from "./TabBar";
 import { ThemePicker } from "./ThemePicker";
 import { Avatar } from "@/components/ui/Avatar";
 import { Counter } from "@/components/ui/Controls";
+import { useHomeworkCounts } from "@/hooks/useHomeworkCounts";
 import { useLogout } from "@/hooks/useLogout";
 import { useStoredState } from "@/hooks/useStoredState";
 import { cn } from "@/lib/cn";
-import { homeworkCountsQuery } from "@/lib/queries";
 import { useAuthStore } from "@/store/auth";
 import { studentBalances } from "@/utils/studentBalances";
-import { sumHomeworkBadgeCounts } from "@/utils/sumHomeworkBadgeCounts";
 import { FeedBackButton } from "../ui/FeedBackButton";
 
 const Brand = ({ collapsed }: { collapsed: boolean }) => (
@@ -79,14 +77,14 @@ const NavList = ({ badges, collapsed }: NavListProps) => (
 
 export const AppLayout = () => {
   const user = useAuthStore((state) => state.user);
-  const homeworkCounts = useQuery(homeworkCountsQuery());
+  const homeworkCounts = useHomeworkCounts(user?.current_group_id);
   const logout = useLogout();
   const { coins, gems } = studentBalances(user?.gaming_points);
   const [collapsed, setCollapsed] = useStoredState("mg-sidebar-collapsed", false);
 
   const badges = useMemo(
-    () => ({ "/homework": sumHomeworkBadgeCounts(homeworkCounts.data) }),
-    [homeworkCounts.data],
+    () => ({ "/homework": homeworkCounts.total }),
+    [homeworkCounts.total],
   );
 
   return (

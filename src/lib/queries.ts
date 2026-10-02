@@ -1,8 +1,4 @@
-import {
-  infiniteQueryOptions,
-  keepPreviousData,
-  queryOptions,
-} from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { request } from "./api";
 import type {
   AcademicPerformance,
@@ -121,23 +117,6 @@ export const homeworkGroupsQuery = () =>
     ...VOLATILE,
   });
 
-export const homeworkQuery = (
-  groupId: number | undefined,
-  type: number,
-  status: number,
-  page = 1,
-) =>
-  queryOptions({
-    queryKey: ["homework", groupId, type, status, page],
-    queryFn: () =>
-      request<HomeworkList>("/homework", {
-        params: { groupId, type, status, page },
-      }),
-    enabled: Boolean(groupId),
-    placeholderData: keepPreviousData,
-    ...VOLATILE,
-  });
-
 export const homeworkFeedQuery = (
   groupId: number | undefined,
   type: number,
@@ -164,10 +143,17 @@ export const homeworkFeedQuery = (
     ...VOLATILE,
   });
 
-export const homeworkCountsQuery = () =>
+export const homeworkCountsQuery = (
+  groupId: number | undefined,
+  type: number,
+) =>
   queryOptions({
-    queryKey: ["homework", "counts"],
-    queryFn: () => request<HomeworkCount[]>("/homework/counts"),
+    queryKey: ["homework", "counts", groupId, type],
+    queryFn: () =>
+      request<HomeworkCount[]>("/homework/counts", {
+        params: { groupId, type },
+      }),
+    enabled: Boolean(groupId),
     ...VOLATILE,
     retry: false,
   });

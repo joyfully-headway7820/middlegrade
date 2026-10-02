@@ -1,39 +1,28 @@
 import { useQueries } from "@tanstack/react-query";
-import { HOMEWORK_STATUS, HOMEWORK_TYPE } from "@/constants/constants";
-import { homeworkQuery } from "@/lib/queries";
+import { HOMEWORK_TYPE } from "@/constants/constants";
+import { homeworkCountsQuery } from "@/lib/queries";
+import type { HomeworkCount } from "@/types";
+import { sumHomeworkBadgeCounts } from "@/utils/sumHomeworkBadgeCounts";
 
-const BADGE_STATUSES = [
-  HOMEWORK_STATUS.OVERDUE,
-  HOMEWORK_STATUS.ACTIVE,
-  HOMEWORK_STATUS.DELETED,
-] as const;
+const TYPES = [HOMEWORK_TYPE.HOMEWORK, HOMEWORK_TYPE.LAB] as const;
 
-const sumListItems = (
-  results: { data?: { items?: unknown[] | null } }[],
-  typeIndex: number,
-) =>
-  BADGE_STATUSES.reduce<number>(
-    (sum, _, statusIndex) =>
-      sum +
-      (results[typeIndex * BADGE_STATUSES.length + statusIndex].data?.items
-        ?.length ?? 0),
-    0,
-  );
-
-/** Сумма заданий со статусами overdue/active/deleted для бейджей type-switch. */
+/** Счётчики журнала по группе: бейджи type-switch и число в заголовке секции. */
 export const useHomeworkCounts = (groupId: number | undefined) =>
   useQueries({
-    queries: [HOMEWORK_TYPE.HOMEWORK, HOMEWORK_TYPE.LAB].flatMap((type) =>
-      BADGE_STATUSES.map((status) => homeworkQuery(groupId, type, status)),
-    ),
+    queries: TYPES.map((type) => homeworkCountsQuery(groupId, type)),
     combine: (results) => {
-      const homework = sumListItems(results, 0);
-      const labs = sumListItems(results, 1);
+      const byType: Record<number, HomeworkCount[] | undefined> = {
+        [HOMEWORK_TYPE.HOMEWORK]: results[0].data,
+        [HOMEWORK_TYPE.LAB]: results[1].data,
+      };
+      const homework = sumHomeworkBadgeCounts(byType[HOMEWORK_TYPE.HOMEWORK]);
+      const labs = sumHomeworkBadgeCounts(byType[HOMEWORK_TYPE.LAB]);
 
       return {
         homework,
         labs,
         total: homework + labs,
+        byType,
       };
     },
   });
