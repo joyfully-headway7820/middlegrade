@@ -49,6 +49,7 @@ export const HomeworkCard = ({ item, sectionStatus }: HomeworkCardProps) => {
   const [actionError, setActionError] = useState<string | null>(null);
   const mark = item.homework_stud?.mark ?? null;
   const work = studentWork(item);
+  const teacherNote = item.homework_comment?.text_comment?.trim() || null;
   const submissionId = item.homework_stud?.id;
   const section = HOMEWORK_SECTIONS.find(
     ({ value }) => value === sectionStatus,
@@ -115,7 +116,10 @@ export const HomeworkCard = ({ item, sectionStatus }: HomeworkCardProps) => {
       </div>
 
       {item.comment ? (
-        <p className="line-clamp-3 text-sm text-ink-400">{item.comment}</p>
+        <p className="text-sm break-words text-ink-400">{item.comment}</p>
+      ) : null}
+      {teacherNote ? (
+        <p className="text-sm break-words text-ink-200">{teacherNote}</p>
       ) : null}
 
       <div className="mt-auto flex flex-col gap-3 text-xs text-ink-500">

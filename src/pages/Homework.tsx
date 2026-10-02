@@ -13,6 +13,7 @@ import {
 import { useHomeworkCounts } from "@/hooks/useHomeworkCounts";
 import { homeworkGroupsQuery } from "@/lib/queries";
 import { useAuthStore } from "@/store/auth";
+import { homeworkCounter } from "@/utils/homeworkCounter";
 import { parseHomeworkSubjectKey } from "@/utils/parseHomeworkSubjectKey";
 
 const initialSectionStates = (): Record<number, HomeworkSectionState> =>
@@ -47,6 +48,7 @@ export const HomeworkPage = () => {
   }, [groupId, type, subjectKey]);
 
   const counts = useHomeworkCounts(groupId);
+  const typeCounts = counts.byType[type];
   const subject = parseHomeworkSubjectKey(subjectKey);
 
   const handleSectionStateChange = useCallback(
@@ -128,7 +130,8 @@ export const HomeworkPage = () => {
                   value={subjectKey}
                   onChange={setSubjectKey}
                   ariaLabel="Фильтр по предмету"
-                  className="w-full min-w-0 sm:w-72"
+                  searchable
+                  className="w-full min-w-0 sm:w-fit sm:max-w-full"
                 />
               ) : null}
             </div>
@@ -143,6 +146,9 @@ export const HomeworkPage = () => {
             groupId={groupId}
             type={type}
             section={section}
+            count={
+              typeCounts ? homeworkCounter(typeCounts, section.value) : undefined
+            }
             subjectSource={subject?.subjectSource}
             subjectId={subject?.subjectId}
             onStateChange={handleSectionStateChange}

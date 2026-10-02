@@ -132,7 +132,8 @@ export const GradesPage = () => {
             value={spec}
             onChange={setSpec}
             ariaLabel="Фильтр по предмету"
-            className="w-full sm:w-72"
+            searchable
+            className="w-full sm:w-fit sm:max-w-full"
           />
         </div>
       </div>

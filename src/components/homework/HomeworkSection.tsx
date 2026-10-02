@@ -16,6 +16,7 @@ type HomeworkSectionProps = {
   groupId: number | undefined;
   type: number;
   section: HomeworkSectionConfig;
+  count?: number;
   subjectSource?: number;
   subjectId?: number;
   onStateChange: (status: number, state: HomeworkSectionState) => void;
@@ -25,6 +26,7 @@ export const HomeworkSection = ({
   groupId,
   type,
   section,
+  count,
   subjectSource,
   subjectId,
   onStateChange,
@@ -67,6 +69,9 @@ export const HomeworkSection = ({
     });
   }, [data, groupId, isError, isPending, items.length, onStateChange, section.value]);
 
+  const title =
+    count == null ? section.label : `${section.label}: ${count}`;
+
   if (!groupId)
     return null;
 
@@ -84,7 +89,7 @@ export const HomeworkSection = ({
     return (
       <section className="flex flex-col gap-4">
         <h2 className={`text-lg font-semibold ${section.headingClass}`}>
-          {section.label}: 0
+          {title}
         </h2>
         <ErrorState
           message="Не удалось загрузить задания"
@@ -101,7 +106,7 @@ export const HomeworkSection = ({
   return (
     <section className="flex flex-col gap-4">
       <h2 className={`text-lg font-semibold ${section.headingClass}`}>
-        {section.label}: {items.length}
+        {title}
       </h2>
       <HomeworkFeed
         items={items}

@@ -1,5 +1,5 @@
 import { Check, ChevronDown, Eye, EyeOff } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type {
   ButtonHTMLAttributes,
   InputHTMLAttributes,
@@ -62,7 +62,7 @@ export const TextField = ({
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
           className={cn(
-            "w-full rounded-xl border border-line bg-canvas px-3.5 py-2.5 text-sm text-ink-50",
+            "w-full rounded-xl border border-line bg-canvas px-3.5 py-2.5 text-base text-ink-50",
             "placeholder:text-ink-500",
             "focus:border-brand-400 focus:outline-none",
             isPassword && "pr-11",
@@ -201,6 +201,7 @@ type SelectProps<T extends string | number> = {
   onChange: (value: T) => void;
   ariaLabel: string;
   className?: string;
+  searchable?: boolean;
 };
 
 export function Select<T extends string | number>({
@@ -209,18 +210,63 @@ export function Select<T extends string | number>({
   onChange,
   ariaLabel,
   className,
+  searchable = false,
 }: SelectProps<T>) {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const selected = options.find((option) => option.value === value);
+  const needle = query.trim().toLocaleLowerCase("ru");
+  const visibleOptions =
+    searchable && needle
+      ? options.filter(({ label }) =>
+          label.toLocaleLowerCase("ru").includes(needle),
+        )
+      : options;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open) return;
 
+    const menu = menuRef.current;
+    const root = containerRef.current;
+    if (!menu || !root) return;
+
+    const place = () => {
+      const margin = 12;
+      const rootRect = root.getBoundingClientRect();
+      const maxWidth = Math.min(512, window.innerWidth - margin * 2);
+      const minWidth = Math.min(rootRect.width, maxWidth);
+
+      menu.style.maxWidth = `${maxWidth}px`;
+      menu.style.minWidth = `${minWidth}px`;
+      menu.style.width = "max-content";
+      menu.style.left = "0";
+      menu.style.right = "auto";
+
+      const width = Math.min(Math.max(menu.scrollWidth, minWidth), maxWidth);
+      menu.style.width = `${width}px`;
+
+      if (rootRect.left + width <= window.innerWidth - margin) return;
+
+      const left = Math.max(margin, window.innerWidth - margin - width);
+      menu.style.left = `${left - rootRect.left}px`;
+    };
+
+    place();
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [open, needle, visibleOptions.length]);
+
+  useEffect(() => {
+    if (!open) {
+      setQuery("");
+      return;
+    }
+
     const onPointerDown = (event: MouseEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) {
+      if (!containerRef.current?.contains(event.target as Node))
         setOpen(false);
-      }
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -244,9 +290,9 @@ export function Select<T extends string | number>({
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between gap-2 rounded-xl border border-line bg-canvas px-3.5 py-2.5 text-sm text-ink-100 transition-colors hover:border-line"
+        className="flex w-full items-center justify-between gap-2 rounded-xl border border-line bg-canvas px-3.5 py-2.5 text-left text-sm text-ink-100 transition-colors hover:border-line"
       >
-        <span className="truncate">{selected?.label ?? "—"}</span>
+        <span className="min-w-0 break-words">{selected?.label ?? "—"}</span>
         <ChevronDown
           className={cn(
             "size-4 shrink-0 text-ink-400 transition-transform",
@@ -257,39 +303,62 @@ export function Select<T extends string | number>({
       </button>
 
       {open ? (
-        <ul
-          role="listbox"
-          className="scrollbar-slim absolute z-30 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border border-line bg-surface p-1 shadow-2xl shadow-black/60"
+        <div
+          ref={menuRef}
+          className="absolute z-30 mt-2 overflow-hidden rounded-xl border border-line bg-surface shadow-2xl shadow-black/60"
         >
-          {options.map((option) => {
-            const active = option.value === value;
-
-            return (
-              <li key={String(option.value)}>
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={active}
-                  onClick={() => {
-                    onChange(option.value);
-                    setOpen(false);
-                  }}
-                  className={cn(
-                    "flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors",
-                    active
-                      ? "bg-brand-600/20 text-heading"
-                      : "text-ink-300 hover:bg-overlay",
-                  )}
-                >
-                  <span className="truncate">{option.label}</span>
-                  {active ? (
-                    <Check className="size-4 shrink-0" aria-hidden />
-                  ) : null}
-                </button>
+          {searchable ? (
+            <div className="border-b border-line p-2">
+              <input
+                type="search"
+                value={query}
+                onChange={({ target }) => setQuery(target.value)}
+                placeholder="Поиск"
+                aria-label="Поиск"
+                className="w-full rounded-lg border border-line bg-canvas px-3 py-2 text-base text-ink-100 placeholder:text-ink-500 focus:border-brand-400 focus:outline-none"
+              />
+            </div>
+          ) : null}
+          <ul
+            role="listbox"
+            className="scrollbar-slim max-h-72 overflow-y-auto p-1"
+          >
+            {visibleOptions.length === 0 ? (
+              <li className="px-3 py-2 text-sm text-ink-500">
+                Ничего не найдено
               </li>
-            );
-          })}
-        </ul>
+            ) : (
+              visibleOptions.map((option) => {
+                const active = option.value === value;
+
+                return (
+                  <li key={String(option.value)}>
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={active}
+                      onClick={() => {
+                        onChange(option.value);
+                        setOpen(false);
+                      }}
+                      className={cn(
+                        "flex w-full items-start justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors",
+                        active
+                          ? "bg-brand-600/20 text-heading"
+                          : "text-ink-300 hover:bg-overlay",
+                      )}
+                    >
+                      <span className="min-w-0 break-words">{option.label}</span>
+                      {active ? (
+                        <Check className="mt-0.5 size-4 shrink-0" aria-hidden />
+                      ) : null}
+                    </button>
+                  </li>
+                );
+              })
+            )}
+          </ul>
+        </div>
       ) : null}
     </div>
   );
