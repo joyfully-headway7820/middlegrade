@@ -5,6 +5,7 @@ import { StarRating } from "@/components/evaluate-lesson/StarRating";
 import { formatDate } from "@/lib/format";
 import type { EvaluateLessonGateState } from "@/hooks/useEvaluateLessonGate";
 import { cn } from "@/lib/cn";
+import { validateEvaluateComment } from "@/utils/validateEvaluateComment";
 
 type EvaluateLessonGateProps = {
   gate: EvaluateLessonGateState;
@@ -18,11 +19,13 @@ const CommentField = ({
   value,
   onChange,
   required,
+  error,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   required: boolean;
+  error: string | null;
 }) => (
   <label className="flex flex-col gap-1.5">
     <span className="text-sm font-medium text-heading">
@@ -33,40 +36,19 @@ const CommentField = ({
     </span>
     <textarea
       value={value}
-      onChange={(event) => onChange(event.target.value)}
+      onChange={(event) => onChange(event.target.value.slice(0, 500))}
       rows={3}
+      maxLength={500}
       className={cn(
         "w-full resize-none rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-heading",
         "focus:border-brand-400 focus:outline-none",
       )}
       placeholder="Расскажите, что можно улучшить"
     />
+    <span className="text-xs text-ink-500">{value.trim().length}/500</span>
+    {error ? <span className="text-xs text-bad">{error}</span> : null}
   </label>
 );
-
-const canAdvanceTeach = (mark: number | null, comment: string) => {
-  if (mark === null) {
-    return false;
-  }
-
-  if (mark <= 3) {
-    return comment.trim().length > 0;
-  }
-
-  return true;
-};
-
-const canSubmitLesson = (mark: number | null, comment: string) => {
-  if (mark === null) {
-    return false;
-  }
-
-  if (mark <= 3) {
-    return comment.trim().length > 0;
-  }
-
-  return true;
-};
 
 export const EvaluateLessonGate = ({ gate }: EvaluateLessonGateProps) => {
   const { current, stage } = gate;
@@ -76,8 +58,16 @@ export const EvaluateLessonGate = ({ gate }: EvaluateLessonGateProps) => {
   }
 
   const dateLabel = formatDate(current.date_visit);
-  const teachReady = canAdvanceTeach(gate.markTeach, gate.commentTeach);
-  const lessonReady = canSubmitLesson(gate.markLesson, gate.commentLesson);
+  const teachCommentError =
+    gate.markTeach === null
+      ? null
+      : validateEvaluateComment(gate.markTeach, gate.commentTeach);
+  const lessonCommentError =
+    gate.markLesson === null
+      ? null
+      : validateEvaluateComment(gate.markLesson, gate.commentLesson);
+  const teachReady = gate.markTeach !== null && teachCommentError === null;
+  const lessonReady = gate.markLesson !== null && lessonCommentError === null;
 
   return (
     <Modal
@@ -121,6 +111,7 @@ export const EvaluateLessonGate = ({ gate }: EvaluateLessonGateProps) => {
               value={gate.commentTeach}
               onChange={gate.setCommentTeach}
               required={commentRequired(gate.markTeach)}
+              error={teachCommentError}
             />
           </>
         ) : (
@@ -146,6 +137,7 @@ export const EvaluateLessonGate = ({ gate }: EvaluateLessonGateProps) => {
               value={gate.commentLesson}
               onChange={gate.setCommentLesson}
               required={commentRequired(gate.markLesson)}
+              error={lessonCommentError}
             />
           </>
         )}
@@ -176,6 +168,12 @@ export const EvaluateLessonGate = ({ gate }: EvaluateLessonGateProps) => {
               </Button>
             )}
           </div>
+
+          {gate.submitError ? (
+            <p role="alert" className="text-sm text-bad">
+              {gate.submitError}
+            </p>
+          ) : null}
 
           <div className="rounded-xl border border-line bg-overlay/40 p-4">
             <p className="mb-3 text-sm text-ink-300">

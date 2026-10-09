@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
-import { request } from "@/lib/api";
+import { ApiError, request } from "@/lib/api";
 import { evaluateLessonQueueQuery } from "@/lib/queries";
 import type { EvaluateLessonQueueItem } from "@/types";
 
@@ -179,6 +179,12 @@ export const useEvaluateLessonGate = (enabled: boolean) => {
     submitCurrent,
     closeAllFive,
     isSubmitting: submit.isPending || isBulkSubmitting,
+    submitError:
+      submit.error instanceof ApiError
+        ? submit.error.message
+        : submit.error
+          ? "Не удалось отправить оценку"
+          : null,
   };
 };
 
