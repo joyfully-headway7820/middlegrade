@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
+  Calendar,
   CalendarClock,
   FileCheck2,
   Paperclip,
@@ -124,6 +125,10 @@ export const HomeworkCard = ({ item, sectionStatus }: HomeworkCardProps) => {
 
       <div className="mt-auto flex flex-col gap-3 text-xs text-ink-500">
         <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+          <span className="inline-flex items-center gap-1.5">
+            <Calendar className="size-3.5" aria-hidden />
+            отправлено {formatFullDate(item.creation_time)}
+          </span>
           <span className="inline-flex items-center gap-1.5">
             <CalendarClock className="size-3.5" aria-hidden />
             до {formatFullDate(item.completion_time)}
