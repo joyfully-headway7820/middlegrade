@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import { WEEKDAYS_SHORT } from "@/constants/constants";
 import { cn } from "@/lib/cn";
 import { addDays, formatTime, isSameDay, startOfMonth, startOfWeek, toIsoDate } from "@/lib/format";
+import { isStudentWorkLesson } from "@/utils/isStudentWorkLesson";
+import { lessonDaySpan } from "@/utils/lessonDaySpan";
 import { pluralRu } from "@/utils/pluralRu";
 import type { ScheduleLesson } from "@/types";
 
@@ -44,7 +46,10 @@ export const MonthView = ({
       <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {cells.map((day) => {
           const iso = toIsoDate(day);
-          const lessons = lessonsByDate.get(iso) ?? [];
+          const lessons = (lessonsByDate.get(iso) ?? []).filter(
+            (lesson) => !isStudentWorkLesson(lesson),
+          );
+          const span = lessonDaySpan(lessons);
           const outside = day.getMonth() !== anchor.getMonth();
           const current = isSameDay(day, today);
 
@@ -74,7 +79,7 @@ export const MonthView = ({
                 {day.getDate()}
               </span>
 
-              {lessons.length ? (
+              {span ? (
                 <>
                   <span
                     aria-hidden
@@ -86,8 +91,7 @@ export const MonthView = ({
                       {pluralRu(lessons.length, ["пара", "пары", "пар"])}
                     </span>
                     <span className="text-[11px] text-ink-300 tabular-nums">
-                      {formatTime(lessons[0].started_at)}–
-                      {formatTime(lessons[lessons.length - 1].finished_at)}
+                      {formatTime(span.startedAt)}–{formatTime(span.finishedAt)}
                     </span>
                   </span>
                 </>
