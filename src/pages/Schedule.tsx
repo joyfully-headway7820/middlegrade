@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Camera, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarPlus, Camera, ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import { DayDialog } from "@/components/schedule/DayDialog";
 import { MonthView } from "@/components/schedule/MonthView";
@@ -20,9 +20,15 @@ import {
 } from "@/lib/format";
 import { scheduleMonthQuery, scheduleRangeQuery } from "@/lib/queries";
 import { useAuthStore } from "@/store/auth";
+import {
+  buildScheduleIcs,
+  scheduleIcsFileName,
+} from "@/utils/buildScheduleIcs";
 import { groupLessonsByDate } from "@/utils/groupLessonsByDate";
 import { isEmptyError } from "@/utils/isEmptyError";
+import { isStudentWorkLesson } from "@/utils/isStudentWorkLesson";
 import { scheduleImageFileName } from "@/utils/scheduleImage";
+import { saveScheduleIcs } from "@/utils/saveScheduleIcs";
 import { saveScheduleImage } from "@/utils/saveScheduleImage";
 
 type ScheduleView = "month" | "week" | "day";
@@ -65,7 +71,6 @@ export const SchedulePage = () => {
 
   const weekResult = useQuery({
     ...scheduleRangeQuery(toIsoDate(weekStart), toIsoDate(weekEnd)),
-    enabled: view === "week" || view === "month",
   });
 
   const dayResult = useQuery({
@@ -122,6 +127,11 @@ export const SchedulePage = () => {
       : null,
   );
 
+  const icsLessons = useMemo(
+    () => (weekResult.data ?? []).filter((lesson) => !isStudentWorkLesson(lesson)),
+    [weekResult.data],
+  );
+
   const saveImage = async () => {
     if (saving || !imageBlob) {
       return;
@@ -137,6 +147,17 @@ export const SchedulePage = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const exportIcs = () => {
+    if (icsLessons.length === 0) {
+      return;
+    }
+
+    saveScheduleIcs(
+      buildScheduleIcs(icsLessons),
+      scheduleIcsFileName(toIsoDate(weekStart), toIsoDate(weekEnd)),
+    );
   };
 
   return (
@@ -168,6 +189,16 @@ export const SchedulePage = () => {
             className="shrink-0 px-3 py-1.5"
           >
             <Camera className="size-4" aria-hidden />
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={exportIcs}
+            disabled={icsLessons.length === 0}
+            aria-label="Экспорт в календарь"
+            className="shrink-0 px-3 py-1.5"
+          >
+            <CalendarPlus className="size-4" aria-hidden />
           </Button>
           <div className="ml-auto flex shrink-0 items-center gap-1">
             <button
